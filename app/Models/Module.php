@@ -13,6 +13,7 @@ class Module extends Model
         'description',
         'content',
         'video_url',
+        'pdf_path',
         'created_by',
         'published',
     ];

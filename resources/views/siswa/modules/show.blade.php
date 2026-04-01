@@ -403,6 +403,17 @@
         </div>
 
         <p class="module-text">{{ $module->content }}</p>
+
+        @if ($module->pdf_path)
+            <div style="margin-top:1rem;">
+                <a href="{{ asset('storage/' . $module->pdf_path) }}" target="_blank" class="btn-action primary"
+                    style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none;">
+                    <i class="fas fa-file-pdf"></i> Buka/Unduh PDF Materi
+                </a>
+                <p style="color:#666; font-size:0.9rem; margin-top:0.5rem;">File PDF tersedia untuk diunduh atau
+                    dibuka di tab baru.</p>
+            </div>
+        @endif
     </div>
 
     <!-- Video Section -->

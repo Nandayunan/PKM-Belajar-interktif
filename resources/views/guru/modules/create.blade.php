@@ -9,7 +9,7 @@
             <i class="fas fa-plus"></i> Buat Modul Baru
         </h1>
 
-        <form method="POST" action="{{ route('guru.modules.store') }}">
+        <form method="POST" action="{{ route('guru.modules.store') }}" enctype="multipart/form-data">
             @csrf
 
             <div style="margin-bottom: 1.5rem;">
@@ -19,6 +19,9 @@
                     style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Poppins', sans-serif;"
                     required>
                     <option value="">-- Pilih Mata Pelajaran --</option>
+                    @foreach ($subjects as $subject)
+                        <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                    @endforeach
                 </select>
             </div>
 
@@ -56,6 +59,13 @@
                 <input type="checkbox" name="published" id="published" style="width: 20px; height: 20px;">
                 <label for="published" style="font-weight: 700; color: #2d3748; cursor: pointer;">Publikasikan modul
                     ini</label>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="font-weight:700; display:block; margin-bottom:0.5rem">Upload PDF Materi (opsional)</label>
+                <input type="file" name="pdf" accept="application/pdf"
+                    style="padding:0.4rem; border:1px solid #e6e6f0; border-radius:6px; width:100%;">
+                <small style="color:#666">File PDF maksimal 10MB. Nama file akan disimpan di server.</small>
             </div>
 
             <div style="display: flex; gap: 1rem;">

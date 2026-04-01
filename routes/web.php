@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\ModuleController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
+use App\Http\Controllers\Teacher\ModuleController as TeacherModuleController;
 use App\Models\User;
 
 Route::get('/', function () {
@@ -86,26 +87,13 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
         return redirect()->route('guru.dashboard');
     })->name('subjects.destroy');
 
-    // Modules
-    Route::get('/modules/create', function () {
-        return view('guru.modules.create');
-    })->name('modules.create');
+    // Modules (real controller)
+    Route::get('/modules/create', [TeacherModuleController::class, 'create'])->name('modules.create');
+    Route::post('/modules', [TeacherModuleController::class, 'store'])->name('modules.store');
 
-    Route::get('/subject/{subject}/module/{module}/edit', function () {
-        return view('guru.modules.edit');
-    })->name('modules.edit');
-
-    Route::post('/modules', function () {
-        return redirect()->route('guru.dashboard');
-    })->name('modules.store');
-
-    Route::put('/subject/{subject}/module/{module}', function () {
-        return redirect()->route('guru.dashboard');
-    })->name('modules.update');
-
-    Route::delete('/subject/{subject}/module/{module}', function () {
-        return redirect()->route('guru.dashboard');
-    })->name('modules.destroy');
+    Route::get('/subject/{subject}/module/{module}/edit', [TeacherModuleController::class, 'edit'])->name('modules.edit');
+    Route::put('/subject/{subject}/module/{module}', [TeacherModuleController::class, 'update'])->name('modules.update');
+    Route::delete('/subject/{subject}/module/{module}', [TeacherModuleController::class, 'destroy'])->name('modules.destroy');
 
     // Questions
     Route::get('/questions/create', function () {

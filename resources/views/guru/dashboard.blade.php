@@ -448,6 +448,7 @@
                                 <th>Mata Pelajaran</th>
                                 <th>Soal</th>
                                 <th>Video</th>
+                                <th>PDF</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -470,6 +471,15 @@
                                             <span style="color: #999;">
                                                 <i class="fas fa-times"></i> Tidak
                                             </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($module->pdf_path)
+                                            <a href="{{ asset('storage/' . $module->pdf_path) }}" target="_blank" class="btn-sm btn-view">
+                                                <i class="fas fa-file-pdf"></i> Lihat
+                                            </a>
+                                        @else
+                                            <span style="color: #999;"><i class="fas fa-times"></i> Tidak</span>
                                         @endif
                                     </td>
                                     <td>

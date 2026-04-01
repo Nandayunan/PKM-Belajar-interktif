@@ -9,20 +9,32 @@
             <i class="fas fa-edit"></i> Edit Modul
         </h1>
 
-        <form method="POST" action="{{ route('guru.modules.update', [0, 0]) }}">
+        <form method="POST" action="{{ route('guru.modules.update', [$module->subject_id, $module->id]) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
             <div style="margin-bottom: 1.5rem;">
+                <label style="font-weight: 700; color: #2d3748; display: block; margin-bottom: 0.5rem;">Pilih Mata
+                    Pelajaran</label>
+                <select name="subject_id"
+                    style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Poppins', sans-serif;"
+                    required>
+                    @foreach ($subjects as $subject)
+                        <option value="{{ $subject->id }}" {{ $module->subject_id == $subject->id ? 'selected' : '' }}>{{ $subject->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
                 <label style="font-weight: 700; color: #2d3748; display: block; margin-bottom: 0.5rem;">Nama Modul</label>
-                <input type="text" name="name"
+                <input type="text" name="name" value="{{ old('name', $module->name) }}"
                     style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Poppins', sans-serif;"
                     required>
             </div>
 
             <div style="margin-bottom: 1.5rem;">
                 <label style="font-weight: 700; color: #2d3748; display: block; margin-bottom: 0.5rem;">Nomor Modul</label>
-                <input type="number" name="module_number"
+                <input type="number" name="module_number" value="{{ old('module_number', $module->module_number) }}"
                     style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Poppins', sans-serif;"
                     required>
             </div>
@@ -32,21 +44,33 @@
                     style="font-weight: 700; color: #2d3748; display: block; margin-bottom: 0.5rem;">Konten/Materi</label>
                 <textarea name="content"
                     style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Poppins', sans-serif; min-height: 150px;"
-                    required></textarea>
+                    required>{{ old('content', $module->content) }}</textarea>
             </div>
 
             <div style="margin-bottom: 1.5rem;">
                 <label style="font-weight: 700; color: #2d3748; display: block; margin-bottom: 0.5rem;">Link Video
                     YouTube</label>
-                <input type="url" name="video_url"
+                <input type="url" name="video_url" value="{{ old('video_url', $module->video_url) }}"
                     style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Poppins', sans-serif;"
                     placeholder="https://youtube.com/watch?v=...">
             </div>
 
             <div style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" name="published" id="published" style="width: 20px; height: 20px;">
+                <input type="checkbox" name="published" id="published" style="width: 20px; height: 20px;" {{ $module->published ? 'checked' : '' }}>
                 <label for="published" style="font-weight: 700; color: #2d3748; cursor: pointer;">Publikasikan modul
                     ini</label>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <label style="font-weight:700; display:block; margin-bottom:0.5rem">Upload/Replace PDF Materi (opsional)</label>
+                <input type="file" name="pdf" accept="application/pdf" style="padding:0.4rem; border:1px solid #e6e6f0; border-radius:6px; width:100%;">
+                @if ($module->pdf_path)
+                    <div style="margin-top:0.5rem;">
+                        <a href="{{ asset('storage/' . $module->pdf_path) }}" target="_blank" class="btn-sm btn-view">
+                            <i class="fas fa-file-pdf"></i> Lihat PDF Saat Ini
+                        </a>
+                    </div>
+                @endif
             </div>
 
             <div style="display: flex; gap: 1rem;">
