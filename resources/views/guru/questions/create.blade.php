@@ -40,6 +40,13 @@
 
             <div style="margin-top:1rem; display:flex; gap:1.5rem;">
                 <div style="flex:1">
+                    <label style="font-weight:700; display:block; margin-bottom:0.5rem">Kelas</label>
+                    <input type="text" name="class"
+                        style="width:100%; padding:0.65rem; border:1px solid #e6e6f0; border-radius:8px;" 
+                        placeholder="Contoh: VII-A, VII-B, VIII-A">
+                </div>
+
+                <div style="flex:1">
                     <label style="font-weight:700; display:block; margin-bottom:0.5rem">Tipe Soal</label>
                     <select name="type" id="question-type"
                         style="width:100%; padding:0.65rem; border:1px solid #e6e6f0; border-radius:8px;" required>

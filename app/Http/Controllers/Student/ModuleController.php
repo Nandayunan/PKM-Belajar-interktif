@@ -147,7 +147,7 @@ class ModuleController extends Controller
         // Update module progress
         $percentage = $questions->count() > 0 ? ($totalCorrect / $questions->count()) * 100 : 0;
 
-        StudentProgress::updateOrCreate(
+        $moduleProgress = StudentProgress::updateOrCreate(
             [
                 'user_id' => $user->id,
                 'module_id' => $module->id,
@@ -188,6 +188,12 @@ class ModuleController extends Controller
                     'points_earned' => $totalPoints,
                 ]
             );
+        }
+
+        // Redirect to feedback form if no feedback submitted yet
+        if ($moduleProgress->feedback_submitted_at === null) {
+            return redirect()->route('siswa.feedback.create', $moduleProgress->id)
+                ->with('success', "Jawaban Anda berhasil disimpan! Anda mendapat {$totalPoints} dari {$totalPointsPossible} poin.");
         }
 
         return redirect()->route('siswa.modules.show', [$subjectId, $moduleId])

@@ -14,10 +14,14 @@ class QuestionAnswer extends Model
         'answer',
         'is_correct',
         'points_earned',
+        'teacher_feedback',
+        'teacher_score',
+        'graded_at',
     ];
 
     protected $casts = [
         'is_correct' => 'boolean',
+        'graded_at' => 'datetime',
     ];
 
     // Relationships

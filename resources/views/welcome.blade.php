@@ -98,18 +98,11 @@
             <div
                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; padding: 2rem; text-align: center; box-shadow: var(--card-shadow);">
                 <h2 style="margin-top: 0; margin-bottom: 1rem;">Siap Belajar?</h2>
-                <p style="margin: 0 0 1.5rem 0; opacity: 0.95;">Bergabunglah dengan ribuan siswa yang telah menggunakan platform
-                    ini</p>
-                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="{{ route('login') }}"
-                        style="padding: 1rem 2rem; background: white; color: #667eea; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; text-decoration: none; font-size: 1rem; transition: transform 0.3s;">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </a>
-                    <a href="{{ route('register') }}"
-                        style="padding: 1rem 2rem; background: rgba(255,255,255,0.2); color: white; border: 2px solid white; border-radius: 10px; cursor: pointer; font-weight: 700; text-decoration: none; font-size: 1rem; transition: all 0.3s;">
-                        <i class="fas fa-user-plus"></i> Daftar Sekarang
-                    </a>
-                </div>
+                <p style="margin: 0 0 1.5rem 0; opacity: 0.95;">Login untuk mengakses platform pembelajaran</p>
+                <a href="{{ route('login') }}"
+                    style="padding: 1rem 2rem; background: white; color: #667eea; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; text-decoration: none; font-size: 1rem; transition: transform 0.3s; display: inline-block;">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
             </div>
         @endguest
 

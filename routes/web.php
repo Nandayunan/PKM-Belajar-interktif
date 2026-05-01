@@ -3,11 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\ModuleController;
+use App\Http\Controllers\Student\FeedbackController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
 use App\Http\Controllers\Teacher\ModuleController as TeacherModuleController;
+use App\Http\Controllers\Teacher\StudentController;
+use App\Http\Controllers\Teacher\GradingController;
 use App\Models\User;
 
 Route::get('/', function () {
@@ -26,8 +28,6 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'show'])->name('login');
     Route::post('/login', [LoginController::class, 'store']);
-    Route::get('/register', [RegisterController::class, 'show'])->name('register');
-    Route::post('/register', [RegisterController::class, 'store']);
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
@@ -56,11 +56,28 @@ Route::middleware(['auth', 'student'])->prefix('siswa')->name('siswa.')->group(f
             Route::post('/submit-answer', [ModuleController::class, 'submitAnswer'])->name('modules.submit-answer');
         });
     });
+
+    // Feedback Routes
+    Route::prefix('feedback')->name('feedback.')->group(function () {
+        Route::get('/{progress}', [FeedbackController::class, 'create'])->name('create');
+        Route::post('/{progress}', [FeedbackController::class, 'store'])->name('store');
+    });
 });
 
 // Teacher Routes
 Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(function () {
     Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('dashboard');
+
+    // Student Management Routes
+    Route::resource('students', StudentController::class)->only(['create', 'store', 'edit', 'update', 'destroy', 'index']);
+
+    // Grading Routes
+    Route::prefix('grading')->name('grading.')->group(function () {
+        Route::get('/', [GradingController::class, 'index'])->name('index');
+        Route::get('/{answer}', [GradingController::class, 'show'])->name('show');
+        Route::post('/{answer}', [GradingController::class, 'store'])->name('store');
+        Route::get('/graded/list', [GradingController::class, 'graded'])->name('graded');
+    });
 
     // Dummy routes for CRUD operations
     Route::get('/subjects/create', function () {

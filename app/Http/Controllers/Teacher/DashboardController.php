@@ -30,11 +30,15 @@ class DashboardController extends Controller
             ->with('user', 'subject')
             ->get();
 
+        // Fetch all students (untuk manajemen siswa)
+        $students = User::where('role', 0)->paginate(15);
+
         return view('guru.dashboard', [
             'subjects' => $subjects,
             'modules' => $modules,
             'questions' => $questions,
             'studentProgress' => $studentProgress,
+            'students' => $students,
             'totalSubjects' => $totalSubjects,
             'totalModules' => $totalModules,
             'totalQuestions' => $totalQuestions,

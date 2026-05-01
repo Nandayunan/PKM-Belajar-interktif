@@ -19,10 +19,14 @@ class StudentProgress extends Model
         'earned_points',
         'percentage',
         'status',
+        'student_feedback',
+        'student_feelings',
+        'feedback_submitted_at',
     ];
 
     protected $casts = [
         'percentage' => 'float',
+        'feedback_submitted_at' => 'datetime',
     ];
 
     // Relationships

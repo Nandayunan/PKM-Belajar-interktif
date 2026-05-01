@@ -340,6 +340,9 @@
             <button class="tab-btn" onclick="switchTab('questions')">
                 <i class="fas fa-question-circle"></i> Soal
             </button>
+            <button class="tab-btn" onclick="switchTab('students')">
+                <i class="fas fa-users"></i> Manajemen Siswa
+            </button>
             <button class="tab-btn" onclick="switchTab('student-progress')">
                 <i class="fas fa-chart-bar"></i> Progress Siswa
             </button>
@@ -584,6 +587,80 @@
                         </tbody>
                     </table>
                 </div>
+            @endif
+        </div>
+
+        <!-- STUDENTS MANAGEMENT TAB -->
+        <div id="students-tab" class="tab-content" style="display: none;">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fas fa-users"></i> Manajemen Siswa
+                </div>
+                <a href="{{ route('guru.students.create') }}" class="btn-add">
+                    <i class="fas fa-user-plus"></i> Tambah Siswa
+                </a>
+            </div>
+
+            @if ($students->isEmpty())
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>Belum ada siswa yang terdaftar</p>
+                    <a href="{{ route('guru.students.create') }}" class="btn-add">
+                        <i class="fas fa-user-plus"></i> Tambah Siswa Pertama
+                    </a>
+                </div>
+            @else
+                <div class="table-responsive-custom">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nama Siswa</th>
+                                <th>Email</th>
+                                <th>No. HP</th>
+                                <th>Kelas</th>
+                                <th>Wali Kelas</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($students as $student)
+                                <tr>
+                                    <td><strong>{{ $student->name }}</strong></td>
+                                    <td>{{ $student->email }}</td>
+                                    <td>{{ $student->phone ?? '-' }}</td>
+                                    <td>{{ $student->class ?? '-' }}</td>
+                                    <td>{{ $student->homeroom_teacher ?? '-' }}</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="{{ route('guru.students.edit', $student->id) }}"
+                                                class="btn-sm btn-edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <form action="{{ route('guru.students.destroy', $student->id) }}"
+                                                method="POST" style="display: inline;"
+                                                onsubmit="return confirm('Hapus siswa ini?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-sm btn-delete">
+                                                    <i class="fas fa-trash"></i> Hapus
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: #999;">Tidak ada data siswa</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                @if ($students->hasPages())
+                    <div style="margin-top: 2rem;">
+                        {{ $students->links() }}
+                    </div>
+                @endif
             @endif
         </div>
 

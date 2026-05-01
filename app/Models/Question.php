@@ -15,6 +15,7 @@ class Question extends Model
         'points',
         'created_by',
         'published',
+        'class',
     ];
 
     protected $casts = [
