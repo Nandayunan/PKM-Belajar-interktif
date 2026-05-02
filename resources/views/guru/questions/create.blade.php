@@ -7,21 +7,109 @@
         $subjects = \App\Models\Subject::with('modules')->get();
         $modules = \App\Models\Module::all(['id', 'subject_id', 'name']);
     @endphp
+@section('extra-css')
+    <style>
+        .question-card {
+            max-width: 1100px;
+            margin: 0 auto;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            background: white;
+        }
 
-    <div
-        style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 8px 24px rgba(0,0,0,0.06); max-width: 820px; margin: 0 auto;">
-        <h1 style="color: var(--primary-color); margin-bottom: 1.5rem; font-size: 28px; font-weight:700;">
-            <i class="fas fa-plus" style="margin-right:8px"></i> Buat Soal Baru
-        </h1>
+        .question-hero {
+            min-width: 320px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.98), rgba(79, 70, 229, 0.95));
+            color: white;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.5rem;
+        }
 
+        .question-hero h2 {
+            font-size: 1.6rem;
+            margin: 0;
+            font-weight: 800;
+        }
+
+        .question-form {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .option-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .option-input {
+            flex: 1;
+            padding: 0.55rem;
+            border: 1px solid #e6e6f0;
+            border-radius: 8px;
+        }
+
+        .option-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-add-option {
+            background: transparent;
+            border: 2px dashed #e6e6f0;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            color: #374151;
+            font-weight: 700;
+        }
+
+        .correct-badge {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 0.35rem 0.6rem;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .question-card {
+                flex-direction: column;
+            }
+
+            .question-hero {
+                min-height: 140px;
+            }
+        }
+    </style>
+@endsection
+
+<div class="question-card card">
+    <div class="question-hero">
+        <div style="display:flex; gap:0.75rem; align-items:center">
+            <div
+                style="width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center">
+                <i class="fas fa-question" style="font-size:20px"></i>
+            </div>
+            <div>
+                <h2>Buat / Edit Soal</h2>
+                <div style="opacity:0.95;">Desain form yang bersih dan fokus pada produktivitas guru.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-form">
         <form method="POST" action="{{ route('guru.questions.store') }}">
             @csrf
 
-            <div style="display:flex; gap:1.5rem;">
-                <div style="flex:1">
-                    <label style="font-weight:700; display:block; margin-bottom:0.5rem">Pilih Mata Pelajaran</label>
-                    <select id="subject-select"
-                        style="width:100%; padding:0.65rem; border:1px solid #e6e6f0; border-radius:8px;" required>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Pilih Mata Pelajaran</label>
+                    <select id="subject-select" class="form-select" required>
                         <option value="">-- Pilih Mata Pelajaran --</option>
                         @foreach ($subjects as $subject)
                             <option value="{{ $subject->id }}">{{ $subject->name }}</option>
@@ -29,27 +117,21 @@
                     </select>
                 </div>
 
-                <div style="flex:1">
-                    <label style="font-weight:700; display:block; margin-bottom:0.5rem">Pilih Modul</label>
-                    <select id="module-select" name="module_id"
-                        style="width:100%; padding:0.65rem; border:1px solid #e6e6f0; border-radius:8px;" required disabled>
+                <div class="col-md-6">
+                    <label class="form-label">Pilih Modul</label>
+                    <select id="module-select" name="module_id" class="form-select" required disabled>
                         <option value="">-- Pilih Modul --</option>
                     </select>
                 </div>
-            </div>
 
-            <div style="margin-top:1rem; display:flex; gap:1.5rem;">
-                <div style="flex:1">
-                    <label style="font-weight:700; display:block; margin-bottom:0.5rem">Kelas</label>
-                    <input type="text" name="class"
-                        style="width:100%; padding:0.65rem; border:1px solid #e6e6f0; border-radius:8px;"
-                        placeholder="Contoh: VII-A, VII-B, VIII-A">
+                <div class="col-md-4">
+                    <label class="form-label">Kelas</label>
+                    <input type="text" name="class" class="form-control" placeholder="Contoh: VII-A">
                 </div>
 
-                <div style="flex:1">
-                    <label style="font-weight:700; display:block; margin-bottom:0.5rem">Tipe Soal</label>
-                    <select name="type" id="question-type"
-                        style="width:100%; padding:0.65rem; border:1px solid #e6e6f0; border-radius:8px;" required>
+                <div class="col-md-4">
+                    <label class="form-label">Tipe Soal</label>
+                    <select name="type" id="question-type" class="form-select" required>
                         <option value="">-- Pilih Tipe --</option>
                         <option value="multiple_choice">Pilihan Ganda</option>
                         <option value="essay">Essay</option>
@@ -58,78 +140,68 @@
                     </select>
                 </div>
 
-                <div style="flex:1">
-                    <label style="font-weight:700; display:block; margin-bottom:0.5rem">Poin</label>
-                    <input type="number" name="points" value="10" min="0"
-                        style="width:100%; padding:0.65rem; border:1px solid #e6e6f0; border-radius:8px;" required>
-                </div>
-            </div>
-
-            <div style="margin-top:1rem;">
-                <label style="font-weight:700; display:block; margin-bottom:0.5rem">Pertanyaan</label>
-                <textarea name="question" id="question-text"
-                    style="width:100%; padding:0.75rem; border:1px solid #e6e6f0; border-radius:8px; min-height:120px;" required></textarea>
-            </div>
-
-            <!-- Multiple choice options -->
-            <div id="mc-options" style="margin-top:1rem; display:none;">
-                <label style="font-weight:700; display:block; margin-bottom:0.5rem">Pilihan Jawaban (Pilihan Ganda)</label>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem">
-                    <input type="text" name="options[0]" placeholder="Opsi A"
-                        style="padding:0.6rem; border:1px solid #e6e6f0; border-radius:6px;">
-                    <input type="text" name="options[1]" placeholder="Opsi B"
-                        style="padding:0.6rem; border:1px solid #e6e6f0; border-radius:6px;">
-                    <input type="text" name="options[2]" placeholder="Opsi C"
-                        style="padding:0.6rem; border:1px solid #e6e6f0; border-radius:6px;">
-                    <input type="text" name="options[3]" placeholder="Opsi D"
-                        style="padding:0.6rem; border:1px solid #e6e6f0; border-radius:6px;">
+                <div class="col-md-4">
+                    <label class="form-label">Poin</label>
+                    <input type="number" name="points" value="10" min="0" class="form-control" required>
                 </div>
 
-                <div style="margin-top:0.75rem;">
-                    <label style="font-weight:700; display:block; margin-bottom:0.5rem">Jawaban Benar (Pilihan
-                        Ganda)</label>
-                    <select name="correct_answer_mc" id="correct-answer-mc"
-                        style="padding:0.6rem; border:1px solid #e6e6f0; border-radius:6px; width:200px;">
-                        <option value="">-- Pilih Jawaban --</option>
-                        <option value="0">Opsi A</option>
-                        <option value="1">Opsi B</option>
-                        <option value="2">Opsi C</option>
-                        <option value="3">Opsi D</option>
+                <div class="col-12">
+                    <label class="form-label">Pertanyaan</label>
+                    <textarea name="question" id="question-text" class="form-control" rows="4" required></textarea>
+                </div>
+
+                <!-- Multiple choice options -->
+                <div class="col-12" id="mc-options" style="display:none;">
+                    <label class="form-label">Pilihan Jawaban (Pilihan Ganda)</label>
+                    <div id="options-list" style="display:flex;flex-direction:column;gap:0.5rem">
+                        <!-- option rows injected by JS -->
+                    </div>
+
+                    <div style="margin-top:0.75rem; display:flex; gap:0.5rem; align-items:center;">
+                        <button type="button" id="add-option" class="btn-add-option">+ Tambah Opsi</button>
+                        <div class="form-note" style="margin-left:0.5rem">Centang pilihan yang benar.</div>
+                    </div>
+                </div>
+
+                <!-- True/False -->
+                <div class="col-12" id="tf-options" style="display:none;">
+                    <label class="form-label">Jawaban Benar (Benar / Salah)</label>
+                    <select name="correct_answer_tf" class="form-select" style="max-width:240px;">
+                        <option value="true">Benar</option>
+                        <option value="false">Salah</option>
                     </select>
                 </div>
-            </div>
 
-            <!-- True/False -->
-            <div id="tf-options" style="margin-top:1rem; display:none;">
-                <label style="font-weight:700; display:block; margin-bottom:0.5rem">Jawaban Benar (Benar / Salah)</label>
-                <select name="correct_answer_tf"
-                    style="padding:0.6rem; border:1px solid #e6e6f0; border-radius:6px; width:200px;">
-                    <option value="true">Benar</option>
-                    <option value="false">Salah</option>
-                </select>
-            </div>
-
-            <div style="margin-top:1.25rem; display:flex; gap:1rem;">
-                <button type="submit"
-                    style="padding:0.7rem 1.5rem; background:linear-gradient(135deg,var(--primary-color),var(--primary-dark)); color:#fff; border:none; border-radius:8px; font-weight:700;">Simpan</button>
-                <a href="{{ route('guru.dashboard') }}"
-                    style="padding:0.7rem 1.5rem; background:#f3f4f6; color:#333; border-radius:8px; text-decoration:none; display:inline-flex; align-items:center;">Batal</a>
+                <div class="col-12 d-flex" style="gap:0.75rem;">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save"></i>&nbsp; Simpan
+                    </button>
+                    <a href="{{ route('guru.dashboard') }}" class="btn btn-outline-primary btn-lg">Batal</a>
+                </div>
             </div>
         </form>
     </div>
+</div>
 
+@section('extra-js')
     <script>
         const modules = {!! $modules->toJson() !!};
 
-        document.getElementById('subject-select').addEventListener('change', function(e) {
-            const subjectId = parseInt(e.target.value || 0);
-            const moduleSelect = document.getElementById('module-select');
+        const subjectSelect = document.getElementById('subject-select');
+        const moduleSelect = document.getElementById('module-select');
+        const questionType = document.getElementById('question-type');
+        const mcOptions = document.getElementById('mc-options');
+        const tfOptions = document.getElementById('tf-options');
+        const optionsList = document.getElementById('options-list');
+        const addOptionBtn = document.getElementById('add-option');
+
+        function populateModules(subjectId) {
             moduleSelect.innerHTML = '<option value="">-- Pilih Modul --</option>';
             if (!subjectId) {
                 moduleSelect.disabled = true;
                 return;
             }
-            const filtered = modules.filter(m => m.subject_id === subjectId);
+            const filtered = modules.filter(m => m.subject_id === parseInt(subjectId));
             filtered.forEach(m => {
                 const opt = document.createElement('option');
                 opt.value = m.id;
@@ -137,16 +209,79 @@
                 moduleSelect.appendChild(opt);
             });
             moduleSelect.disabled = false;
+        }
+
+        subjectSelect.addEventListener('change', function(e) {
+            populateModules(e.target.value);
         });
 
         function updateVisibility() {
-            const type = document.getElementById('question-type').value;
-            document.getElementById('mc-options').style.display = (type === 'multiple_choice' || type === 'mixed') ?
-                'block' : 'none';
-            document.getElementById('tf-options').style.display = (type === 'true_false') ? 'block' : 'none';
+            const type = questionType.value;
+            mcOptions.style.display = (type === 'multiple_choice' || type === 'mixed') ? 'block' : 'none';
+            tfOptions.style.display = (type === 'true_false') ? 'block' : 'none';
         }
 
-        document.getElementById('question-type').addEventListener('change', updateVisibility);
+        questionType.addEventListener('change', updateVisibility);
         updateVisibility();
+
+        // Options management
+        function createOptionRow(text = '', index = null) {
+            const row = document.createElement('div');
+            row.className = 'option-row';
+
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'correct_answer_mc';
+            radio.value = index !== null ? index : '';
+            radio.style.width = '18px';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = (typeof index === 'number') ? `options[${index}]` : 'options[]';
+            input.placeholder = 'Tulis opsi jawaban...';
+            input.className = 'option-input';
+            input.value = text;
+
+            const actions = document.createElement('div');
+            actions.className = 'option-actions';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn btn-sm btn-outline-primary';
+            removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
+            removeBtn.addEventListener('click', () => {
+                row.remove();
+                refreshOptionIndexes();
+            });
+
+            actions.appendChild(removeBtn);
+
+            row.appendChild(radio);
+            row.appendChild(input);
+            row.appendChild(actions);
+
+            return row;
+        }
+
+        function refreshOptionIndexes() {
+            const rows = optionsList.querySelectorAll('.option-row');
+            rows.forEach((r, i) => {
+                const input = r.querySelector('input[type="text"]');
+                const radio = r.querySelector('input[type="radio"]');
+                input.name = `options[${i}]`;
+                radio.value = i;
+            });
+        }
+
+        addOptionBtn.addEventListener('click', () => {
+            optionsList.appendChild(createOptionRow('', null));
+            refreshOptionIndexes();
+        });
+
+        // Initialize with 4 empty options to match previous UX
+        for (let i = 0; i < 4; i++) {
+            optionsList.appendChild(createOptionRow('', i));
+        }
     </script>
+@endsection
 @endsection

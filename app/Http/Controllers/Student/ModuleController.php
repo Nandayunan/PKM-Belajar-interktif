@@ -246,19 +246,64 @@ class ModuleController extends Controller
 
     private function convertYouTubeToEmbed($url)
     {
-        $patterns = [
-            '/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/' => 'https://www.youtube.com/embed/$1',
-            '/youtu\.be\/([a-zA-Z0-9_-]+)/' => 'https://www.youtube.com/embed/$1',
-            '/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/' => 'https://www.youtube.com/embed/$1',
-        ];
+        // Normalize and extract video ID robustly to handle many YouTube URL formats
+        if (empty($url)) {
+            return null;
+        }
 
-        foreach ($patterns as $pattern => $replacement) {
-            if (preg_match($pattern, $url, $matches)) {
-                $embedUrl = preg_replace($pattern, $replacement, $url);
-                return '<iframe width="100%" height="100%" src="' . $embedUrl . '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        // Ensure scheme present
+        if (!preg_match('#^https?://#i', $url)) {
+            $url = 'https://' . ltrim($url, '/');
+        }
+
+        $host = parse_url($url, PHP_URL_HOST) ?: '';
+        $path = parse_url($url, PHP_URL_PATH) ?: '';
+        $query = parse_url($url, PHP_URL_QUERY) ?: '';
+
+        $videoId = null;
+
+        // 1) youtu.be short links -> path contains the id
+        if (str_contains($host, 'youtu.be')) {
+            $videoId = trim($path, '/');
+        }
+
+        // 2) youtube.com/watch?v=... or other query variations
+        if (!$videoId && str_contains($host, 'youtube.com')) {
+            parse_str($query, $params);
+            if (!empty($params['v'])) {
+                $videoId = $params['v'];
+            }
+
+            // support embed path like /embed/VIDEOID
+            if (!$videoId && preg_match('#/embed/([a-zA-Z0-9_-]+)#', $path, $m)) {
+                $videoId = $m[1];
+            }
+
+            // support /v/VIDEOID legacy path
+            if (!$videoId && preg_match('#/v/([a-zA-Z0-9_-]+)#', $path, $m2)) {
+                $videoId = $m2[1];
             }
         }
 
-        return null;
+        // 3) If still not found, try to extract last path segment as fallback
+        if (!$videoId) {
+            if (preg_match('#([a-zA-Z0-9_-]{6,})$#', $path, $m3)) {
+                $videoId = $m3[1];
+            }
+        }
+
+        if (!$videoId) {
+            return null;
+        }
+
+        // Clean video id (strip params if any)
+        $videoId = preg_replace('/[^a-zA-Z0-9_-]/', '', $videoId);
+
+        // Use privacy-enhanced domain and disable related videos (rel=0)
+        $embedUrl = "https://www.youtube-nocookie.com/embed/{$videoId}?rel=0"
+            . "&modestbranding=1";
+
+        // Return iframe markup with necessary allow attributes for playback and picture-in-picture
+        return '<iframe width="100%" height="100%" src="' . e($embedUrl) . '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
     }
 }
