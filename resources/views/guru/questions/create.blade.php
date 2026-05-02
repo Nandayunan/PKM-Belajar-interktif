@@ -132,15 +132,15 @@
                 </div>
 
                 <div class="col-12" style="margin-top:0.5rem;">
-                    <div style="display:flex; gap:0.75rem; align-items:center;">
-                        <button type="button" id="btn-manual" class="btn btn-primary btn-lg">
-                            <i class="fas fa-pencil-alt"></i>&nbsp; Buat Soal Manual
+                    <div class="d-flex align-items-center" style="gap:0.75rem;">
+                        <button type="button" id="btn-continue" class="btn btn-primary btn-lg">
+                            <i class="fas fa-arrow-right"></i>&nbsp; Lanjutkan
                         </button>
-                        <button type="button" id="btn-import" class="btn btn-outline-primary btn-lg">
-                            <i class="fas fa-file-import"></i>&nbsp; Import File (.csv/.xlsx)
-                        </button>
-                        <div class="form-note" style="margin-left:1rem">Pilih mata pelajaran, modul, dan kelas terlebih
-                            dahulu.</div>
+                        <button type="button" id="btn-reset-selection" class="btn btn-outline-secondary btn-lg">Ubah
+                            Pilihan</button>
+                        <a href="{{ route('guru.dashboard') }}" class="btn btn-outline-danger btn-lg">Batal</a>
+                        <div class="form-note text-muted" style="margin-left:1rem">Pilih mata pelajaran, modul, dan
+                            kelas terlebih dahulu.</div>
                     </div>
                 </div>
 
@@ -191,19 +191,33 @@
                     </select>
                 </div>
 
-                <div class="col-12 d-flex" style="gap:0.75rem;">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="fas fa-save"></i>&nbsp; Simpan
-                    </button>
-
-                    <a href="{{ route('guru.questions.import') }}" class="btn btn-outline-primary btn-lg">
-                        <i class="fas fa-file-import"></i>&nbsp; Import Soal
-                    </a>
-
-                    <a href="{{ route('guru.dashboard') }}" class="btn btn-outline-primary btn-lg">Batal</a>
+                <div class="col-12 mt-2">
+                    <div class="text-end">
+                        <a href="{{ route('guru.dashboard') }}" class="btn btn-outline-secondary">Kembali</a>
+                    </div>
                 </div>
             </div>
         </form>
+
+        <!-- Decision card: shown after pressing Continue -->
+        <div id="decision-card" style="display:none; margin-top:1.25rem;">
+            <div class="card shadow-sm">
+                <div class="card-body d-flex flex-column flex-md-row align-items-center justify-content-between">
+                    <div>
+                        <h5 class="mb-1">Pilih Aksi Selanjutnya</h5>
+                        <div class="text-muted">Lanjutkan membuat soal manual atau impor dari file CSV/Excel.</div>
+                    </div>
+                    <div class="d-flex" style="gap:0.75rem; margin-top:0.75rem;">
+                        <button type="button" id="dec-manual" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-pencil-alt"></i>&nbsp; Buat Manual
+                        </button>
+                        <button type="button" id="dec-import" class="btn btn-primary btn-lg">
+                            <i class="fas fa-file-import"></i>&nbsp; Import File (.csv/.xlsx)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -307,30 +321,50 @@
             optionsList.appendChild(createOptionRow('', i));
         }
 
-        // New flow: require subject/module/class first, then choose manual or import
-        const btnManual = document.getElementById('btn-manual');
-        const btnImport = document.getElementById('btn-import');
+        // New flow: require subject/module/class first, then continue -> decision manual/import
+        const btnContinue = document.getElementById('btn-continue');
+        const btnReset = document.getElementById('btn-reset-selection');
+        const decisionCard = document.getElementById('decision-card');
+        const decManual = document.getElementById('dec-manual');
+        const decImport = document.getElementById('dec-import');
         const manualForm = document.getElementById('manual-form');
         const classInput = document.getElementById('class-input');
 
-        btnManual.addEventListener('click', () => {
-            // ensure module selected
-            if (!moduleSelect.value) {
-                alert('Pilih modul terlebih dahulu sebelum membuat soal manual.');
+        btnContinue.addEventListener('click', () => {
+            // require selections
+            if (!subjectSelect.value) {
+                alert('Pilih mata pelajaran terlebih dahulu.');
                 return;
             }
+            if (!moduleSelect.value) {
+                alert('Pilih modul terlebih dahulu.');
+                return;
+            }
+            // show decision card
+            decisionCard.style.display = 'block';
+            decisionCard.scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        btnReset.addEventListener('click', () => {
+            // allow user to change selections
+            decisionCard.style.display = 'none';
+            manualForm.style.display = 'none';
+        });
+
+        decManual.addEventListener('click', () => {
             // reveal manual form
             manualForm.style.display = 'block';
-            // scroll to manual form
+            decisionCard.style.display = 'none';
             manualForm.scrollIntoView({
                 behavior: 'smooth'
             });
-            // ensure hidden parts update visibility
             updateVisibility();
         });
 
-        btnImport.addEventListener('click', () => {
-            // build import URL with query params if available
+        decImport.addEventListener('click', () => {
+            // redirect to import with query params
             let url = '{{ route('guru.questions.import') }}';
             const params = new URLSearchParams();
             if (moduleSelect.value) params.set('module_id', moduleSelect.value);

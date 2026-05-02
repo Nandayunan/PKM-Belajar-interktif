@@ -192,12 +192,25 @@ class QuestionImportController extends Controller
 
         $imported = 0;
         $failed = [];
+        $skipped = 0;
+        $skippedRows = [];
 
         DB::beginTransaction();
         try {
             foreach ($parsed as $row) {
                 if (!empty($row['errors'])) {
                     $failed[] = "Baris {$row['row']}: " . implode('; ', $row['errors']);
+                    continue;
+                }
+
+                // Prevent duplicate: skip if same question text already exists for this module
+                $questionTextTrim = trim((string)$row['question']);
+                $exists = Question::where('module_id', $row['module_id'])
+                    ->whereRaw('LOWER(TRIM(question)) = ?', [mb_strtolower($questionTextTrim)])
+                    ->exists();
+                if ($exists) {
+                    $skipped++;
+                    $skippedRows[] = "Baris {$row['row']}: duplikat pertanyaan (sudah ada)";
                     continue;
                 }
 
@@ -226,6 +239,10 @@ class QuestionImportController extends Controller
         session()->forget('import_parsed');
 
         $message = "Import selesai. Berhasil: {$imported}.";
+        if ($skipped > 0) {
+            $message .= " Dilewati (duplikat): {$skipped}.";
+            session()->flash('import_skipped', $skippedRows);
+        }
         if (!empty($failed)) {
             $message .= ' Gagal: ' . count($failed) . ' baris.';
             session()->flash('import_failures', $failed);

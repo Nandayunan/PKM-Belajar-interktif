@@ -28,9 +28,43 @@ class DashboardController extends Controller
         $totalQuestions = $questions->count();
         $totalStudents = User::where('role', 0)->count();
 
-        $studentProgress = StudentProgress::whereIn('subject_id', $subjects->pluck('id'))
+        $rawProgress = StudentProgress::whereIn('subject_id', $subjects->pluck('id'))
             ->with('user', 'subject')
             ->get();
+
+        // Aggregate progress by user + subject so each student appears once per subject
+        $studentProgress = $rawProgress->groupBy(function ($p) {
+            return $p->user_id . '_' . $p->subject_id;
+        })->map(function ($group) {
+            $first = $group->first();
+            $total_questions = $group->sum('total_questions');
+            $answered = $group->sum('answered_questions');
+            $correct = $group->sum('correct_answers');
+            $total_points = $group->sum('total_points');
+            $earned_points = $group->sum('earned_points');
+
+            $percentage = $total_questions > 0 ? ($correct / max(1, $total_questions)) * 100 : 0;
+
+            // determine status: if any in_progress -> in_progress, elseif all completed -> completed, else not_started
+            $statuses = $group->pluck('status')->unique()->filter()->values();
+            if ($statuses->contains('in_progress')) {
+                $status = 'in_progress';
+            } elseif ($statuses->contains('completed') && $statuses->count() === 1) {
+                $status = 'completed';
+            } else {
+                $status = $statuses->isEmpty() ? 'not_started' : $statuses->first();
+            }
+
+            $first->total_questions = $total_questions;
+            $first->answered_questions = $answered;
+            $first->correct_answers = $correct;
+            $first->total_points = $total_points;
+            $first->earned_points = $earned_points;
+            $first->percentage = $percentage;
+            $first->status = $status;
+
+            return $first;
+        })->values();
 
         // Fetch recent submissions (answers) for questions created by this teacher
         $submissions = QuestionAnswer::whereHas('question', function ($q) use ($user) {
