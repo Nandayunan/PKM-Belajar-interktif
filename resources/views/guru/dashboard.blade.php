@@ -346,6 +346,9 @@
             <button class="tab-btn" onclick="switchTab('student-progress')">
                 <i class="fas fa-chart-bar"></i> Progress Siswa
             </button>
+            <button class="tab-btn" onclick="switchTab('submissions')">
+                <i class="fas fa-inbox"></i> Submissions
+            </button>
         </div>
 
         <!-- SUBJECTS TAB -->
@@ -738,6 +741,125 @@
                 </div>
             @endif
         </div>
+
+        <!-- SUBMISSIONS TAB -->
+        <div id="submissions-tab" class="tab-content" style="display: none;">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fas fa-inbox"></i> Submissions
+                </div>
+            </div>
+
+            @if ($submissions->isEmpty())
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>Belum ada jawaban yang dikumpulkan untuk soal Anda</p>
+                </div>
+            @else
+                <div class="table-responsive-custom">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Siswa</th>
+                                <th>Terakhir Kirim</th>
+                                <th>Total Jawaban</th>
+                                <th>Menunggu Dinilai</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($submissions as $userId => $answers)
+                                @php
+                                    $user = $answers->first()->user;
+                                    $last = $answers->first()->created_at;
+                                    $total = $answers->count();
+                                    $pending = $answers
+                                        ->filter(
+                                            fn($a) => is_null($a->teacher_score) &&
+                                                in_array($a->question->type, ['essay', 'mixed']),
+                                        )
+                                        ->count();
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <strong>{{ $user->name }}</strong><br>
+                                        <small style="color:#999;">{{ $user->email }}</small>
+                                    </td>
+                                    <td>{{ $last->diffForHumans() }}</td>
+                                    <td>{{ $total }}</td>
+                                    <td>{{ $pending }}</td>
+                                    <td>
+                                        <a href="#" class="btn-sm btn-view"
+                                            onclick="toggleAnswers({{ $userId }}); return false;">
+                                            <i class="fas fa-eye"></i> Lihat Jawaban
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <tr id="answers-{{ $userId }}" style="display:none;">
+                                    <td colspan="5">
+                                        <div style="padding:1rem; background:#fbfbff; border-radius:8px;">
+                                            @php
+                                                $notes = $teacherNotes[$userId] ?? null;
+                                                $latestNote = $notes ? $notes->first() : null;
+                                            @endphp
+                                            <div style="margin-bottom:0.75rem;">
+                                                <strong>Catatan Guru Terbaru:</strong>
+                                                @if($latestNote)
+                                                    <div style="background:#f6fffa; padding:0.5rem; border-radius:6px; margin-top:0.4rem; color:#064e3b;">{{ Str::limit($latestNote->note, 300) }}<br><small style="color:#666;">Diberikan: {{ $latestNote->created_at->diffForHumans() }}</small></div>
+                                                @else
+                                                    <div style="color:#6b7280; margin-top:0.4rem;">Belum ada catatan</div>
+                                                @endif
+                                            </div>
+                                            @foreach ($answers as $ans)
+                                                <div
+                                                    style="padding:0.75rem; border-bottom:1px solid #eef2ff; display:flex; justify-content:space-between; gap:1rem;">
+                                                    <div style="flex:1;">
+                                                        <div style="font-weight:700;">
+                                                            {{ Str::limit($ans->question->question, 120) }}</div>
+                                                        <div style="color:#666; margin-top:0.4rem;">
+                                                            {{ ucfirst($ans->question->type) }} · Modul:
+                                                            {{ $ans->question->module->name ?? '-' }}</div>
+                                                        <div style="margin-top:0.6rem;">Jawaban:
+                                                            <strong>{{ Str::limit($ans->answer, 200) }}</strong></div>
+                                                    </div>
+                                                    <div
+                                                        style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-end;">
+                                                        @if (is_null($ans->teacher_score) && in_array($ans->question->type, ['essay', 'mixed']))
+                                                            <a href="{{ route('guru.grading.show', $ans->id) }}"
+                                                                class="btn-sm btn-edit"> <i class="fas fa-pen"></i>
+                                                                Nilai</a>
+                                                        @else
+                                                            <span
+                                                                style="color:#6b7280;">{{ is_null($ans->teacher_score) ? ($ans->is_correct ? 'Benar' : 'Salah') : $ans->teacher_score . ' pts' }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                            <div style="margin-top:1rem;">
+                                                <form action="{{ route('guru.students.note') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                                    <input type="hidden" name="subject_id" value="">
+                                                    <input type="hidden" name="module_id" value="">
+                                                    <div style="margin-bottom:0.5rem;">
+                                                        <label for="note-{{ $user->id }}" style="font-weight:700;">Tambah Catatan untuk siswa</label>
+                                                        <textarea id="note-{{ $user->id }}" name="note" rows="3" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid #e5e7eb;">{{ old('note') }}</textarea>
+                                                    </div>
+                                                    <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
+                                                        <button class="btn-sm btn-edit" type="submit"><i class="fas fa-save"></i> Simpan Catatan</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
     </div>
 @endsection
 
@@ -763,6 +885,16 @@
 
             // Add active class to clicked button
             event.target.classList.add('active');
+        }
+
+        function toggleAnswers(userId) {
+            const row = document.getElementById('answers-' + userId);
+            if (!row) return;
+            row.style.display = (row.style.display === 'none' || row.style.display === '') ? 'table-row' : 'none';
+            if (row.style.display === 'table-row') row.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
         }
     </script>
 @endsection

@@ -77,6 +77,9 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
     // Student Management Routes
     Route::resource('students', StudentController::class)->only(['create', 'store', 'edit', 'update', 'destroy', 'index']);
 
+    // Teacher notes (add comment for a student)
+    Route::post('/student-note', [TeacherDashboardController::class, 'storeNote'])->name('students.note');
+
     // Grading Routes
     Route::prefix('grading')->name('grading.')->group(function () {
         Route::get('/', [GradingController::class, 'index'])->name('index');
