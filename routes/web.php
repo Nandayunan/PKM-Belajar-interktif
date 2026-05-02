@@ -202,7 +202,5 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
         return view('guru.settings');
     })->name('settings');
 
-    Route::get('/student-progress/{user}/{subject}', function () {
-        return view('guru.student-progress.show');
-    })->name('student-progress.show');
+    Route::get('/student-progress/{user}/{subject}', [\App\Http\Controllers\Teacher\StudentProgressController::class, 'show'])->name('student-progress.show');
 });
