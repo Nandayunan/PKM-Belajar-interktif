@@ -1,0 +1,9 @@
+question,correct_answer,options,type,points,class,module_id
+"Apa ibu kota Indonesia?","Jakarta","Jakarta||Bandung||Surabaya||Yogyakarta",multiple_choice,10,VII-A,
+"Sungai terpanjang di dunia adalah?","Nil","","essay",0,,
+"Pilih yang benar: Bumi mengitari Matahari","true","",true_false,5,,
+
+# Notes: 
+# - 'options' column for multiple_choice should separate choices with double pipes '||' (example: "A||B||C||D").
+# - 'type' can be one of: multiple_choice, essay, true_false, mixed
+# - 'module_id' is optional; if left empty, choose the target module when importing.

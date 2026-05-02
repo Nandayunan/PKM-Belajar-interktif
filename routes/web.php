@@ -126,6 +126,11 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
         return view('guru.questions.create');
     })->name('questions.create');
 
+    // Import questions (Excel/CSV)
+    Route::get('/questions/import', [\App\Http\Controllers\Teacher\QuestionImportController::class, 'create'])->name('questions.import');
+    Route::post('/questions/import', [\App\Http\Controllers\Teacher\QuestionImportController::class, 'store'])->name('questions.import.store');
+    Route::post('/questions/import/confirm', [\App\Http\Controllers\Teacher\QuestionImportController::class, 'confirm'])->name('questions.import.confirm');
+
     Route::get('/questions/{question}/edit', function () {
         return view('guru.questions.edit');
     })->name('questions.edit');

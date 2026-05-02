@@ -107,6 +107,7 @@
             @csrf
 
             <div class="row g-3">
+                <!-- Selection panel: choose subject, module, class first -->
                 <div class="col-md-6">
                     <label class="form-label">Pilih Mata Pelajaran</label>
                     <select id="subject-select" class="form-select" required>
@@ -117,37 +118,55 @@
                     </select>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">Pilih Modul</label>
-                    <select id="module-select" name="module_id" class="form-select" required disabled>
+                    <select id="module-select" name="module_id" class="form-select" disabled>
                         <option value="">-- Pilih Modul --</option>
                     </select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <label class="form-label">Kelas</label>
-                    <input type="text" name="class" class="form-control" placeholder="Contoh: VII-A">
+                    <input type="text" name="class" id="class-input" class="form-control"
+                        placeholder="Contoh: VII-A">
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label">Tipe Soal</label>
-                    <select name="type" id="question-type" class="form-select" required>
-                        <option value="">-- Pilih Tipe --</option>
-                        <option value="multiple_choice">Pilihan Ganda</option>
-                        <option value="essay">Essay</option>
-                        <option value="mixed">Essay & Pilihan Ganda</option>
-                        <option value="true_false">Benar / Salah</option>
-                    </select>
+                <div class="col-12" style="margin-top:0.5rem;">
+                    <div style="display:flex; gap:0.75rem; align-items:center;">
+                        <button type="button" id="btn-manual" class="btn btn-primary btn-lg">
+                            <i class="fas fa-pencil-alt"></i>&nbsp; Buat Soal Manual
+                        </button>
+                        <button type="button" id="btn-import" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-file-import"></i>&nbsp; Import File (.csv/.xlsx)
+                        </button>
+                        <div class="form-note" style="margin-left:1rem">Pilih mata pelajaran, modul, dan kelas terlebih
+                            dahulu.</div>
+                    </div>
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label">Poin</label>
-                    <input type="number" name="points" value="10" min="0" class="form-control" required>
-                </div>
+                <!-- Hidden manual form: revealed after user clicks 'Buat Soal Manual' -->
+                <div id="manual-form" style="display:none; width:100%">
+                    <div class="col-md-4 mt-3">
+                        <label class="form-label">Tipe Soal</label>
+                        <select name="type" id="question-type" class="form-select" required>
+                            <option value="">-- Pilih Tipe --</option>
+                            <option value="multiple_choice">Pilihan Ganda</option>
+                            <option value="essay">Essay</option>
+                            <option value="mixed">Essay & Pilihan Ganda</option>
+                            <option value="true_false">Benar / Salah</option>
+                        </select>
+                    </div>
 
-                <div class="col-12">
-                    <label class="form-label">Pertanyaan</label>
-                    <textarea name="question" id="question-text" class="form-control" rows="4" required></textarea>
+                    <div class="col-md-4 mt-3">
+                        <label class="form-label">Poin</label>
+                        <input type="number" name="points" value="10" min="0" class="form-control"
+                            required>
+                    </div>
+
+                    <div class="col-12 mt-3">
+                        <label class="form-label">Pertanyaan</label>
+                        <textarea name="question" id="question-text" class="form-control" rows="4" required></textarea>
+                    </div>
                 </div>
 
                 <!-- Multiple choice options -->
@@ -176,6 +195,11 @@
                     <button type="submit" class="btn btn-primary btn-lg">
                         <i class="fas fa-save"></i>&nbsp; Simpan
                     </button>
+
+                    <a href="{{ route('guru.questions.import') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-file-import"></i>&nbsp; Import Soal
+                    </a>
+
                     <a href="{{ route('guru.dashboard') }}" class="btn btn-outline-primary btn-lg">Batal</a>
                 </div>
             </div>
@@ -282,6 +306,39 @@
         for (let i = 0; i < 4; i++) {
             optionsList.appendChild(createOptionRow('', i));
         }
+
+        // New flow: require subject/module/class first, then choose manual or import
+        const btnManual = document.getElementById('btn-manual');
+        const btnImport = document.getElementById('btn-import');
+        const manualForm = document.getElementById('manual-form');
+        const classInput = document.getElementById('class-input');
+
+        btnManual.addEventListener('click', () => {
+            // ensure module selected
+            if (!moduleSelect.value) {
+                alert('Pilih modul terlebih dahulu sebelum membuat soal manual.');
+                return;
+            }
+            // reveal manual form
+            manualForm.style.display = 'block';
+            // scroll to manual form
+            manualForm.scrollIntoView({
+                behavior: 'smooth'
+            });
+            // ensure hidden parts update visibility
+            updateVisibility();
+        });
+
+        btnImport.addEventListener('click', () => {
+            // build import URL with query params if available
+            let url = '{{ route('guru.questions.import') }}';
+            const params = new URLSearchParams();
+            if (moduleSelect.value) params.set('module_id', moduleSelect.value);
+            if (classInput.value) params.set('class', classInput.value);
+            const q = params.toString();
+            if (q) url += '?' + q;
+            window.location.href = url;
+        });
     </script>
 @endsection
 @endsection
