@@ -315,28 +315,36 @@
         </div>
     @endif
 
-    @if(!empty($gradedAnswers) && $gradedAnswers->isNotEmpty())
+    @if (!empty($gradedAnswers) && $gradedAnswers->isNotEmpty())
         <div style="max-width:900px; margin: 0 auto 1.5rem;">
             <div class="section-title"><i class="fas fa-clipboard-check"></i> Penilaian Guru Terbaru</div>
             <div style="background:white; padding:1rem; border-radius:12px; box-shadow:var(--card-shadow);">
-                @foreach($gradedAnswers as $ans)
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 0; border-bottom:1px solid #f1f5f9;">
+                @foreach ($gradedAnswers as $ans)
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 0; border-bottom:1px solid #f1f5f9;">
                         <div>
                             <div style="font-weight:700;">{{ $ans->question->question }}</div>
-                            <div style="color:#666; font-size:0.9rem;">Modul: {{ $ans->question->module->title ?? '—' }}</div>
-                            <div style="color:#444; margin-top:0.35rem;">Nilai Guru: <strong>{{ $ans->teacher_score }}/{{ $ans->question->points }}</strong></div>
-                            @if(!empty($ans->teacher_feedback))
+                            <div style="color:#666; font-size:0.9rem;">Modul: {{ $ans->question->module->title ?? '—' }}
+                            </div>
+                            <div style="color:#444; margin-top:0.35rem;">Nilai Guru:
+                                <strong>{{ $ans->teacher_score }}/{{ $ans->question->points }}</strong></div>
+                            @if (!empty($ans->teacher_feedback))
                                 <div style="color:#555; margin-top:0.25rem;">Feedback: {{ $ans->teacher_feedback }}</div>
                             @endif
                         </div>
                         <div style="text-align:right;">
                             <div style="margin-bottom:0.5rem;">
-                                <span style="background:#e6fffa; color:#0f766e; padding:0.35rem 0.6rem; border-radius:999px; font-weight:700;">Guru sudah menilai</span>
+                                <span
+                                    style="background:#e6fffa; color:#0f766e; padding:0.35rem 0.6rem; border-radius:999px; font-weight:700;">Guru
+                                    sudah menilai</span>
                             </div>
-                            @if($ans->question->module)
-                                <a href="{{ route('siswa.modules.review', [$ans->question->module->subject_id, $ans->question->module->id]) }}" class="btn-modules" style="display:inline-block; padding:0.4rem 0.6rem;">Lihat Review</a>
+                            @if ($ans->question->module)
+                                <a href="{{ route('siswa.modules.review', [$ans->question->module->subject_id, $ans->question->module->id]) }}"
+                                    class="btn-modules" style="display:inline-block; padding:0.4rem 0.6rem;">Lihat
+                                    Review</a>
                             @else
-                                <a href="#" class="btn-modules" style="display:inline-block; padding:0.4rem 0.6rem;">Lihat Review</a>
+                                <a href="#" class="btn-modules"
+                                    style="display:inline-block; padding:0.4rem 0.6rem;">Lihat Review</a>
                             @endif
                         </div>
                     </div>
@@ -345,18 +353,22 @@
         </div>
     @endif
 
-    @if(!empty($teacherNotes) && $teacherNotes->isNotEmpty())
+    @if (!empty($teacherNotes) && $teacherNotes->isNotEmpty())
         <div style="max-width:900px; margin: 1.25rem auto;">
             <div class="section-title"><i class="fas fa-sticky-note"></i> Catatan Guru</div>
             <div style="background:white; padding:1rem; border-radius:12px; box-shadow:var(--card-shadow);">
-                @foreach($teacherNotes as $note)
+                @foreach ($teacherNotes as $note)
                     <div style="padding:0.75rem; border-bottom:1px solid #f1f5f9;">
-                        <div style="font-weight:700;">Dari: {{ $note->teacher->name }} <span style="color:#666; font-weight:600; font-size:0.9rem;">· {{ $note->created_at->diffForHumans() }}</span></div>
+                        <div style="font-weight:700;">Dari: {{ $note->teacher->name }} <span
+                                style="color:#666; font-weight:600; font-size:0.9rem;">·
+                                {{ $note->created_at->diffForHumans() }}</span></div>
                         <div style="color:#374151; margin-top:0.4rem;">{{ $note->note }}</div>
-                        @if($note->module)
-                            <div style="color:#6b7280; margin-top:0.35rem; font-size:0.9rem;">Modul: {{ $note->module->name }}</div>
+                        @if ($note->module)
+                            <div style="color:#6b7280; margin-top:0.35rem; font-size:0.9rem;">Modul:
+                                {{ $note->module->name }}</div>
                         @elseif($note->subject)
-                            <div style="color:#6b7280; margin-top:0.35rem; font-size:0.9rem;">Mata Pelajaran: {{ $note->subject->name }}</div>
+                            <div style="color:#6b7280; margin-top:0.35rem; font-size:0.9rem;">Mata Pelajaran:
+                                {{ $note->subject->name }}</div>
                         @endif
                     </div>
                 @endforeach

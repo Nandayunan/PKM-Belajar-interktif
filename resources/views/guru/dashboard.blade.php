@@ -805,8 +805,12 @@
                                             @endphp
                                             <div style="margin-bottom:0.75rem;">
                                                 <strong>Catatan Guru Terbaru:</strong>
-                                                @if($latestNote)
-                                                    <div style="background:#f6fffa; padding:0.5rem; border-radius:6px; margin-top:0.4rem; color:#064e3b;">{{ Str::limit($latestNote->note, 300) }}<br><small style="color:#666;">Diberikan: {{ $latestNote->created_at->diffForHumans() }}</small></div>
+                                                @if ($latestNote)
+                                                    <div
+                                                        style="background:#f6fffa; padding:0.5rem; border-radius:6px; margin-top:0.4rem; color:#064e3b;">
+                                                        {{ Str::limit($latestNote->note, 300) }}<br><small
+                                                            style="color:#666;">Diberikan:
+                                                            {{ $latestNote->created_at->diffForHumans() }}</small></div>
                                                 @else
                                                     <div style="color:#6b7280; margin-top:0.4rem;">Belum ada catatan</div>
                                                 @endif
@@ -821,7 +825,8 @@
                                                             {{ ucfirst($ans->question->type) }} · Modul:
                                                             {{ $ans->question->module->name ?? '-' }}</div>
                                                         <div style="margin-top:0.6rem;">Jawaban:
-                                                            <strong>{{ Str::limit($ans->answer, 200) }}</strong></div>
+                                                            <strong>{{ Str::limit($ans->answer, 200) }}</strong>
+                                                        </div>
                                                     </div>
                                                     <div
                                                         style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-end;">
@@ -843,11 +848,14 @@
                                                     <input type="hidden" name="subject_id" value="">
                                                     <input type="hidden" name="module_id" value="">
                                                     <div style="margin-bottom:0.5rem;">
-                                                        <label for="note-{{ $user->id }}" style="font-weight:700;">Tambah Catatan untuk siswa</label>
-                                                        <textarea id="note-{{ $user->id }}" name="note" rows="3" style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid #e5e7eb;">{{ old('note') }}</textarea>
+                                                        <label for="note-{{ $user->id }}"
+                                                            style="font-weight:700;">Tambah Catatan untuk siswa</label>
+                                                        <textarea id="note-{{ $user->id }}" name="note" rows="3"
+                                                            style="width:100%; padding:0.6rem; border-radius:6px; border:1px solid #e5e7eb;">{{ old('note') }}</textarea>
                                                     </div>
                                                     <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
-                                                        <button class="btn-sm btn-edit" type="submit"><i class="fas fa-save"></i> Simpan Catatan</button>
+                                                        <button class="btn-sm btn-edit" type="submit"><i
+                                                                class="fas fa-save"></i> Simpan Catatan</button>
                                                     </div>
                                                 </form>
                                             </div>

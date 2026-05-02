@@ -226,7 +226,8 @@
                         @if ($isPendingEssay)
                             <div class="pending-badge"><i class="fas fa-hourglass-half"></i> Menunggu guru menilai</div>
                         @elseif ($isGradedByTeacher && $question->type === 'essay')
-                            <div class="correct-badge"><i class="fas fa-user-graduate"></i> Guru sudah menilai ({{ $answer->teacher_score }} / {{ $question->points }})</div>
+                            <div class="correct-badge"><i class="fas fa-user-graduate"></i> Guru sudah menilai
+                                ({{ $answer->teacher_score }} / {{ $question->points }})</div>
                         @elseif (!is_null($isCorrect))
                             @if ($isCorrect)
                                 <div class="correct-badge"><i class="fas fa-check"></i> Benar</div>
