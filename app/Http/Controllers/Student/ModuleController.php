@@ -74,6 +74,16 @@ class ModuleController extends Controller
 
         $totalModules = $subject->modules()->count();
         $currentQuestionNumber = 1;
+        // Check if the student already has saved answers for this module
+        $existingAnswers = \App\Models\QuestionAnswer::whereIn('question_id', $questions->pluck('id')->toArray())
+            ->where('user_id', $user->id)
+            ->get();
+
+        $hasAnswers = $existingAnswers->isNotEmpty();
+
+        // compute earned points and possible points as an estimate
+        $earnedPoints = $existingAnswers->sum('points_earned');
+        $pointsPossible = $questions->sum('points');
 
         return view('siswa.modules.show', [
             'subject' => $subject,
@@ -82,6 +92,9 @@ class ModuleController extends Controller
             'embedVideoUrl' => $embedVideoUrl,
             'totalModules' => $totalModules,
             'currentQuestionNumber' => $currentQuestionNumber,
+            'hasAnswers' => $hasAnswers,
+            'earnedPoints' => $earnedPoints,
+            'pointsPossible' => $pointsPossible,
         ]);
     }
 
@@ -198,6 +211,37 @@ class ModuleController extends Controller
 
         return redirect()->route('siswa.modules.show', [$subjectId, $moduleId])
             ->with('success', "Jawaban Anda berhasil disimpan! Anda mendapat {$totalPoints} dari {$totalPointsPossible} poin.");
+    }
+
+    /**
+     * Show a review page for a completed module where student can see which answers were correct.
+     */
+    public function review($subjectId, $moduleId)
+    {
+        $subject = Subject::findOrFail($subjectId);
+        $module = Module::where('id', $moduleId)
+            ->where('subject_id', $subjectId)
+            ->firstOrFail();
+
+        $questions = $module->questions()->get();
+        $user = Auth::user();
+
+        // Load student answers for these questions
+        $answers = \App\Models\QuestionAnswer::whereIn('question_id', $questions->pluck('id')->toArray())
+            ->where('user_id', $user->id)
+            ->get()
+            ->keyBy('question_id');
+
+        // Get teacher settings to decide which details to show
+        $teacherSettings = $module->teacher?->teacherSettings ?? null;
+
+        return view('siswa.modules.review', [
+            'subject' => $subject,
+            'module' => $module,
+            'questions' => $questions,
+            'answers' => $answers,
+            'teacherSettings' => $teacherSettings,
+        ]);
     }
 
     private function convertYouTubeToEmbed($url)

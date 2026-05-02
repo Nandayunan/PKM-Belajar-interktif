@@ -23,7 +23,9 @@ class DashboardController extends Controller
             ->distinct('subject_id')
             ->count();
 
+        // Average over subject-level progress only (module_id is null) to avoid dilution by module rows
         $averageProgress = StudentProgress::where('user_id', $user->id)
+            ->whereNull('module_id')
             ->average('percentage') ?? 0;
 
         return view('siswa.dashboard', [

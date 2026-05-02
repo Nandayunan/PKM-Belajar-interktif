@@ -55,7 +55,11 @@ class FeedbackController extends Controller
             'feedback_submitted_at' => now(),
         ]);
 
-        return redirect()->route('siswa.modules.show', [$progress->subject_id, $progress->module_id])
-            ->with('success', 'Terima kasih! Feedback Anda telah disimpan.');
+        // Prepare a review link the student can use from dashboard to review their answers
+        $reviewLink = route('siswa.modules.review', [$progress->subject_id, $progress->module_id]);
+
+        return redirect()->route('siswa.dashboard')
+            ->with('success', 'Terima kasih! Feedback Anda telah disimpan.')
+            ->with('review_link', $reviewLink);
     }
 }

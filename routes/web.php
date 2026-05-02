@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\ModuleController;
 use App\Http\Controllers\Student\FeedbackController;
@@ -28,6 +29,10 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'show'])->name('login');
     Route::post('/login', [LoginController::class, 'store']);
+
+    // Registration routes (simple local implementation)
+    Route::get('/register', [RegisterController::class, 'show'])->name('register');
+    Route::post('/register', [RegisterController::class, 'store']);
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
@@ -54,6 +59,7 @@ Route::middleware(['auth', 'student'])->prefix('siswa')->name('siswa.')->group(f
         Route::prefix('/module/{module}')->group(function () {
             Route::get('/', [ModuleController::class, 'show'])->name('modules.show');
             Route::post('/submit-answer', [ModuleController::class, 'submitAnswer'])->name('modules.submit-answer');
+            Route::get('/review', [ModuleController::class, 'review'])->name('modules.review');
         });
     });
 

@@ -337,8 +337,8 @@
                     <div class="score-input-group">
                         <div class="score-input">
                             <input type="number" id="teacher_score" name="teacher_score"
-                                class="form-control @error('teacher_score') is-invalid @enderror"
-                                min="0" max="{{ $question->points }}" value="{{ old('teacher_score') }}" required>
+                                class="form-control @error('teacher_score') is-invalid @enderror" min="0"
+                                max="{{ $question->points }}" value="{{ old('teacher_score') }}" required>
                             @error('teacher_score')
                                 <div class="error-text">{{ $message }}</div>
                             @enderror
@@ -352,8 +352,8 @@
                 <div class="form-group">
                     <label for="teacher_feedback">Feedback & Komentar</label>
                     <textarea id="teacher_feedback" name="teacher_feedback"
-                        class="form-control @error('teacher_feedback') is-invalid @enderror"
-                        rows="5" placeholder="Berikan feedback konstruktif untuk siswa..." required>{{ old('teacher_feedback') }}</textarea>
+                        class="form-control @error('teacher_feedback') is-invalid @enderror" rows="5"
+                        placeholder="Berikan feedback konstruktif untuk siswa..." required>{{ old('teacher_feedback') }}</textarea>
                     @error('teacher_feedback')
                         <div class="error-text">{{ $message }}</div>
                     @enderror

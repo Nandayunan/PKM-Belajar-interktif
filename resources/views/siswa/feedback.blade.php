@@ -266,8 +266,7 @@
                     </label>
                     <textarea id="student_feedback" name="student_feedback"
                         class="form-control @error('student_feedback') is-invalid @enderror"
-                        placeholder="Contoh: Saya sudah paham tentang konsep X, tetapi masih kesulitan dengan Y..."
-                        required>{{ old('student_feedback') }}</textarea>
+                        placeholder="Contoh: Saya sudah paham tentang konsep X, tetapi masih kesulitan dengan Y..." required>{{ old('student_feedback') }}</textarea>
                     <div class="char-count">
                         <span id="feedback-count">0</span>/1000 karakter
                     </div>

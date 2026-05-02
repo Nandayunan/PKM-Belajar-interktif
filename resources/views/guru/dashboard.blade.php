@@ -478,7 +478,8 @@
                                     </td>
                                     <td>
                                         @if ($module->pdf_path)
-                                            <a href="{{ asset('storage/' . $module->pdf_path) }}" target="_blank" class="btn-sm btn-view">
+                                            <a href="{{ asset('storage/' . $module->pdf_path) }}" target="_blank"
+                                                class="btn-sm btn-view">
                                                 <i class="fas fa-file-pdf"></i> Lihat
                                             </a>
                                         @else

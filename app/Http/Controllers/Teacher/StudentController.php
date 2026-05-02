@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 
 class StudentController extends Controller
 {
@@ -23,14 +22,19 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'phone' => 'required|string|max:15',
-            'date_of_birth' => 'required|date|before:today',
-            'class' => 'required|string|max:50',
-            'homeroom_teacher' => 'required|string|max:100',
-            'password' => ['required', 'string', Password::min(8)->letters()->numbers()],
+            'name'             => 'required|string|max:255',
+            'email'            => 'required|email|unique:users,email',
+            'phone'            => 'required|string|max:20',
+            'date_of_birth'    => 'required|date',
+            'class'            => 'required|string|max:50',
+            'homeroom_teacher' => 'required|string|max:255',
+            'password'         => 'required|string|min:8|regex:/[0-9]/|regex:/[a-zA-Z]/',
+        ], [
+            'password.regex'   => 'Password harus mengandung minimal satu angka dan satu huruf.',
+            'password.min'     => 'Password minimal 8 karakter.',
+            'password.required' => 'Password wajib diisi.',
         ]);
 
         $user = User::create([
@@ -70,13 +74,13 @@ class StudentController extends Controller
             return redirect()->route('guru.dashboard')->with('error', 'User ini bukan siswa!');
         }
 
+        // Only validate the fields present in the edit form. Email and password are not editable here.
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $student->id,
-            'phone' => 'required|string|max:15',
-            'date_of_birth' => 'required|date|before:today',
-            'class' => 'required|string|max:50',
-            'homeroom_teacher' => 'required|string|max:100',
+            'name'             => 'required|string|max:255',
+            'phone'            => 'required|string|max:20',
+            'date_of_birth'    => 'required|date',
+            'class'            => 'required|string|max:50',
+            'homeroom_teacher' => 'required|string|max:255',
         ]);
 
         $student->update($validated);

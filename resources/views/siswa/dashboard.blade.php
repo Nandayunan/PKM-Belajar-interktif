@@ -296,6 +296,25 @@
         <p>Mari kita mulai petualangan belajar hari ini</p>
     </div>
 
+    @if (session('review_link'))
+        <div style="max-width:900px; margin: 0 auto 1.5rem;">
+            <div class="result-toast success" style="display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                    <div class="result-toast-icon"><i class="fas fa-check-circle" style="color:var(--success-color);"></i>
+                    </div>
+                    <div class="result-toast-message">Jawaban dan feedback Anda telah disimpan.</div>
+                    <div class="result-toast-details">Klik tombol di samping untuk meninjau jawaban Anda pada modul yang baru
+                        saja diselesaikan.</div>
+                </div>
+                <div style="margin-left:1rem;">
+                    <a href="{{ session('review_link') }}" class="btn-modules"
+                        style="display:inline-flex; padding:0.6rem 1rem; align-items:center;"> <i
+                            class="fas fa-search"></i>&nbsp; Review Jawaban</a>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Profile Card -->
     <div class="profile-card">
         <div class="profile-avatar">
@@ -344,9 +363,11 @@
         <div class="subject-grid">
             @foreach ($subjects as $subject)
                 @php
+                    // Prefer subject-level progress (module_id is null) so we show aggregated percentage per subject
                     $progress = $subject
                         ->progress()
                         ->where('user_id', auth()->id())
+                        ->whereNull('module_id')
                         ->first();
                     $progressPercentage = $progress?->percentage ?? 0;
                     $moduleCount = $subject->modules()->count();

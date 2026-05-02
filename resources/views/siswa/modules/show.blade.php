@@ -446,102 +446,121 @@
                 <span class="progress-text">{{ round(($currentQuestionNumber / $questions->count()) * 100) }}%</span>
             </div>
 
-            <form action="{{ route('siswa.modules.submit-answer', [$subject->id, $module->id]) }}" method="POST">
-                @csrf
-
-                <div class="questions-container">
-                    @foreach ($questions as $index => $question)
-                        @php
-                            $isFirst = $index === 0;
-                            $userAnswer = auth()->user()->answers()->where('question_id', $question->id)->first();
-                        @endphp
-
-                        <div class="question-card {{ $isFirst ? 'current' : '' }}" id="question-{{ $question->id }}"
-                            style="display: {{ $isFirst ? 'block' : 'none' }};">
-                            <div class="question-header">
-                                <div class="question-number">{{ $index + 1 }}</div>
-                                <div class="question-text">{{ $question->question }}</div>
-                                <span class="question-type-badge">
-                                    @switch($question->type)
-                                        @case('multiple_choice')
-                                            Pilihan Ganda
-                                        @break
-
-                                        @case('true_false')
-                                            Benar/Salah
-                                        @break
-
-                                        @case('essay')
-                                            Essay
-                                        @break
-                                    @endswitch
-                                </span>
-                                <span class="question-points"><i class="fas fa-star"></i> +{{ $question->points }}
-                                    Poin</span>
-                            </div>
-
-                            @if ($question->type === 'essay')
-                                <textarea name="answers[{{ $question->id }}]" class="essay-textarea" placeholder="Tulis jawaban Anda di sini...">{{ old('answers.' . $question->id, $userAnswer?->answer ?? '') }}</textarea>
-                            @elseif ($question->type === 'true_false')
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                    <label class="answer-option" style="cursor: pointer;">
-                                        <input type="radio" name="answers[{{ $question->id }}]" value="true"
-                                            {{ old('answers.' . $question->id, $userAnswer?->answer) === 'true' || $userAnswer?->answer === true ? 'checked' : '' }}>
-                                        <div class="answer-text">
-                                            <i class="fas fa-check" style="color: var(--success-color);"></i> Benar
-                                        </div>
-                                    </label>
-                                    <label class="answer-option" style="cursor: pointer;">
-                                        <input type="radio" name="answers[{{ $question->id }}]" value="false"
-                                            {{ old('answers.' . $question->id, $userAnswer?->answer) === 'false' || $userAnswer?->answer === false ? 'checked' : '' }}>
-                                        <div class="answer-text">
-                                            <i class="fas fa-times" style="color: var(--danger-color);"></i> Salah
-                                        </div>
-                                    </label>
-                                </div>
-                            @else
-                                @php
-                                    // Options may already be cast to array by the model. Handle both cases.
-                                    if (is_array($question->options)) {
-                                        $options = $question->options;
-                                    } else {
-                                        $options = json_decode($question->options ?? '[]', true) ?? [];
-                                    }
-                                @endphp
-
-                                @foreach ($options as $option)
-                                    <label class="answer-option" style="cursor: pointer;">
-                                        <input type="radio" name="answers[{{ $question->id }}]"
-                                            value="{{ $option }}"
-                                            {{ old('answers.' . $question->id, $userAnswer?->answer) === $option ? 'checked' : '' }}>
-                                        <div class="answer-text">{{ $option }}</div>
-                                    </label>
-                                @endforeach
-                            @endif
-
-                            <div class="question-actions">
-                                @if ($index > 0)
-                                    <button type="button" class="btn-action secondary"
-                                        onclick="showQuestion({{ $questions[$index - 1]->id }})">
-                                        <i class="fas fa-arrow-left"></i> Sebelumnya
-                                    </button>
-                                @endif
-
-                                @if ($index < count($questions) - 1)
-                                    <button type="button" class="btn-action secondary"
-                                        onclick="showQuestion({{ $questions[$index + 1]->id }})">
-                                        Selanjutnya <i class="fas fa-arrow-right"></i>
-                                    </button>
-                                @else
-                                    <button type="submit" class="btn-action primary" style="margin-left: auto;">
-                                        <i class="fas fa-check"></i> Selesai & Kirim Jawaban
-                                    </button>
-                                @endif
-                            </div>
-                        </div>
-                    @endforeach
+            @if (!empty($hasAnswers) && $hasAnswers)
+                <div
+                    style="padding:1rem; background:#fff8e6; border:1px solid #fde3a7; border-radius:8px; margin-bottom:1rem; display:flex; justify-content:space-between;">
+                    <div>
+                        <strong>Anda sudah mengerjakan modul ini.</strong>
+                        <div style="color:#666; margin-top:0.25rem;">Estimasi poin: <strong>{{ $earnedPoints }}</strong>
+                            dari <strong>{{ $pointsPossible }}</strong></div>
+                    </div>
+                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                        <a href="{{ route('siswa.modules.review', [$subject->id, $module->id]) }}"
+                            class="btn-action primary"> <i class="fas fa-search"></i> Review Jawaban</a>
+                        <a href="{{ route('siswa.modules.show', [$subject->id, $module->id]) }}?retake=1"
+                            class="btn-action secondary">Kerjakan Ulang</a>
+                    </div>
                 </div>
-            </form>
+
+                {{-- If you want to still show saved answers below, you can include them or link to review. For now we stop here. --}}
+            @else
+                <form action="{{ route('siswa.modules.submit-answer', [$subject->id, $module->id]) }}" method="POST">
+                    @csrf
+
+                    <div class="questions-container">
+                        @foreach ($questions as $index => $question)
+                            @php
+                                $isFirst = $index === 0;
+                                $userAnswer = auth()->user()->answers()->where('question_id', $question->id)->first();
+                            @endphp
+
+                            <div class="question-card {{ $isFirst ? 'current' : '' }}" id="question-{{ $question->id }}"
+                                style="display: {{ $isFirst ? 'block' : 'none' }};">
+                                <div class="question-header">
+                                    <div class="question-number">{{ $index + 1 }}</div>
+                                    <div class="question-text">{{ $question->question }}</div>
+                                    <span class="question-type-badge">
+                                        @switch($question->type)
+                                            @case('multiple_choice')
+                                                Pilihan Ganda
+                                            @break
+
+                                            @case('true_false')
+                                                Benar/Salah
+                                            @break
+
+                                            @case('essay')
+                                                Essay
+                                            @break
+                                        @endswitch
+                                    </span>
+                                    <span class="question-points"><i class="fas fa-star"></i> +{{ $question->points }}
+                                        Poin</span>
+                                </div>
+
+                                @if ($question->type === 'essay')
+                                    <textarea name="answers[{{ $question->id }}]" class="essay-textarea" placeholder="Tulis jawaban Anda di sini...">{{ old('answers.' . $question->id, $userAnswer?->answer ?? '') }}</textarea>
+                                @elseif ($question->type === 'true_false')
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                        <label class="answer-option" style="cursor: pointer;">
+                                            <input type="radio" name="answers[{{ $question->id }}]" value="true"
+                                                {{ old('answers.' . $question->id, $userAnswer?->answer) === 'true' || $userAnswer?->answer === true ? 'checked' : '' }}>
+                                            <div class="answer-text">
+                                                <i class="fas fa-check" style="color: var(--success-color);"></i> Benar
+                                            </div>
+                                        </label>
+                                        <label class="answer-option" style="cursor: pointer;">
+                                            <input type="radio" name="answers[{{ $question->id }}]" value="false"
+                                                {{ old('answers.' . $question->id, $userAnswer?->answer) === 'false' || $userAnswer?->answer === false ? 'checked' : '' }}>
+                                            <div class="answer-text">
+                                                <i class="fas fa-times" style="color: var(--danger-color);"></i> Salah
+                                            </div>
+                                        </label>
+                                    </div>
+                                @else
+                                    @php
+                                        // Options may already be cast to array by the model. Handle both cases.
+                                        if (is_array($question->options)) {
+                                            $options = $question->options;
+                                        } else {
+                                            $options = json_decode($question->options ?? '[]', true) ?? [];
+                                        }
+                                    @endphp
+
+                                    @foreach ($options as $option)
+                                        <label class="answer-option" style="cursor: pointer;">
+                                            <input type="radio" name="answers[{{ $question->id }}]"
+                                                value="{{ $option }}"
+                                                {{ old('answers.' . $question->id, $userAnswer?->answer) === $option ? 'checked' : '' }}>
+                                            <div class="answer-text">{{ $option }}</div>
+                                        </label>
+                                    @endforeach
+                                @endif
+
+                                <div class="question-actions">
+                                    @if ($index > 0)
+                                        <button type="button" class="btn-action secondary"
+                                            onclick="showQuestion({{ $questions[$index - 1]->id }})">
+                                            <i class="fas fa-arrow-left"></i> Sebelumnya
+                                        </button>
+                                    @endif
+
+                                    @if ($index < count($questions) - 1)
+                                        <button type="button" class="btn-action secondary"
+                                            onclick="showQuestion({{ $questions[$index + 1]->id }})">
+                                            Selanjutnya <i class="fas fa-arrow-right"></i>
+                                        </button>
+                                    @else
+                                        <button type="submit" class="btn-action primary" style="margin-left: auto;">
+                                            <i class="fas fa-check"></i> Selesai & Kirim Jawaban
+                                        </button>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </form>
+            @endif
         </div>
     @else
         <div class="content-section">

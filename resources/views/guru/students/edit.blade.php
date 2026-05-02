@@ -167,8 +167,8 @@
                 <div class="form-group">
                     <label for="name">Nama Lengkap <span class="required">*</span></label>
                     <input type="text" id="name" name="name"
-                        class="form-control @error('name') is-invalid @enderror"
-                        value="{{ old('name', $student->name) }}" required>
+                        class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $student->name) }}"
+                        required>
                     @error('name')
                         <div class="error-text">{{ $message }}</div>
                     @enderror
@@ -176,9 +176,8 @@
 
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email"
-                        class="form-control"
-                        value="{{ $student->email }}" disabled>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ $student->email }}"
+                        disabled>
                     <small style="color: #999;">Email tidak dapat diubah</small>
                 </div>
             </div>
@@ -187,8 +186,7 @@
                 <div class="form-group">
                     <label for="phone">Nomor HP <span class="required">*</span></label>
                     <input type="tel" id="phone" name="phone"
-                        class="form-control @error('phone') is-invalid @enderror"
-                        placeholder="Nomor HP"
+                        class="form-control @error('phone') is-invalid @enderror" placeholder="Nomor HP"
                         value="{{ old('phone', $student->phone) }}" required>
                     @error('phone')
                         <div class="error-text">{{ $message }}</div>
@@ -199,7 +197,7 @@
                     <label for="date_of_birth">Tanggal Lahir <span class="required">*</span></label>
                     <input type="date" id="date_of_birth" name="date_of_birth"
                         class="form-control @error('date_of_birth') is-invalid @enderror"
-                        value="{{ old('date_of_birth', $student->date_of_birth) }}" required>
+                        value="{{ old('date_of_birth', optional($student->date_of_birth)->format('Y-m-d')) }}" required>
                     @error('date_of_birth')
                         <div class="error-text">{{ $message }}</div>
                     @enderror
@@ -210,8 +208,7 @@
                 <div class="form-group">
                     <label for="class">Kelas <span class="required">*</span></label>
                     <input type="text" id="class" name="class"
-                        class="form-control @error('class') is-invalid @enderror"
-                        placeholder="Contoh: VII-A"
+                        class="form-control @error('class') is-invalid @enderror" placeholder="Contoh: VII-A"
                         value="{{ old('class', $student->class) }}" required>
                     @error('class')
                         <div class="error-text">{{ $message }}</div>
@@ -221,8 +218,7 @@
                 <div class="form-group">
                     <label for="homeroom_teacher">Wali Kelas <span class="required">*</span></label>
                     <input type="text" id="homeroom_teacher" name="homeroom_teacher"
-                        class="form-control @error('homeroom_teacher') is-invalid @enderror"
-                        placeholder="Nama wali kelas"
+                        class="form-control @error('homeroom_teacher') is-invalid @enderror" placeholder="Nama wali kelas"
                         value="{{ old('homeroom_teacher', $student->homeroom_teacher) }}" required>
                     @error('homeroom_teacher')
                         <div class="error-text">{{ $message }}</div>

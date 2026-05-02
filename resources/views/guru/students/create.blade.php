@@ -148,8 +148,7 @@
                 <div class="form-group">
                     <label for="name">Nama Lengkap <span class="required">*</span></label>
                     <input type="text" id="name" name="name"
-                        class="form-control @error('name') is-invalid @enderror"
-                        placeholder="Nama lengkap siswa"
+                        class="form-control @error('name') is-invalid @enderror" placeholder="Nama lengkap siswa"
                         value="{{ old('name') }}" required>
                     @error('name')
                         <div class="error-text">{{ $message }}</div>
@@ -159,8 +158,7 @@
                 <div class="form-group">
                     <label for="email">Email <span class="required">*</span></label>
                     <input type="email" id="email" name="email"
-                        class="form-control @error('email') is-invalid @enderror"
-                        placeholder="Email siswa"
+                        class="form-control @error('email') is-invalid @enderror" placeholder="Email siswa"
                         value="{{ old('email') }}" required>
                     @error('email')
                         <div class="error-text">{{ $message }}</div>
@@ -173,8 +171,7 @@
                     <label for="phone">Nomor HP <span class="required">*</span></label>
                     <input type="tel" id="phone" name="phone"
                         class="form-control @error('phone') is-invalid @enderror"
-                        placeholder="Nomor HP (contoh: 081234567890)"
-                        value="{{ old('phone') }}" required>
+                        placeholder="Nomor HP (contoh: 081234567890)" value="{{ old('phone') }}" required>
                     @error('phone')
                         <div class="error-text">{{ $message }}</div>
                     @enderror
@@ -183,8 +180,8 @@
                 <div class="form-group">
                     <label for="date_of_birth">Tanggal Lahir <span class="required">*</span></label>
                     <input type="date" id="date_of_birth" name="date_of_birth"
-                        class="form-control @error('date_of_birth') is-invalid @enderror"
-                        value="{{ old('date_of_birth') }}" required>
+                        class="form-control @error('date_of_birth') is-invalid @enderror" value="{{ old('date_of_birth') }}"
+                        required>
                     @error('date_of_birth')
                         <div class="error-text">{{ $message }}</div>
                     @enderror
@@ -195,8 +192,7 @@
                 <div class="form-group">
                     <label for="class">Kelas <span class="required">*</span></label>
                     <input type="text" id="class" name="class"
-                        class="form-control @error('class') is-invalid @enderror"
-                        placeholder="Contoh: VII-A, VII-B, VIII-A"
+                        class="form-control @error('class') is-invalid @enderror" placeholder="Contoh: VII-A, VII-B, VIII-A"
                         value="{{ old('class') }}" required>
                     @error('class')
                         <div class="error-text">{{ $message }}</div>
@@ -206,8 +202,7 @@
                 <div class="form-group">
                     <label for="homeroom_teacher">Wali Kelas <span class="required">*</span></label>
                     <input type="text" id="homeroom_teacher" name="homeroom_teacher"
-                        class="form-control @error('homeroom_teacher') is-invalid @enderror"
-                        placeholder="Nama wali kelas"
+                        class="form-control @error('homeroom_teacher') is-invalid @enderror" placeholder="Nama wali kelas"
                         value="{{ old('homeroom_teacher') }}" required>
                     @error('homeroom_teacher')
                         <div class="error-text">{{ $message }}</div>
@@ -219,8 +214,7 @@
                 <label for="password">Password <span class="required">*</span></label>
                 <input type="password" id="password" name="password"
                     class="form-control @error('password') is-invalid @enderror"
-                    placeholder="Password minimal 8 karakter dengan angka dan huruf"
-                    required>
+                    placeholder="Password minimal 8 karakter dengan angka dan huruf" required>
                 @error('password')
                     <div class="error-text">{{ $message }}</div>
                 @enderror

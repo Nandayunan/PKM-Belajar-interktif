@@ -232,7 +232,9 @@
             </form>
 
             <div class="auth-footer">
-                <p>Belum punya akun? <a href="{{ route('register') }}">Daftar sekarang</a></p>
+                @if (Route::has('register'))
+                    <p>Belum punya akun? <a href="{{ route('register') }}">Daftar sekarang</a></p>
+                @endif
                 <p><a href="#">Lupa password?</a></p>
             </div>
 

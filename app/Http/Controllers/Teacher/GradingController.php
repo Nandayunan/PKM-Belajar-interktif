@@ -22,10 +22,10 @@ class GradingController extends Controller
             $query->where('created_by', $teacher->id)
                 ->whereIn('type', ['essay', 'mixed']);
         })
-        ->where('teacher_score', null)  // Not yet graded
-        ->with('user', 'question', 'question.module')
-        ->orderBy('created_at', 'asc')
-        ->paginate(15);
+            ->where('teacher_score', null)  // Not yet graded
+            ->with('user', 'question', 'question.module')
+            ->orderBy('created_at', 'asc')
+            ->paginate(15);
 
         return view('guru.grading.index', compact('pendingAnswers'));
     }
@@ -100,10 +100,10 @@ class GradingController extends Controller
             $query->where('created_by', $teacher->id)
                 ->whereIn('type', ['essay', 'mixed']);
         })
-        ->whereNotNull('teacher_score')
-        ->with('user', 'question', 'question.module')
-        ->orderBy('graded_at', 'desc')
-        ->paginate(15);
+            ->whereNotNull('teacher_score')
+            ->with('user', 'question', 'question.module')
+            ->orderBy('graded_at', 'desc')
+            ->paginate(15);
 
         return view('guru.grading.graded', compact('gradedAnswers'));
     }

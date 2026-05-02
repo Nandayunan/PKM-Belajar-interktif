@@ -249,11 +249,11 @@
                             <div class="graded-student">{{ $answer->user->name }}</div>
                             <div class="graded-meta">
                                 <span><i class="fas fa-envelope"></i> {{ $answer->user->email }}</span>
-                                <span><i class="fas fa-calendar"></i> Dinilai: {{ $answer->graded_at->format('d M Y H:i') }}</span>
+                                <span><i class="fas fa-calendar"></i> Dinilai:
+                                    {{ $answer->graded_at->format('d M Y H:i') }}</span>
                                 @if ($answer->question->type === 'mixed')
                                     <span>
-                                        <i
-                                            class="fas fa-{{ $answer->is_correct ? 'check-circle' : 'times-circle' }}"></i>
+                                        <i class="fas fa-{{ $answer->is_correct ? 'check-circle' : 'times-circle' }}"></i>
                                         {{ $answer->is_correct ? 'Benar' : 'Salah' }}
                                     </span>
                                 @endif

@@ -240,7 +240,9 @@
                     <div class="stat-mini-label">Pending</div>
                 </div>
                 <div class="stat-mini">
-                    <div class="stat-mini-number">{{ \App\Models\QuestionAnswer::whereHas('question', function($q) { $q->where('created_by', auth()->user()->id)->whereIn('type', ['essay', 'mixed']); })->whereNotNull('teacher_score')->count() }}</div>
+                    <div class="stat-mini-number">
+                        {{ \App\Models\QuestionAnswer::whereHas('question', function ($q) {$q->where('created_by', auth()->user()->id)->whereIn('type', ['essay', 'mixed']);})->whereNotNull('teacher_score')->count() }}
+                    </div>
                     <div class="stat-mini-label">Sudah Dinilai</div>
                 </div>
             </div>
