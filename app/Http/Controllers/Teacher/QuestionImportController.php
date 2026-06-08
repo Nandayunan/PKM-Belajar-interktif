@@ -24,11 +24,28 @@ class QuestionImportController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls,csv',
+            'file' => 'required|file',
             'module_id' => 'nullable|exists:modules,id',
         ]);
 
         $file = $request->file('file');
+        $extension = strtolower($file->getClientOriginalExtension());
+        $mime = strtolower($file->getClientMimeType());
+        $allowedExtensions = ['xlsx', 'xls', 'csv', 'xlsm', 'ods', 'xlsb'];
+        $allowedMimeTypes = [
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-excel',
+            'text/csv',
+            'application/csv',
+            'text/plain',
+            'application/vnd.oasis.opendocument.spreadsheet',
+            'application/vnd.ms-excel.sheet.macroenabled.12',
+            'application/vnd.ms-excel.sheet.binary.macroenabled.12',
+        ];
+
+        if (!in_array($extension, $allowedExtensions, true) && !in_array($mime, $allowedMimeTypes, true)) {
+            return back()->withErrors(['file' => 'The file field must be a spreadsheet file of type: xlsx, xls, xlsm, ods, xlsb, or csv'])->withInput();
+        }
 
         // use temporary path
         $path = $file->getRealPath();
@@ -97,7 +114,25 @@ class QuestionImportController extends Controller
                 $rowErrors[] = "kolom 'Pertanyaan' tidak ditemukan atau kosong";
             }
 
-            $type = $assoc['type'] ?? ($assoc['tipe'] ?? 'multiple_choice');
+            $rawType = trim(strtolower($assoc['type'] ?? ($assoc['tipe'] ?? '')));
+            $rawType = str_replace([' ', '-', '\\'], '_', $rawType);
+            $typeMap = [
+                'multiple_choice' => 'multiple_choice',
+                'multiplechoice' => 'multiple_choice',
+                'pilihan_ganda' => 'multiple_choice',
+                'multiple' => 'multiple_choice',
+                'pilihan' => 'multiple_choice',
+                'essay' => 'essay',
+                'esai' => 'essay',
+                'true_false' => 'true_false',
+                'truefalse' => 'true_false',
+                'true' => 'true_false',
+                'false' => 'true_false',
+                'tf' => 'true_false',
+                'mixed' => 'mixed',
+            ];
+            $type = $typeMap[$rawType] ?? '';
+
             $points = isset($assoc['points']) && is_numeric($assoc['points']) ? (int)$assoc['points'] : (isset($assoc['poin']) && is_numeric($assoc['poin']) ? (int)$assoc['poin'] : 0);
             $class = $assoc['class'] ?? ($assoc['kelas'] ?? null);
 
@@ -154,8 +189,22 @@ class QuestionImportController extends Controller
                 }
             }
 
+            if ($type === '') {
+                if (is_array($options) && count($options) >= 2) {
+                    $type = 'multiple_choice';
+                } elseif (in_array(strtolower(trim($correctRaw)), ['true', 'false', 'benar', 'salah', '0', '1'], true)) {
+                    $type = 'true_false';
+                } else {
+                    $type = 'essay';
+                }
+            }
+
+            if (!in_array($type, ['multiple_choice', 'essay', 'true_false', 'mixed'], true)) {
+                $rowErrors[] = "Tipe soal tidak valid: {$type}. Gunakan multiple_choice, essay, true_false, atau mixed.";
+            }
+
             // basic validation for MC questions
-            if (in_array($type, ['multiple_choice', 'mixed']) && (!is_array($options) || count($options) < 2)) {
+            if (in_array($type, ['multiple_choice', 'mixed'], true) && (!is_array($options) || count($options) < 2)) {
                 $rowErrors[] = 'Pilihan ganda membutuhkan minimal 2 opsi (kolom A,B atau kolom options)';
             }
 
@@ -216,7 +265,11 @@ class QuestionImportController extends Controller
 
                 $q = new Question();
                 $q->module_id = $row['module_id'];
-                $q->type = $row['type'] === 'mixed' ? 'multiple_choice' : $row['type'];
+                $type = $row['type'] ?? '';
+                if (!in_array($type, ['multiple_choice', 'essay', 'true_false', 'mixed'], true)) {
+                    $type = 'multiple_choice';
+                }
+                $q->type = $type === 'mixed' ? 'multiple_choice' : $type;
                 $q->question = $row['question'];
                 $q->points = $row['points'] ?? 0;
                 $q->class = $row['class'] ?? null;

@@ -74,13 +74,13 @@
 
                 <div class="mb-3">
                     <label class="form-label">File (.xlsx, .xls, .csv)</label>
-                    <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required>
+                    <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv,.xlsm,.ods,.xlsb" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Petunjuk singkat</label>
-                    <div class="form-note">Gunakan template CSV/Excel yang tersedia: <a
-                            href="/resources/templates/question-import-template.csv">Download template</a>. Untuk pilihan
+                        <div class="form-note">Gunakan template CSV/Excel yang tersedia: <a
+                            href="{{ asset('templates/question-import-template.csv') }}">Download template</a>. Untuk pilihan
                         ganda pisahkan opsi dengan <code>||</code>.</div>
                 </div>
 

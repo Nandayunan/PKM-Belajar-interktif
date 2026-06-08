@@ -11,6 +11,9 @@ use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardControll
 use App\Http\Controllers\Teacher\ModuleController as TeacherModuleController;
 use App\Http\Controllers\Teacher\StudentController;
 use App\Http\Controllers\Teacher\GradingController;
+use App\Models\Question;
+use App\Models\Module;
+use App\Models\Subject;
 use App\Models\User;
 
 Route::get('/', function () {
@@ -101,8 +104,25 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
         return view('guru.subjects.edit');
     })->name('subjects.edit');
 
-    Route::post('/subjects', function () {
-        return redirect()->route('guru.dashboard');
+    Route::post('/subjects', function (\Illuminate\Http\Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'icon' => 'required|string|max:10',
+            'color' => 'required|string|size:7',
+        ]);
+
+        $user = Auth::user();
+
+        $subject = \App\Models\Subject::create([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'icon' => $request->input('icon'),
+            'color' => $request->input('color'),
+            'created_by' => $user->id,
+        ]);
+
+        return redirect()->route('guru.dashboard')->with('success', 'Mata pelajaran berhasil dibuat');
     })->name('subjects.store');
 
     Route::put('/subjects/{subject}', function () {
@@ -131,8 +151,10 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
     Route::post('/questions/import', [\App\Http\Controllers\Teacher\QuestionImportController::class, 'store'])->name('questions.import.store');
     Route::post('/questions/import/confirm', [\App\Http\Controllers\Teacher\QuestionImportController::class, 'confirm'])->name('questions.import.confirm');
 
-    Route::get('/questions/{question}/edit', function () {
-        return view('guru.questions.edit');
+    Route::get('/questions/{question}/edit', function (Question $question) {
+        $subjects = Subject::with('modules')->get();
+        $modules = Module::all(['id', 'subject_id', 'name']);
+        return view('guru.questions.edit', compact('question', 'subjects', 'modules'));
     })->name('questions.edit');
 
     Route::post('/questions', function (\Illuminate\Http\Request $request) {
@@ -189,12 +211,66 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
         return redirect()->route('guru.dashboard')->with('success', 'Soal berhasil dibuat');
     })->name('questions.store');
 
-    Route::put('/questions/{question}', function () {
-        return redirect()->route('guru.dashboard');
+    Route::put('/questions/{question}', function (\Illuminate\Http\Request $request, Question $question) {
+        $request->validate([
+            'module_id' => 'required|exists:modules,id',
+            'type' => 'required|string',
+            'question' => 'required|string',
+            'points' => 'required|integer',
+            'class' => 'nullable|string|max:255',
+        ]);
+
+        $submittedType = $request->input('type');
+        if (!in_array($submittedType, ['multiple_choice', 'mixed', 'true_false', 'essay'], true)) {
+            $submittedType = 'multiple_choice';
+        }
+
+        $question->module_id = $request->input('module_id');
+        $question->type = $submittedType === 'mixed' ? 'multiple_choice' : $submittedType;
+        $question->question = $request->input('question');
+        $question->points = $request->input('points');
+        $question->class = $request->input('class');
+
+        $question->correct_answer = '';
+        $question->options = null;
+
+        if (in_array($submittedType, ['multiple_choice', 'mixed'], true)) {
+            $opts = $request->input('options', []);
+            $opts = array_values(array_filter($opts, function ($v) {
+                return is_string($v) && trim($v) !== '';
+            }));
+            $question->options = $opts;
+
+            $correctIndex = $request->input('correct_answer_mc', '');
+            if ($correctIndex !== null && $correctIndex !== '' && isset($opts[(int)$correctIndex])) {
+                $question->correct_answer = (string) $opts[(int)$correctIndex];
+            } else {
+                $question->correct_answer = '';
+            }
+        } elseif ($submittedType === 'true_false') {
+            $tf = $request->input('correct_answer_tf', 'true');
+            $question->correct_answer = ($tf === 'false' || $tf === '0' || $tf === false) ? 'false' : 'true';
+        } else {
+            $question->correct_answer = $request->input('correct_answer_essay', '');
+            $question->options = null;
+        }
+
+        $question->save();
+
+        return redirect()->route('guru.dashboard')->with('success', 'Soal berhasil diperbarui');
     })->name('questions.update');
 
-    Route::delete('/questions/{question}', function () {
-        return redirect()->route('guru.dashboard');
+    Route::delete('/questions/{question}', function (\Illuminate\Http\Request $request, \App\Models\Question $question) {
+        $user = Auth::user();
+
+        // Only the teacher who created the question can delete it
+        if (! $user || ! method_exists($user, 'isTeacher') || ! $user->isTeacher() || $question->created_by !== $user->id) {
+            abort(403, 'Anda tidak berwenang menghapus soal ini.');
+        }
+
+        $question->delete();
+
+        return redirect()->route('guru.dashboard')->with('success', 'Soal berhasil dihapus');
     })->name('questions.destroy');
 
     // Settings & Progress

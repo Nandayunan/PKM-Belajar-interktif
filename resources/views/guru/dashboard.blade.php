@@ -244,6 +244,26 @@
             color: #999;
         }
 
+        .accordion-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0.5rem;
+            border-radius: 8px;
+            background: #fbfbff;
+            margin-bottom: 0.6rem;
+        }
+
+        .accordion-chevron {
+            transition: transform 0.25s ease;
+            display: inline-block;
+        }
+
+        .accordion-chevron.open {
+            transform: rotate(90deg);
+        }
+
         .empty-state i {
             font-size: 3rem;
             color: #ccc;
@@ -331,22 +351,22 @@
     <div class="content-section">
         <!-- Tab Buttons -->
         <div class="tab-buttons">
-            <button class="tab-btn active" onclick="switchTab('subjects')">
+            <button class="tab-btn active" data-tab="subjects" onclick="switchTab('subjects', this)">
                 <i class="fas fa-book"></i> Mata Pelajaran
             </button>
-            <button class="tab-btn" onclick="switchTab('modules')">
+            <button class="tab-btn" data-tab="modules" onclick="switchTab('modules', this)">
                 <i class="fas fa-layer-group"></i> Modul
             </button>
-            <button class="tab-btn" onclick="switchTab('questions')">
+            <button class="tab-btn" data-tab="questions" onclick="switchTab('questions', this)">
                 <i class="fas fa-question-circle"></i> Soal
             </button>
-            <button class="tab-btn" onclick="switchTab('students')">
+            <button class="tab-btn" data-tab="students" onclick="switchTab('students', this)">
                 <i class="fas fa-users"></i> Manajemen Siswa
             </button>
-            <button class="tab-btn" onclick="switchTab('student-progress')">
+            <button class="tab-btn" data-tab="student-progress" onclick="switchTab('student-progress', this)">
                 <i class="fas fa-chart-bar"></i> Progress Siswa
             </button>
-            <button class="tab-btn" onclick="switchTab('submissions')">
+            <button class="tab-btn" data-tab="submissions" onclick="switchTab('submissions', this)">
                 <i class="fas fa-inbox"></i> Submissions
             </button>
         </div>
@@ -437,88 +457,102 @@
                 </a>
             </div>
 
-            @if ($modules->isEmpty())
+            @if ($subjects->isEmpty())
                 <div class="empty-state">
                     <i class="fas fa-inbox"></i>
-                    <p>Belum ada modul yang dibuat</p>
-                    <a href="{{ route('guru.modules.create') }}" class="btn-add">
-                        <i class="fas fa-plus"></i> Buat Modul Pertama
+                    <p>Belum ada mata pelajaran atau modul yang dibuat</p>
+                    <a href="{{ route('guru.subjects.create') }}" class="btn-add">
+                        <i class="fas fa-plus"></i> Buat Mata Pelajaran / Modul Pertama
                     </a>
                 </div>
             @else
-                <div class="table-responsive-custom">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Modul</th>
-                                <th>Mata Pelajaran</th>
-                                <th>Soal</th>
-                                <th>Video</th>
-                                <th>PDF</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($modules as $module)
-                                <tr>
-                                    <td>
-                                        <strong>{{ $module->name }}</strong><br>
-                                        <small style="color: #999;">Modul {{ $module->module_number }}</small>
-                                    </td>
-                                    <td>{{ $module->subject->icon }} {{ $module->subject->name }}</td>
-                                    <td>{{ $module->questions()->count() }} soal</td>
-                                    <td>
-                                        @if ($module->video_url)
-                                            <span style="color: var(--success-color);">
-                                                <i class="fas fa-check"></i> Ada
-                                            </span>
-                                        @else
-                                            <span style="color: #999;">
-                                                <i class="fas fa-times"></i> Tidak
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($module->pdf_path)
-                                            <a href="{{ asset('storage/' . $module->pdf_path) }}" target="_blank"
-                                                class="btn-sm btn-view">
-                                                <i class="fas fa-file-pdf"></i> Lihat
-                                            </a>
-                                        @else
-                                            <span style="color: #999;"><i class="fas fa-times"></i> Tidak</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <span
-                                            class="badge-status {{ $module->published ? 'badge-published' : 'badge-draft' }}">
-                                            <i class="fas fa-{{ $module->published ? 'check' : 'clock' }}"></i>
-                                            {{ $module->published ? 'Dipublikasi' : 'Draft' }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <a href="{{ route('guru.modules.edit', [$module->subject_id, $module->id]) }}"
-                                                class="btn-sm btn-edit">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                            <form
-                                                action="{{ route('guru.modules.destroy', [$module->subject_id, $module->id]) }}"
-                                                method="POST" style="display: inline;"
-                                                onsubmit="return confirm('Hapus modul ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn-sm btn-delete">
-                                                    <i class="fas fa-trash"></i> Hapus
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                @foreach ($subjects as $subj)
+                    @php
+                        $subModules = $modules->where('subject_id', $subj->id);
+                    @endphp
+
+                    <div style="margin-bottom:1rem;">
+                        <div class="accordion-header" onclick="toggleSubjectModules({{ $subj->id }})">
+                            <div style="font-weight:800; font-size:1.05rem;">{{ $subj->icon }} {{ $subj->name }}</div>
+                            <div style="display:flex; align-items:center; gap:0.75rem; color:#666;">
+                                <div style="font-size:0.95rem;">{{ $subModules->count() }} modul</div>
+                                <div id="chev-{{ $subj->id }}" class="accordion-chevron">▶</div>
+                            </div>
+                        </div>
+
+                        <div id="modules-for-{{ $subj->id }}" style="display:none;">
+                            @if ($subModules->isEmpty())
+                                <div class="empty-state" style="padding:1rem; text-align:left;">
+                                    <p style="margin:0;">Belum ada modul untuk mata pelajaran ini.</p>
+                                </div>
+                            @else
+                                <div class="table-responsive-custom">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:40%">Modul</th>
+                                                <th>Soal</th>
+                                                <th>Video</th>
+                                                <th>PDF</th>
+                                                <th>Status</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($subModules as $module)
+                                                <tr>
+                                                    <td>
+                                                        <strong>{{ $module->name }}</strong><br>
+                                                        <small style="color: #999;">Modul {{ $module->module_number }}</small>
+                                                    </td>
+                                                    <td>{{ $module->questions()->count() }} soal</td>
+                                                    <td>
+                                                        @if ($module->video_url)
+                                                            <span style="color: var(--success-color);">
+                                                                <i class="fas fa-check"></i> Ada
+                                                            </span>
+                                                        @else
+                                                            <span style="color: #999;"><i class="fas fa-times"></i> Tidak</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($module->pdf_path)
+                                                            <a href="{{ asset('storage/' . $module->pdf_path) }}" target="_blank" class="btn-sm btn-view">
+                                                                <i class="fas fa-file-pdf"></i> Lihat
+                                                            </a>
+                                                        @else
+                                                            <span style="color: #999;"><i class="fas fa-times"></i> Tidak</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge-status {{ $module->published ? 'badge-published' : 'badge-draft' }}">
+                                                            <i class="fas fa-{{ $module->published ? 'check' : 'clock' }}"></i>
+                                                            {{ $module->published ? 'Dipublikasi' : 'Draft' }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="action-buttons">
+                                                            <a href="{{ route('guru.modules.edit', [$module->subject_id, $module->id]) }}" class="btn-sm btn-edit">
+                                                                <i class="fas fa-edit"></i> Edit
+                                                            </a>
+                                                            <form action="{{ route('guru.modules.destroy', [$module->subject_id, $module->id]) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus modul ini?');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn-sm btn-delete">
+                                                                    <i class="fas fa-trash"></i> Hapus
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
             @endif
         </div>
 
@@ -531,6 +565,29 @@
                 <a href="{{ route('guru.questions.create') }}" class="btn-add">
                     <i class="fas fa-plus"></i> Buat Soal
                 </a>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:1rem; flex-wrap:wrap;">
+                <div>
+                    <label for="filter-subject" style="font-weight:700; display:block; margin-bottom:0.25rem;">Filter Mata Pelajaran</label>
+                    <select id="filter-subject" style="padding:0.5rem; border-radius:6px; border:1px solid #e5e7eb;">
+                        <option value="">Semua Mata Pelajaran</option>
+                        @foreach ($subjects as $s)
+                            <option value="{{ $s->id }}">{{ $s->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="filter-module" style="font-weight:700; display:block; margin-bottom:0.25rem;">Filter Modul</label>
+                    <select id="filter-module" disabled style="padding:0.5rem; border-radius:6px; border:1px solid #e5e7eb;">
+                        <option value="">Semua Modul</option>
+                    </select>
+                </div>
+
+                <div style="align-self:flex-end;">
+                    <button class="tab-btn" onclick="resetQuestionFilter();">Reset</button>
+                </div>
             </div>
 
             @if ($questions->isEmpty())
@@ -555,29 +612,23 @@
                         </thead>
                         <tbody>
                             @foreach ($questions as $question)
-                                <tr>
+                                <tr data-subject-id="{{ $question->module->subject_id ?? '' }}" data-module-id="{{ $question->module_id }}">
                                     <td><strong>{{ Str::limit($question->question, 50) }}</strong></td>
                                     <td>
-                                        <span class="badge-status badge-published"
-                                            style="background: #dbeafe; color: var(--info-color);">
+                                        <span class="badge-status badge-published" style="background: #dbeafe; color: var(--info-color);">
                                             {{ ucfirst(str_replace('_', ' ', $question->type)) }}
                                         </span>
                                     </td>
                                     <td>{{ $question->module->name }}</td>
                                     <td>
-                                        <span style="color: var(--warning-color); font-weight: 700;">
-                                            +{{ $question->points }}
-                                        </span>
+                                        <span style="color: var(--warning-color); font-weight: 700;">+{{ $question->points }}</span>
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <a href="{{ route('guru.questions.edit', $question->id) }}"
-                                                class="btn-sm btn-edit">
+                                            <a href="{{ route('guru.questions.edit', $question->id) }}" class="btn-sm btn-edit">
                                                 <i class="fas fa-edit"></i> Edit
                                             </a>
-                                            <form action="{{ route('guru.questions.destroy', $question->id) }}"
-                                                method="POST" style="display: inline;"
-                                                onsubmit="return confirm('Hapus soal ini?');">
+                                            <form action="{{ route('guru.questions.destroy', $question->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus soal ini?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn-sm btn-delete">
@@ -904,5 +955,77 @@
                 block: 'center'
             });
         }
+
+        // Accordion: toggle modules per subject
+        function toggleSubjectModules(subjectId) {
+            const container = document.getElementById('modules-for-' + subjectId);
+            const chev = document.getElementById('chev-' + subjectId);
+            if (!container) return;
+            const isHidden = container.style.display === 'none' || container.style.display === '';
+            container.style.display = isHidden ? 'block' : 'none';
+            if (chev) {
+                if (isHidden) chev.classList.add('open');
+                else chev.classList.remove('open');
+            }
+            if (isHidden) container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Question filtering
+        const modulesData = @json($modules->map(fn($m) => ['id' => $m->id, 'name' => $m->name, 'subject_id' => $m->subject_id]));
+
+        function populateModuleOptions(subjectId) {
+            const select = document.getElementById('filter-module');
+            select.innerHTML = '';
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.text = 'Semua Modul';
+            select.appendChild(defaultOpt);
+
+            const filtered = subjectId ? modulesData.filter(m => String(m.subject_id) === String(subjectId)) : modulesData;
+            filtered.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id;
+                opt.text = m.name;
+                select.appendChild(opt);
+            });
+
+            select.disabled = filtered.length === 0;
+        }
+
+        function applyQuestionFilter() {
+            const subjectId = document.getElementById('filter-subject').value;
+            const moduleId = document.getElementById('filter-module').value;
+            document.querySelectorAll('#questions-tab table tbody tr').forEach(row => {
+                const rSubject = row.getAttribute('data-subject-id') || '';
+                const rModule = row.getAttribute('data-module-id') || '';
+                let visible = true;
+                if (subjectId && String(rSubject) !== String(subjectId)) visible = false;
+                if (moduleId && String(rModule) !== String(moduleId)) visible = false;
+                row.style.display = visible ? '' : 'none';
+            });
+        }
+
+        function resetQuestionFilter() {
+            document.getElementById('filter-subject').value = '';
+            populateModuleOptions('');
+            document.getElementById('filter-module').value = '';
+            applyQuestionFilter();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const subjSel = document.getElementById('filter-subject');
+            const modSel = document.getElementById('filter-module');
+            if (subjSel) {
+                subjSel.addEventListener('change', function() {
+                    populateModuleOptions(this.value);
+                    applyQuestionFilter();
+                });
+            }
+            if (modSel) {
+                modSel.addEventListener('change', applyQuestionFilter);
+            }
+            // initialize modules select
+            populateModuleOptions('');
+        });
     </script>
 @endsection
