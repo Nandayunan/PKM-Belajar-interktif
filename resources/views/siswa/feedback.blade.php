@@ -15,7 +15,7 @@
             padding: 2rem;
             border-radius: 15px;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 30px rgba(17, 24, 68, 0.3);
             text-align: center;
         }
 
@@ -118,7 +118,7 @@
 
         .form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 0.2rem rgba(17, 24, 68, 0.1);
             outline: none;
         }
 

@@ -15,30 +15,30 @@
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--card-shadow);
-            display: flex;
-            background: white;
+            background: transparent;
         }
 
         .question-hero {
-            min-width: 320px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.98), rgba(79, 70, 229, 0.95));
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 0.5rem;
+            padding: 2rem 2.25rem;
+            display: block;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
         }
 
         .question-hero h2 {
             font-size: 1.6rem;
-            margin: 0;
+            margin: 0 0 0.25rem 0;
             font-weight: 800;
         }
 
         .question-form {
-            padding: 2rem;
-            flex: 1;
+            padding: 1.75rem 2.25rem 2.25rem 2.25rem;
+            background: white;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
         }
 
         .option-row {
@@ -77,13 +77,29 @@
         }
 
         @media (max-width: 768px) {
-            .question-card {
-                flex-direction: column;
+            .question-hero {
+                padding: 1.25rem 1rem;
             }
 
-            .question-hero {
-                min-height: 140px;
+            .question-form {
+                padding: 1rem;
             }
+        }
+
+        .selection-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary-hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            box-shadow: 0 10px 30px rgba(21, 30, 81, 0.18);
+            padding: 0.6rem 1.1rem;
         }
     </style>
 @endsection
@@ -106,119 +122,131 @@
         <form method="POST" action="{{ route('guru.questions.store') }}">
             @csrf
 
-            <div class="row g-3">
-                <!-- Selection panel: choose subject, module, class first -->
-                <div class="col-md-6">
-                    <label class="form-label">Pilih Mata Pelajaran</label>
-                    <select id="subject-select" class="form-select" required>
-                        <option value="">-- Pilih Mata Pelajaran --</option>
-                        @foreach ($subjects as $subject)
-                            <option value="{{ $subject->id }}">{{ $subject->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Pilih Modul</label>
-                    <select id="module-select" name="module_id" class="form-select" disabled>
-                        <option value="">-- Pilih Modul --</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <label class="form-label">Kelas</label>
-                    <input type="text" name="class" id="class-input" class="form-control"
-                        placeholder="Contoh: VII-A">
-                </div>
-
-                <div class="col-12" style="margin-top:0.5rem;">
-                    <div class="d-flex align-items-center" style="gap:0.75rem;">
-                        <button type="button" id="btn-continue" class="btn btn-primary btn-lg">
-                            <i class="fas fa-arrow-right"></i>&nbsp; Lanjutkan
-                        </button>
-                        <button type="button" id="btn-reset-selection" class="btn btn-outline-secondary btn-lg">Ubah
-                            Pilihan</button>
-                        <a href="{{ route('guru.dashboard') }}" class="btn btn-outline-danger btn-lg">Batal</a>
-                        <div class="form-note text-muted" style="margin-left:1rem">Pilih mata pelajaran, modul, dan
-                            kelas terlebih dahulu.</div>
-                    </div>
-                </div>
-
-                <!-- Hidden manual form: revealed after user clicks 'Buat Soal Manual' -->
-                <div id="manual-form" style="display:none; width:100%">
-                    <div class="col-md-4 mt-3">
-                        <label class="form-label">Tipe Soal</label>
-                        <select name="type" id="question-type" class="form-select" required>
-                            <option value="">-- Pilih Tipe --</option>
-                            <option value="multiple_choice">Pilihan Ganda</option>
-                            <option value="essay">Essay</option>
-                            <option value="mixed">Essay & Pilihan Ganda</option>
-                            <option value="true_false">Benar / Salah</option>
+            <div class="selection-panel">
+                <div class="row g-3 align-items-center">
+                    <!-- Selection panel: choose subject, module, class first -->
+                    <div class="col-md-6">
+                        <label class="form-label">Pilih Mata Pelajaran</label>
+                        <select id="subject-select" class="form-select" required>
+                            <option value="">-- Pilih Mata Pelajaran --</option>
+                            @foreach ($subjects as $subject)
+                                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                            @endforeach
                         </select>
                     </div>
 
-                    <div class="col-md-4 mt-3">
-                        <label class="form-label">Poin</label>
-                        <input type="number" name="points" value="10" min="0" class="form-control"
-                            required>
+                    <div class="col-md-4">
+                        <label class="form-label">Pilih Modul</label>
+                        <select id="module-select" name="module_id" class="form-select" disabled>
+                            <option value="">-- Pilih Modul --</option>
+                        </select>
                     </div>
 
-                    <div class="col-12 mt-3">
-                        <label class="form-label">Pertanyaan</label>
-                        <textarea name="question" id="question-text" class="form-control" rows="4" required></textarea>
+                    <div class="col-md-2">
+                        <label class="form-label">Kelas</label>
+                        <input type="text" name="class" id="class-input" class="form-control"
+                            placeholder="Contoh: VII-A">
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <div class="d-flex flex-wrap align-items-center" style="gap:0.75rem;">
+                            <button type="button" id="btn-continue" class="btn btn-primary btn-lg btn-primary-hero">
+                                <i class="fas fa-arrow-right"></i>&nbsp; Lanjutkan
+                            </button>
+                            <button type="button" id="btn-reset-selection"
+                                class="btn btn-outline-secondary btn-lg">Ubah
+                                Pilihan</button>
+                            <a href="{{ route('guru.dashboard') }}" class="btn btn-outline-danger btn-lg">Batal</a>
+                            <div class="form-note text-muted ms-3">Pilih mata pelajaran, modul, dan kelas terlebih
+                                dahulu.</div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Multiple choice options -->
-                <div class="col-12" id="mc-options" style="display:none;">
-                    <label class="form-label">Pilihan Jawaban (Pilihan Ganda)</label>
-                    <div id="options-list" style="display:flex;flex-direction:column;gap:0.5rem">
-                        <!-- option rows injected by JS -->
-                    </div>
-
-                    <div style="margin-top:0.75rem; display:flex; gap:0.5rem; align-items:center;">
-                        <button type="button" id="add-option" class="btn-add-option">+ Tambah Opsi</button>
-                        <div class="form-note" style="margin-left:0.5rem">Centang pilihan yang benar.</div>
-                    </div>
-                </div>
-
-                <!-- True/False -->
-                <div class="col-12" id="tf-options" style="display:none;">
-                    <label class="form-label">Jawaban Benar (Benar / Salah)</label>
-                    <select name="correct_answer_tf" class="form-select" style="max-width:240px;">
-                        <option value="true">Benar</option>
-                        <option value="false">Salah</option>
+            <!-- Hidden manual form: revealed after user clicks 'Buat Soal Manual' -->
+            <div id="manual-form" style="display:none; width:100%">
+                <div class="col-md-4 mt-3">
+                    <label class="form-label">Tipe Soal</label>
+                    <select name="type" id="question-type" class="form-select" required>
+                        <option value="">-- Pilih Tipe --</option>
+                        <option value="multiple_choice">Pilihan Ganda</option>
+                        <option value="essay">Essay</option>
+                        <option value="mixed">Essay & Pilihan Ganda</option>
+                        <option value="true_false">Benar / Salah</option>
                     </select>
                 </div>
 
-                <div class="col-12 mt-2">
-                    <div class="text-end">
+                <div class="col-md-4 mt-3">
+                    <label class="form-label">Poin</label>
+                    <input type="number" name="points" value="10" min="0" class="form-control" required>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <label class="form-label">Pertanyaan</label>
+                    <textarea name="question" id="question-text" class="form-control" rows="4" required></textarea>
+                </div>
+
+            </div>
+
+            <!-- Multiple choice options -->
+            <div class="col-12" id="mc-options" style="display:none;">
+                <label class="form-label">Pilihan Jawaban (Pilihan Ganda)</label>
+                <div id="options-list" style="display:flex;flex-direction:column;gap:0.5rem">
+                    <!-- option rows injected by JS -->
+                </div>
+
+                <div style="margin-top:0.75rem; display:flex; gap:0.5rem; align-items:center;">
+                    <button type="button" id="add-option" class="btn-add-option">+ Tambah Opsi</button>
+                    <div class="form-note" style="margin-left:0.5rem">Centang pilihan yang benar.</div>
+                </div>
+            </div>
+
+            <!-- True/False -->
+            <div class="col-12" id="tf-options" style="display:none;">
+                <label class="form-label">Jawaban Benar (Benar / Salah)</label>
+                <select name="correct_answer_tf" class="form-select" style="max-width:240px;">
+                    <option value="true">Benar</option>
+                    <option value="false">Salah</option>
+                </select>
+            </div>
+
+            <div class="col-12 mt-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div id="manual-actions" style="display:none;">
+                        <button type="submit" class="btn btn-success btn-lg me-2" id="btn-save-manual">
+                            <i class="fas fa-save"></i>&nbsp; Simpan Soal
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-lg"
+                            id="btn-cancel-manual">Batal</button>
+                    </div>
+                    <div>
                         <a href="{{ route('guru.dashboard') }}" class="btn btn-outline-secondary">Kembali</a>
                     </div>
                 </div>
             </div>
-        </form>
-
-        <!-- Decision card: shown after pressing Continue -->
-        <div id="decision-card" style="display:none; margin-top:1.25rem;">
-            <div class="card shadow-sm">
-                <div class="card-body d-flex flex-column flex-md-row align-items-center justify-content-between">
-                    <div>
-                        <h5 class="mb-1">Pilih Aksi Selanjutnya</h5>
-                        <div class="text-muted">Lanjutkan membuat soal manual atau impor dari file CSV/Excel.</div>
-                    </div>
-                    <div class="d-flex" style="gap:0.75rem; margin-top:0.75rem;">
-                        <button type="button" id="dec-manual" class="btn btn-outline-primary btn-lg">
-                            <i class="fas fa-pencil-alt"></i>&nbsp; Buat Manual
-                        </button>
-                        <button type="button" id="dec-import" class="btn btn-primary btn-lg">
-                            <i class="fas fa-file-import"></i>&nbsp; Import File (.csv/.xlsx)
-                        </button>
-                    </div>
+    </div>
+    <!-- Decision card: shown after pressing Continue -->
+    <div id="decision-card" style="display:none; margin-top:1.25rem;">
+        <div class="card shadow-sm">
+            <div class="card-body d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <div>
+                    <h5 class="mb-1">Pilih Aksi Selanjutnya</h5>
+                    <div class="text-muted">Lanjutkan membuat soal manual atau impor dari file CSV/Excel.</div>
+                </div>
+                <div class="d-flex" style="gap:0.75rem; margin-top:0.75rem;">
+                    <button type="button" id="dec-manual" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-pencil-alt"></i>&nbsp; Buat Manual
+                    </button>
+                    <button type="button" id="dec-import" class="btn btn-primary btn-lg">
+                        <i class="fas fa-file-import"></i>&nbsp; Import File (.csv/.xlsx)
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    </form>
+</div>
 </div>
 
 @section('extra-js')
@@ -328,6 +356,7 @@
         const decManual = document.getElementById('dec-manual');
         const decImport = document.getElementById('dec-import');
         const manualForm = document.getElementById('manual-form');
+        const manualActions = document.getElementById('manual-actions');
         const classInput = document.getElementById('class-input');
 
         btnContinue.addEventListener('click', () => {
@@ -351,15 +380,24 @@
             // allow user to change selections
             decisionCard.style.display = 'none';
             manualForm.style.display = 'none';
+            if (manualActions) manualActions.style.display = 'none';
         });
 
         decManual.addEventListener('click', () => {
             // reveal manual form
             manualForm.style.display = 'block';
             decisionCard.style.display = 'none';
-            manualForm.scrollIntoView({
-                behavior: 'smooth'
-            });
+            if (manualActions) {
+                manualActions.style.display = 'flex';
+                // scroll to manual actions at bottom
+                manualActions.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            } else {
+                manualForm.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
             updateVisibility();
         });
 
@@ -373,6 +411,19 @@
             if (q) url += '?' + q;
             window.location.href = url;
         });
+
+        // cancel manual creation and go back to decision card
+        const btnCancelManual = document.getElementById('btn-cancel-manual');
+        if (btnCancelManual) {
+            btnCancelManual.addEventListener('click', () => {
+                manualForm.style.display = 'none';
+                if (manualActions) manualActions.style.display = 'none';
+                decisionCard.style.display = 'block';
+                decisionCard.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        }
     </script>
 @endsection
 @endsection

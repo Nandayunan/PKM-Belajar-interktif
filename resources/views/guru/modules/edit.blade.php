@@ -4,12 +4,13 @@
 
 @section('content')
     <div
-        style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1); max-width: 700px; margin: 0 auto;">
+        style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(17, 24, 68, 0.1); max-width: 700px; margin: 0 auto;">
         <h1 style="color: var(--primary-color); margin-bottom: 2rem;">
             <i class="fas fa-edit"></i> Edit Modul
         </h1>
 
-        <form method="POST" action="{{ route('guru.modules.update', [$module->subject_id, $module->id]) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('guru.modules.update', [$module->subject_id, $module->id]) }}"
+            enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -20,7 +21,8 @@
                     style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Poppins', sans-serif;"
                     required>
                     @foreach ($subjects as $subject)
-                        <option value="{{ $subject->id }}" {{ $module->subject_id == $subject->id ? 'selected' : '' }}>{{ $subject->name }}</option>
+                        <option value="{{ $subject->id }}" {{ $module->subject_id == $subject->id ? 'selected' : '' }}>
+                            {{ $subject->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -56,14 +58,17 @@
             </div>
 
             <div style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" name="published" id="published" style="width: 20px; height: 20px;" {{ $module->published ? 'checked' : '' }}>
+                <input type="checkbox" name="published" id="published" style="width: 20px; height: 20px;"
+                    {{ $module->published ? 'checked' : '' }}>
                 <label for="published" style="font-weight: 700; color: #2d3748; cursor: pointer;">Publikasikan modul
                     ini</label>
             </div>
 
             <div style="margin-bottom:1.5rem;">
-                <label style="font-weight:700; display:block; margin-bottom:0.5rem">Upload/Replace PDF Materi (opsional)</label>
-                <input type="file" name="pdf" accept="application/pdf" style="padding:0.4rem; border:1px solid #e6e6f0; border-radius:6px; width:100%;">
+                <label style="font-weight:700; display:block; margin-bottom:0.5rem">Upload/Replace PDF Materi
+                    (opsional)</label>
+                <input type="file" name="pdf" accept="application/pdf"
+                    style="padding:0.4rem; border:1px solid #e6e6f0; border-radius:6px; width:100%;">
                 @if ($module->pdf_path)
                     <div style="margin-top:0.5rem;">
                         <a href="{{ asset('storage/' . $module->pdf_path) }}" target="_blank" class="btn-sm btn-view">

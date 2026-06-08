@@ -67,7 +67,7 @@
 
         .module-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 20px 50px rgba(17, 24, 68, 0.2);
         }
 
         .module-card.locked {
@@ -195,7 +195,7 @@
 
         .btn-module-action:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 8px 20px rgba(17, 24, 68, 0.3);
             color: white;
         }
 

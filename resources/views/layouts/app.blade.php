@@ -22,19 +22,19 @@
         }
 
         :root {
-            --primary-color: #6366f1;
-            --primary-dark: #4f46e5;
-            --success-color: #10b981;
+            --primary-color: #111844;
+            --primary-dark: #4B5694;
+            --success-color: #7288AE;
             --danger-color: #ef4444;
             --warning-color: #f59e0b;
             --info-color: #3b82f6;
-            --light-bg: #f8f9ff;
-            --card-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
+            --light-bg: #EAE0CF;
+            --card-shadow: 0 10px 30px rgba(17, 24, 68, 0.08);
             --border-radius: 15px;
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             background-attachment: fixed;
             min-height: 100vh;
             color: #2d3748;
@@ -106,7 +106,7 @@
 
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.15);
+            box-shadow: 0 15px 40px rgba(17, 24, 68, 0.15);
         }
 
         /* Buttons */
@@ -117,12 +117,12 @@
             font-weight: 600;
             border-radius: 10px;
             transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 5px 15px rgba(17, 24, 68, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 8px 25px rgba(17, 24, 68, 0.4);
             color: white;
         }
 
@@ -178,7 +178,7 @@
         .form-control:focus,
         .form-select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 0.2rem rgba(17, 24, 68, 0.1);
         }
 
         /* Alert Styling */
@@ -264,7 +264,7 @@
         }
 
         .bg-light-primary {
-            background-color: rgba(99, 102, 241, 0.1) !important;
+            background-color: rgba(17, 24, 68, 0.1) !important;
         }
 
         .divider {

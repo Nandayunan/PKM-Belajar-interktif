@@ -301,6 +301,12 @@ class QuestionImportController extends Controller
             session()->flash('import_failures', $failed);
         }
 
+        // If there are no failures and no skipped duplicates, redirect to dashboard
+        if (empty($failed) && $skipped === 0) {
+            return redirect()->route('guru.dashboard')->with('success', $message);
+        }
+
+        // Otherwise, return to import preview/import page with details
         return redirect()->route('guru.questions.import')->with('success', $message);
     }
 }

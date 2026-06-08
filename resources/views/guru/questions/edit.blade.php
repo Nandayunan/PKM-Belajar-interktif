@@ -34,7 +34,7 @@
 
         .question-hero {
             min-width: 320px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.98), rgba(79, 70, 229, 0.95));
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
             padding: 2rem;
             display: flex;
@@ -126,7 +126,8 @@
                     <select id="subject-select" class="form-select" required>
                         <option value="">-- Pilih Mata Pelajaran --</option>
                         @foreach ($subjects as $subject)
-                            <option value="{{ $subject->id }}" {{ $subject->id === $currentSubjectId ? 'selected' : '' }}>{{ $subject->name }}</option>
+                            <option value="{{ $subject->id }}"
+                                {{ $subject->id === $currentSubjectId ? 'selected' : '' }}>{{ $subject->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -136,7 +137,9 @@
                     <select id="module-select" name="module_id" class="form-select" required>
                         <option value="">-- Pilih Modul --</option>
                         @foreach ($modules as $module)
-                            <option value="{{ $module->id }}" {{ $module->id === $question->module_id ? 'selected' : '' }} data-subject-id="{{ $module->subject_id }}">{{ $module->name }}</option>
+                            <option value="{{ $module->id }}"
+                                {{ $module->id === $question->module_id ? 'selected' : '' }}
+                                data-subject-id="{{ $module->subject_id }}">{{ $module->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -151,17 +154,20 @@
                     <label class="form-label">Tipe Soal</label>
                     <select name="type" id="question-type" class="form-select" required>
                         <option value="">-- Pilih Tipe --</option>
-                        <option value="multiple_choice" {{ $question->type === 'multiple_choice' ? 'selected' : '' }}>Pilihan Ganda</option>
+                        <option value="multiple_choice" {{ $question->type === 'multiple_choice' ? 'selected' : '' }}>
+                            Pilihan Ganda</option>
                         <option value="essay" {{ $question->type === 'essay' ? 'selected' : '' }}>Essay</option>
-                        <option value="mixed" {{ $question->type === 'mixed' ? 'selected' : '' }}>Essay & Pilihan Ganda</option>
-                        <option value="true_false" {{ $question->type === 'true_false' ? 'selected' : '' }}>Benar / Salah</option>
+                        <option value="mixed" {{ $question->type === 'mixed' ? 'selected' : '' }}>Essay & Pilihan
+                            Ganda</option>
+                        <option value="true_false" {{ $question->type === 'true_false' ? 'selected' : '' }}>Benar /
+                            Salah</option>
                     </select>
                 </div>
 
                 <div class="col-md-4 mt-3">
                     <label class="form-label">Poin</label>
-                    <input type="number" name="points" value="{{ old('points', $question->points) }}" min="0" class="form-control"
-                        required>
+                    <input type="number" name="points" value="{{ old('points', $question->points) }}" min="0"
+                        class="form-control" required>
                 </div>
 
                 <div class="col-12 mt-3">
@@ -182,8 +188,10 @@
                 <div class="col-12" id="tf-options" style="display:none;">
                     <label class="form-label">Jawaban Benar (Benar / Salah)</label>
                     <select name="correct_answer_tf" class="form-select" style="max-width:240px;">
-                        <option value="true" {{ $question->correct_answer === 'true' ? 'selected' : '' }}>Benar</option>
-                        <option value="false" {{ $question->correct_answer === 'false' ? 'selected' : '' }}>Salah</option>
+                        <option value="true" {{ $question->correct_answer === 'true' ? 'selected' : '' }}>Benar
+                        </option>
+                        <option value="false" {{ $question->correct_answer === 'false' ? 'selected' : '' }}>Salah
+                        </option>
                     </select>
                 </div>
 

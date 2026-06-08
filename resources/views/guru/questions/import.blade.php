@@ -16,7 +16,7 @@
 
         .import-hero {
             min-width: 260px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.98), rgba(79, 70, 229, 0.95));
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
             padding: 2rem;
             display: flex;
@@ -26,12 +26,13 @@
 
         .import-form {
             padding: 2rem;
-            flex: 1
+            flex: 1;
         }
     </style>
 @endsection
 
 @section('content')
+
     <div class="import-card card">
         <div class="import-hero">
             <h2>Bulk Import Soal</h2>
@@ -74,13 +75,15 @@
 
                 <div class="mb-3">
                     <label class="form-label">File (.xlsx, .xls, .csv)</label>
-                    <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv,.xlsm,.ods,.xlsb" required>
+                    <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv,.xlsm,.ods,.xlsb"
+                        required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Petunjuk singkat</label>
-                        <div class="form-note">Gunakan template CSV/Excel yang tersedia: <a
-                            href="{{ asset('templates/question-import-template.csv') }}">Download template</a>. Untuk pilihan
+                    <div class="form-note">Gunakan template CSV/Excel yang tersedia: <a
+                            href="{{ asset('templates/question-import-template.csv') }}">Download template</a>. Untuk
+                        pilihan
                         ganda pisahkan opsi dengan <code>||</code>.</div>
                 </div>
 

@@ -5,7 +5,7 @@
 @section('content')
     <div style="max-width: 600px; margin: 0 auto;">
         <div
-            style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1); margin-bottom: 2rem;">
+            style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(17, 24, 68, 0.1); margin-bottom: 2rem;">
             <h1 style="color: var(--primary-color); margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem;">
                 <i class="fas fa-user-circle"></i> Profil Saya
             </h1>

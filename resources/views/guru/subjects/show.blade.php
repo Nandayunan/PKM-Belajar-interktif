@@ -3,7 +3,7 @@
 @section('title', 'Lihat Mata Pelajaran')
 
 @section('content')
-    <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);">
+    <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(17, 24, 68, 0.1);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <h1 style="color: var(--primary-color); margin: 0;">
                 <i class="fas fa-book"></i> Detail Mata Pelajaran

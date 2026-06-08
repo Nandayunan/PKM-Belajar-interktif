@@ -108,19 +108,26 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'icon' => 'required|string|max:10',
-            'color' => 'required|string|size:7',
+            // 'icon' and 'color' are optional now — UI no longer provides them
         ]);
 
         $user = Auth::user();
 
-        $subject = \App\Models\Subject::create([
+        $data = [
             'name' => $request->input('name'),
             'description' => $request->input('description'),
-            'icon' => $request->input('icon'),
-            'color' => $request->input('color'),
             'created_by' => $user->id,
-        ]);
+        ];
+
+        if ($request->filled('icon')) {
+            $data['icon'] = $request->input('icon');
+        }
+
+        if ($request->filled('color')) {
+            $data['color'] = $request->input('color');
+        }
+
+        $subject = \App\Models\Subject::create($data);
 
         return redirect()->route('guru.dashboard')->with('success', 'Mata pelajaran berhasil dibuat');
     })->name('subjects.store');

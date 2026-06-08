@@ -17,7 +17,7 @@
 
         .module-hero {
             min-width: 280px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.98), rgba(79, 70, 229, 0.95));
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
             padding: 2rem;
             display: flex;

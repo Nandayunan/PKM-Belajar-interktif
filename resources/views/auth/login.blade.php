@@ -17,7 +17,7 @@
             max-width: 450px;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 20px 60px rgba(17, 24, 68, 0.3);
             padding: 3rem;
             animation: slideUp 0.5s ease;
         }
@@ -72,7 +72,7 @@
 
         .form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 0.2rem rgba(17, 24, 68, 0.1);
         }
 
         .btn-auth {
@@ -85,12 +85,12 @@
             font-weight: 600;
             font-size: 1rem;
             transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 5px 15px rgba(17, 24, 68, 0.3);
         }
 
         .btn-auth:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 8px 25px rgba(17, 24, 68, 0.4);
             color: white;
         }
 

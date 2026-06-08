@@ -124,12 +124,12 @@
         .btn-modern-primary {
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.18);
+            box-shadow: 0 8px 20px rgba(17, 24, 68, 0.18);
         }
 
         .btn-modern-ghost {
             background: transparent;
-            border: 1px solid rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(17, 24, 68, 0.12);
             color: var(--primary-color);
         }
 

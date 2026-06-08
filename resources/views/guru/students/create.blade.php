@@ -10,7 +10,7 @@
             background: white;
             border-radius: 15px;
             padding: 2rem;
-            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.1);
+            box-shadow: 0 5px 20px rgba(17, 24, 68, 0.1);
         }
 
         .form-header {
@@ -56,7 +56,7 @@
         .form-control:focus,
         .form-select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 0.2rem rgba(17, 24, 68, 0.1);
             outline: none;
         }
 
@@ -89,12 +89,12 @@
         .btn-submit {
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 5px 15px rgba(17, 24, 68, 0.3);
         }
 
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 8px 25px rgba(17, 24, 68, 0.4);
         }
 
         .btn-cancel {

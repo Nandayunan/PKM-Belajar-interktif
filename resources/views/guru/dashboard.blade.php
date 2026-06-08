@@ -10,7 +10,7 @@
             padding: 3rem 2rem;
             border-radius: 20px;
             margin-bottom: 3rem;
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 15px 40px rgba(17, 24, 68, 0.3);
         }
 
         .guru-header h1 {
@@ -43,7 +43,7 @@
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 15px 40px rgba(17, 24, 68, 0.2);
         }
 
         .stat-number {
@@ -503,7 +503,8 @@
                                                 <tr>
                                                     <td>
                                                         <strong>{{ $module->name }}</strong><br>
-                                                        <small style="color: #999;">Modul {{ $module->module_number }}</small>
+                                                        <small style="color: #999;">Modul
+                                                            {{ $module->module_number }}</small>
                                                     </td>
                                                     <td>{{ $module->questions()->count() }} soal</td>
                                                     <td>
@@ -512,30 +513,39 @@
                                                                 <i class="fas fa-check"></i> Ada
                                                             </span>
                                                         @else
-                                                            <span style="color: #999;"><i class="fas fa-times"></i> Tidak</span>
+                                                            <span style="color: #999;"><i class="fas fa-times"></i>
+                                                                Tidak</span>
                                                         @endif
                                                     </td>
                                                     <td>
                                                         @if ($module->pdf_path)
-                                                            <a href="{{ asset('storage/' . $module->pdf_path) }}" target="_blank" class="btn-sm btn-view">
+                                                            <a href="{{ asset('storage/' . $module->pdf_path) }}"
+                                                                target="_blank" class="btn-sm btn-view">
                                                                 <i class="fas fa-file-pdf"></i> Lihat
                                                             </a>
                                                         @else
-                                                            <span style="color: #999;"><i class="fas fa-times"></i> Tidak</span>
+                                                            <span style="color: #999;"><i class="fas fa-times"></i>
+                                                                Tidak</span>
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <span class="badge-status {{ $module->published ? 'badge-published' : 'badge-draft' }}">
-                                                            <i class="fas fa-{{ $module->published ? 'check' : 'clock' }}"></i>
+                                                        <span
+                                                            class="badge-status {{ $module->published ? 'badge-published' : 'badge-draft' }}">
+                                                            <i
+                                                                class="fas fa-{{ $module->published ? 'check' : 'clock' }}"></i>
                                                             {{ $module->published ? 'Dipublikasi' : 'Draft' }}
                                                         </span>
                                                     </td>
                                                     <td>
                                                         <div class="action-buttons">
-                                                            <a href="{{ route('guru.modules.edit', [$module->subject_id, $module->id]) }}" class="btn-sm btn-edit">
+                                                            <a href="{{ route('guru.modules.edit', [$module->subject_id, $module->id]) }}"
+                                                                class="btn-sm btn-edit">
                                                                 <i class="fas fa-edit"></i> Edit
                                                             </a>
-                                                            <form action="{{ route('guru.modules.destroy', [$module->subject_id, $module->id]) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus modul ini?');">
+                                                            <form
+                                                                action="{{ route('guru.modules.destroy', [$module->subject_id, $module->id]) }}"
+                                                                method="POST" style="display: inline;"
+                                                                onsubmit="return confirm('Hapus modul ini?');">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit" class="btn-sm btn-delete">
@@ -569,7 +579,8 @@
 
             <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:1rem; flex-wrap:wrap;">
                 <div>
-                    <label for="filter-subject" style="font-weight:700; display:block; margin-bottom:0.25rem;">Filter Mata Pelajaran</label>
+                    <label for="filter-subject" style="font-weight:700; display:block; margin-bottom:0.25rem;">Filter Mata
+                        Pelajaran</label>
                     <select id="filter-subject" style="padding:0.5rem; border-radius:6px; border:1px solid #e5e7eb;">
                         <option value="">Semua Mata Pelajaran</option>
                         @foreach ($subjects as $s)
@@ -579,8 +590,10 @@
                 </div>
 
                 <div>
-                    <label for="filter-module" style="font-weight:700; display:block; margin-bottom:0.25rem;">Filter Modul</label>
-                    <select id="filter-module" disabled style="padding:0.5rem; border-radius:6px; border:1px solid #e5e7eb;">
+                    <label for="filter-module" style="font-weight:700; display:block; margin-bottom:0.25rem;">Filter
+                        Modul</label>
+                    <select id="filter-module" disabled
+                        style="padding:0.5rem; border-radius:6px; border:1px solid #e5e7eb;">
                         <option value="">Semua Modul</option>
                     </select>
                 </div>
@@ -612,23 +625,29 @@
                         </thead>
                         <tbody>
                             @foreach ($questions as $question)
-                                <tr data-subject-id="{{ $question->module->subject_id ?? '' }}" data-module-id="{{ $question->module_id }}">
+                                <tr data-subject-id="{{ $question->module->subject_id ?? '' }}"
+                                    data-module-id="{{ $question->module_id }}">
                                     <td><strong>{{ Str::limit($question->question, 50) }}</strong></td>
                                     <td>
-                                        <span class="badge-status badge-published" style="background: #dbeafe; color: var(--info-color);">
+                                        <span class="badge-status badge-published"
+                                            style="background: #dbeafe; color: var(--info-color);">
                                             {{ ucfirst(str_replace('_', ' ', $question->type)) }}
                                         </span>
                                     </td>
                                     <td>{{ $question->module->name }}</td>
                                     <td>
-                                        <span style="color: var(--warning-color); font-weight: 700;">+{{ $question->points }}</span>
+                                        <span
+                                            style="color: var(--warning-color); font-weight: 700;">+{{ $question->points }}</span>
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <a href="{{ route('guru.questions.edit', $question->id) }}" class="btn-sm btn-edit">
+                                            <a href="{{ route('guru.questions.edit', $question->id) }}"
+                                                class="btn-sm btn-edit">
                                                 <i class="fas fa-edit"></i> Edit
                                             </a>
-                                            <form action="{{ route('guru.questions.destroy', $question->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus soal ini?');">
+                                            <form action="{{ route('guru.questions.destroy', $question->id) }}"
+                                                method="POST" style="display: inline;"
+                                                onsubmit="return confirm('Hapus soal ini?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn-sm btn-delete">
@@ -967,7 +986,10 @@
                 if (isHidden) chev.classList.add('open');
                 else chev.classList.remove('open');
             }
-            if (isHidden) container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (isHidden) container.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
         }
 
         // Question filtering

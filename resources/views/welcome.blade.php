@@ -84,7 +84,7 @@
                     <p style="color: #666; margin: 0; font-size: 0.95rem;">Akses dari desktop, tablet, atau smartphone</p>
                 </div>
                 <div style="text-align: center;">
-                    <div style="font-size: 2rem; color: #8b5cf6; margin-bottom: 1rem;">
+                    <div style="font-size: 2rem; color: var(--primary-dark); margin-bottom: 1rem;">
                         <i class="fas fa-trophy"></i>
                     </div>
                     <h3 style="color: #2d3748; margin: 0 0 0.5rem 0;">Gamifikasi</h3>
@@ -96,11 +96,11 @@
         <!-- CTA Section -->
         @guest
             <div
-                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; padding: 2rem; text-align: center; box-shadow: var(--card-shadow);">
+                style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); color: white; border-radius: 15px; padding: 2rem; text-align: center; box-shadow: var(--card-shadow);">
                 <h2 style="margin-top: 0; margin-bottom: 1rem;">Siap Belajar?</h2>
                 <p style="margin: 0 0 1.5rem 0; opacity: 0.95;">Login untuk mengakses platform pembelajaran</p>
                 <a href="{{ route('login') }}"
-                    style="padding: 1rem 2rem; background: white; color: #667eea; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; text-decoration: none; font-size: 1rem; transition: transform 0.3s; display: inline-block;">
+                    style="padding: 1rem 2rem; background: white; color: var(--primary-color); border: none; border-radius: 10px; cursor: pointer; font-weight: 700; text-decoration: none; font-size: 1rem; transition: transform 0.3s; display: inline-block;">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </a>
             </div>

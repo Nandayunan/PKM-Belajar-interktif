@@ -3,7 +3,7 @@
 @section('title', 'Pengaturan Guru')
 
 @section('content')
-    <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);">
+    <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(17, 24, 68, 0.1);">
         <h1 style="color: var(--primary-color); margin-bottom: 2rem;">
             <i class="fas fa-cog"></i> Pengaturan Guru
         </h1>

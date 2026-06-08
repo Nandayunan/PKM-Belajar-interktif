@@ -4,7 +4,7 @@
 
 @section('content')
     <div
-        style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1); max-width: 600px; margin: 0 auto;">
+        style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(17, 24, 68, 0.1); max-width: 600px; margin: 0 auto;">
         <h1 style="color: var(--primary-color); margin-bottom: 2rem;">
             <i class="fas fa-edit"></i> Edit Mata Pelajaran
         </h1>
@@ -28,19 +28,7 @@
                     required></textarea>
             </div>
 
-            <div style="margin-bottom: 1.5rem;">
-                <label style="font-weight: 700; color: #2d3748; display: block; margin-bottom: 0.5rem;">Icon (Emoji)</label>
-                <input type="text" name="icon"
-                    style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Poppins', sans-serif;"
-                    placeholder="📚" required>
-            </div>
-
-            <div style="margin-bottom: 1.5rem;">
-                <label style="font-weight: 700; color: #2d3748; display: block; margin-bottom: 0.5rem;">Warna (#HEX)</label>
-                <input type="color" name="color"
-                    style="width: 100%; padding: 0.5rem; border: 2px solid #e5e7eb; border-radius: 10px; height: 45px;"
-                    required>
-            </div>
+            <!-- Icon and color fields removed per design request -->
 
             <div style="display: flex; gap: 1rem;">
                 <button type="submit"

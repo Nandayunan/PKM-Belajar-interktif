@@ -10,7 +10,7 @@
             padding: 3rem 2rem;
             border-radius: 20px;
             margin-bottom: 3rem;
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 15px 40px rgba(17, 24, 68, 0.3);
         }
 
         .dashboard-header h1 {
@@ -45,7 +45,7 @@
             justify-content: center;
             font-size: 2.5rem;
             color: white;
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 30px rgba(17, 24, 68, 0.3);
         }
 
         .profile-info h3 {
@@ -94,7 +94,7 @@
 
         .subject-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 20px 50px rgba(17, 24, 68, 0.2);
             border-color: var(--primary-color);
         }
 
@@ -141,7 +141,7 @@
         .subject-badge {
             display: inline-block;
             padding: 0.3rem 0.8rem;
-            background: rgba(99, 102, 241, 0.1);
+            background: rgba(17, 24, 68, 0.1);
             color: var(--primary-color);
             border-radius: 20px;
             font-size: 0.8rem;
@@ -210,7 +210,7 @@
 
         .btn-modules:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 8px 20px rgba(17, 24, 68, 0.3);
             color: white;
             text-decoration: none;
         }
@@ -327,7 +327,8 @@
                             <div style="color:#666; font-size:0.9rem;">Modul: {{ $ans->question->module->title ?? '—' }}
                             </div>
                             <div style="color:#444; margin-top:0.35rem;">Nilai Guru:
-                                <strong>{{ $ans->teacher_score }}/{{ $ans->question->points }}</strong></div>
+                                <strong>{{ $ans->teacher_score }}/{{ $ans->question->points }}</strong>
+                            </div>
                             @if (!empty($ans->teacher_feedback))
                                 <div style="color:#555; margin-top:0.25rem;">Feedback: {{ $ans->teacher_feedback }}</div>
                             @endif
