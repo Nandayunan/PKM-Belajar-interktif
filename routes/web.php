@@ -62,6 +62,8 @@ Route::middleware(['auth', 'student'])->prefix('siswa')->name('siswa.')->group(f
         Route::prefix('/module/{module}')->group(function () {
             Route::get('/', [ModuleController::class, 'show'])->name('modules.show');
             Route::post('/submit-answer', [ModuleController::class, 'submitAnswer'])->name('modules.submit-answer');
+            // Upload student submission (file)
+            Route::post('/upload', [ModuleController::class, 'upload'])->name('modules.upload');
             Route::get('/review', [ModuleController::class, 'review'])->name('modules.review');
         });
     });
@@ -78,7 +80,7 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
     Route::get('/dashboard', [TeacherDashboardController::class, 'index'])->name('dashboard');
 
     // Student Management Routes
-    Route::resource('students', StudentController::class)->only(['create', 'store', 'edit', 'update', 'destroy', 'index']);
+    Route::resource('students', StudentController::class)->only(['create', 'store', 'edit', 'update', 'destroy', 'index', 'show']);
 
     // Teacher notes (add comment for a student)
     Route::post('/student-note', [TeacherDashboardController::class, 'storeNote'])->name('students.note');
@@ -96,8 +98,15 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
         return view('guru.subjects.create');
     })->name('subjects.create');
 
-    Route::get('/subjects/{subject}', function () {
-        return view('guru.subjects.show');
+    Route::get('/subjects/{subject}', function (App\Models\Subject $subject) {
+        // Load related modules and their questions to compute totals
+        $subject->load(['modules.questions']);
+        $totalModules = $subject->modules->count();
+        $totalQuestions = $subject->modules->sum(function ($m) {
+            return $m->questions->count();
+        });
+
+        return view('guru.subjects.show', compact('subject', 'totalModules', 'totalQuestions'));
     })->name('subjects.show');
 
     Route::get('/subjects/{subject}/edit', function () {

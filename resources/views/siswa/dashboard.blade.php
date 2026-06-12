@@ -24,15 +24,66 @@
             opacity: 0.9;
         }
 
-        .profile-card {
+        /* Notification bell */
+        .notif-bell {
+            position: absolute;
+            right: 2rem;
+            top: 1.6rem;
             background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--card-shadow);
+            color: var(--primary-color);
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
-            gap: 2rem;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(17, 24, 68, 0.12);
+            cursor: pointer;
+            z-index: 70;
+        }
+
+        .notif-count {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--danger-color);
+            color: white;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            font-weight: 700;
+        }
+
+        .notif-dropdown {
+            position: absolute;
+            right: 2rem;
+            top: 5.2rem;
+            width: 420px;
+            max-width: calc(100% - 4rem);
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 12px 40px rgba(17, 24, 68, 0.15);
+            display: none;
+            z-index: 60;
+            overflow: hidden;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .notif-item {
+            padding: 0.9rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .notif-item:last-child {
+            border-bottom: none;
         }
 
         .profile-avatar {
@@ -294,6 +345,44 @@
     <div class="dashboard-header">
         <h1><i class="fas fa-star"></i> Selamat Datang, {{ auth()->user()->name }}! 🎉</h1>
         <p>Mari kita mulai petualangan belajar hari ini</p>
+
+        <div class="notif-bell" id="notifBell" title="Notifikasi Penilaian Guru">
+            <i class="fas fa-bell"></i>
+            @if (!empty($gradedAnswers) && $gradedAnswers->count() > 0)
+                <div class="notif-count">{{ $gradedAnswers->count() }}</div>
+            @endif
+        </div>
+
+        <div class="notif-dropdown" id="notifDropdown">
+            @if (empty($gradedAnswers) || $gradedAnswers->isEmpty())
+                <div style="padding:1rem; color:#666;">Belum ada penilaian terbaru dari guru.</div>
+            @else
+                @foreach ($gradedAnswers as $ans)
+                    <div class="notif-item">
+                        <div style="max-width:72%;">
+                            <div style="font-weight:700; font-size:0.95rem;">{{ Str::limit($ans->question->question, 80) }}
+                            </div>
+                            <div style="color:#666; font-size:0.85rem;">Nilai:
+                                <strong>{{ $ans->teacher_score }}/{{ $ans->question->points }}</strong></div>
+                            @if (!empty($ans->teacher_feedback))
+                                <div style="color:#555; font-size:0.85rem;">Feedback:
+                                    {{ Str::limit($ans->teacher_feedback, 120) }}</div>
+                            @endif
+                        </div>
+                        <div
+                            style="text-align:right; display:flex; flex-direction:column; gap:0.5rem; align-items:flex-end;">
+                            @if ($ans->question->module)
+                                <a href="{{ route('siswa.modules.review', [$ans->question->module->subject_id, $ans->question->module->id]) }}"
+                                    class="btn-modules" style="padding:0.35rem 0.6rem;">Lihat Review</a>
+                            @else
+                                <a href="#" class="btn-modules" style="padding:0.35rem 0.6rem;">Lihat Review</a>
+                            @endif
+                            <div style="color:#999; font-size:0.75rem;">{{ $ans->graded_at?->diffForHumans() }}</div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
     </div>
 
     @if (session('review_link'))
@@ -303,7 +392,8 @@
                     <div class="result-toast-icon"><i class="fas fa-check-circle" style="color:var(--success-color);"></i>
                     </div>
                     <div class="result-toast-message">Jawaban dan feedback Anda telah disimpan.</div>
-                    <div class="result-toast-details">Klik tombol di samping untuk meninjau jawaban Anda pada modul yang baru
+                    <div class="result-toast-details">Klik tombol di samping untuk meninjau jawaban Anda pada modul yang
+                        baru
                         saja diselesaikan.</div>
                 </div>
                 <div style="margin-left:1rem;">
@@ -315,44 +405,7 @@
         </div>
     @endif
 
-    @if (!empty($gradedAnswers) && $gradedAnswers->isNotEmpty())
-        <div style="max-width:900px; margin: 0 auto 1.5rem;">
-            <div class="section-title"><i class="fas fa-clipboard-check"></i> Penilaian Guru Terbaru</div>
-            <div style="background:white; padding:1rem; border-radius:12px; box-shadow:var(--card-shadow);">
-                @foreach ($gradedAnswers as $ans)
-                    <div
-                        style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 0; border-bottom:1px solid #f1f5f9;">
-                        <div>
-                            <div style="font-weight:700;">{{ $ans->question->question }}</div>
-                            <div style="color:#666; font-size:0.9rem;">Modul: {{ $ans->question->module->title ?? '—' }}
-                            </div>
-                            <div style="color:#444; margin-top:0.35rem;">Nilai Guru:
-                                <strong>{{ $ans->teacher_score }}/{{ $ans->question->points }}</strong>
-                            </div>
-                            @if (!empty($ans->teacher_feedback))
-                                <div style="color:#555; margin-top:0.25rem;">Feedback: {{ $ans->teacher_feedback }}</div>
-                            @endif
-                        </div>
-                        <div style="text-align:right;">
-                            <div style="margin-bottom:0.5rem;">
-                                <span
-                                    style="background:#e6fffa; color:#0f766e; padding:0.35rem 0.6rem; border-radius:999px; font-weight:700;">Guru
-                                    sudah menilai</span>
-                            </div>
-                            @if ($ans->question->module)
-                                <a href="{{ route('siswa.modules.review', [$ans->question->module->subject_id, $ans->question->module->id]) }}"
-                                    class="btn-modules" style="display:inline-block; padding:0.4rem 0.6rem;">Lihat
-                                    Review</a>
-                            @else
-                                <a href="#" class="btn-modules"
-                                    style="display:inline-block; padding:0.4rem 0.6rem;">Lihat Review</a>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @endif
+    {{-- Graded answers moved to notification bell in header --}}
 
     @if (!empty($teacherNotes) && $teacherNotes->isNotEmpty())
         <div style="max-width:900px; margin: 1.25rem auto;">
@@ -487,5 +540,22 @@
                     (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255))
                 .toString(16).slice(1);
         }
+    </script>
+    <script>
+        // Notification dropdown toggle
+        (function() {
+            const bell = document.getElementById('notifBell');
+            const dd = document.getElementById('notifDropdown');
+            if (!bell || !dd) return;
+
+            bell.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+            });
+
+            document.addEventListener('click', function() {
+                dd.style.display = 'none';
+            });
+        })();
     </script>
 @endsection

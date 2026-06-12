@@ -119,4 +119,16 @@ class StudentController extends Controller
 
         return view('guru.students.index', compact('students'));
     }
+
+    /**
+     * Display the specified student.
+     */
+    public function show(User $student)
+    {
+        if ($student->role !== 0) {
+            return redirect()->route('guru.dashboard')->with('error', 'User ini bukan siswa!');
+        }
+
+        return view('guru.students.show', compact('student'));
+    }
 }

@@ -18,24 +18,26 @@
             <div style="display: grid; gap: 1.5rem;">
                 <div>
                     <label style="color: #999; font-size: 0.9rem; font-weight: 600;">Nama Mata Pelajaran</label>
-                    <p style="margin: 0.5rem 0 0 0; color: #2d3748; font-weight: 700; font-size: 1.1rem;">Nama Mata
-                        Pelajaran</p>
+                    <p style="margin: 0.5rem 0 0 0; color: #2d3748; font-weight: 700; font-size: 1.1rem;">
+                        {{ $subject->name }}</p>
                 </div>
 
                 <div>
                     <label style="color: #999; font-size: 0.9rem; font-weight: 600;">Deskripsi</label>
-                    <p style="margin: 0.5rem 0 0 0; color: #2d3748;">Deskripsi mata pelajaran akan ditampilkan di sini</p>
+                    <p style="margin: 0.5rem 0 0 0; color: #2d3748;">{{ $subject->description }}</p>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div>
                         <label style="color: #999; font-size: 0.9rem; font-weight: 600;">Total Modul</label>
-                        <p style="margin: 0.5rem 0 0 0; color: #2d3748; font-weight: 700; font-size: 1.5rem;">0</p>
+                        <p style="margin: 0.5rem 0 0 0; color: #2d3748; font-weight: 700; font-size: 1.5rem;">
+                            {{ $totalModules ?? 0 }}</p>
                     </div>
 
                     <div>
                         <label style="color: #999; font-size: 0.9rem; font-weight: 600;">Total Soal</label>
-                        <p style="margin: 0.5rem 0 0 0; color: #2d3748; font-weight: 700; font-size: 1.5rem;">0</p>
+                        <p style="margin: 0.5rem 0 0 0; color: #2d3748; font-weight: 700; font-size: 1.5rem;">
+                            {{ $totalQuestions ?? 0 }}</p>
                     </div>
                 </div>
             </div>

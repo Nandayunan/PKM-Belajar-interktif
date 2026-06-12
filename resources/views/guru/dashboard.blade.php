@@ -675,65 +675,157 @@
                 </a>
             </div>
 
-            @if ($students->isEmpty())
-                <div class="empty-state">
-                    <i class="fas fa-inbox"></i>
-                    <p>Belum ada siswa yang terdaftar</p>
-                    <a href="{{ route('guru.students.create') }}" class="btn-add">
-                        <i class="fas fa-user-plus"></i> Tambah Siswa Pertama
-                    </a>
+            <div style="margin:1rem 0; display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+                <form method="GET" action="{{ route('guru.dashboard') }}"
+                    style="display:flex; gap:0.5rem; align-items:center;">
+                    <input type="hidden" name="tab" value="students">
+
+                    @if (!isset($selectedClass) || !$selectedClass)
+                        <div>
+                            <label style="font-weight:700; display:block; margin-bottom:0.5rem;">Pilih Kelas</label>
+                            <div style="color:#666;">Pilih salah satu kelas di bawah untuk melihat daftar siswanya.</div>
+                        </div>
+                    @else
+                        <input type="hidden" name="class" value="{{ $selectedClass }}">
+                        <div style="flex:1; display:flex; gap:0.75rem; align-items:flex-end;">
+                            <div>
+                                <label for="search-q" style="font-weight:700; display:block; margin-bottom:0.25rem;">Cari
+                                    Nama Siswa</label>
+                                <input id="search-q" name="q" placeholder="Cari nama..."
+                                    value="{{ $searchQ ?? '' }}"
+                                    style="padding:0.5rem; border-radius:6px; border:1px solid #e5e7eb; min-width:220px;">
+                            </div>
+
+                            <div style="display:flex; gap:0.5rem; align-items:center;">
+                                <a href="{{ route('guru.students.create') }}?class={{ urlencode($selectedClass) }}"
+                                    class="btn-add">Tambah Siswa di Kelas {{ $selectedClass }}</a>
+                                <a href="{{ route('guru.dashboard') }}?tab=students" class="btn-sm"
+                                    style="background:#eee; padding:0.5rem 0.75rem; border-radius:6px; color:#333; text-decoration:none;">Kembali</a>
+                            </div>
+                        </div>
+                    @endif
+                </form>
+            </div>
+
+            @if (!isset($selectedClass) || !$selectedClass)
+                <div class="empty-state" style="padding:1.5rem;">
+                    @if (empty($classes) || $classes->isEmpty())
+                        <div style="color:#999;">Belum ada kelas terdaftar</div>
+                    @else
+                        <div class="table-responsive-custom" style="width:100%;">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:45%">Kelas</th>
+                                        <th>Deskripsi</th>
+                                        <th style="width:12%">Jumlah Siswa</th>
+                                        <th style="width:12%">Status</th>
+                                        <th style="width:12%">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($classes as $c)
+                                        <tr>
+                                            <td>
+                                                <strong>
+                                                    <span
+                                                        style="display:inline-block;width:34px;height:34px;border-radius:8px;background:#e6f6ff;color:#2b6cb0;text-align:center;line-height:34px;margin-right:0.75rem;vertical-align:middle;font-size:14px;">
+                                                        <i class="fas fa-school"></i>
+                                                    </span>
+                                                    {{ $c->name }}
+                                                </strong>
+                                            </td>
+                                            <td>{{ Str::limit('Daftar siswa untuk kelas ' . $c->name, 50) }}</td>
+                                            <td>
+                                                <strong>{{ $c->count }}</strong> siswa
+                                            </td>
+                                            <td>
+                                                <span class="badge-status badge-published">
+                                                    <i class="fas fa-check"></i> Aktif
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <a href="{{ route('guru.dashboard') }}?class={{ urlencode($c->name) }}&tab=students"
+                                                        class="btn-sm btn-view">
+                                                        <i class="fas fa-eye"></i> Lihat
+                                                    </a>
+                                                    <a href="#" class="btn-sm btn-delete"
+                                                        onclick="event.preventDefault(); if(confirm('Hapus kelas {{ addslashes($c->name) }}?')){ alert('Fitur hapus kelas belum tersedia.'); }">
+                                                        <i class="fas fa-trash"></i> Hapus
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
                 </div>
             @else
-                <div class="table-responsive-custom">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Nama Siswa</th>
-                                <th>Email</th>
-                                <th>No. HP</th>
-                                <th>Kelas</th>
-                                <th>Wali Kelas</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($students as $student)
-                                <tr>
-                                    <td><strong>{{ $student->name }}</strong></td>
-                                    <td>{{ $student->email }}</td>
-                                    <td>{{ $student->phone ?? '-' }}</td>
-                                    <td>{{ $student->class ?? '-' }}</td>
-                                    <td>{{ $student->homeroom_teacher ?? '-' }}</td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <a href="{{ route('guru.students.edit', $student->id) }}"
-                                                class="btn-sm btn-edit">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                            <form action="{{ route('guru.students.destroy', $student->id) }}"
-                                                method="POST" style="display: inline;"
-                                                onsubmit="return confirm('Hapus siswa ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn-sm btn-delete">
-                                                    <i class="fas fa-trash"></i> Hapus
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" style="text-align: center; color: #999;">Tidak ada data siswa</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                @if ($students->hasPages())
-                    <div style="margin-top: 2rem;">
-                        {{ $students->links() }}
+                @if ($students && $students->isEmpty())
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>Belum ada siswa yang terdaftar di kelas {{ $selectedClass }}</p>
+                        <a href="{{ route('guru.students.create') }}?class={{ urlencode($selectedClass) }}"
+                            class="btn-add">
+                            <i class="fas fa-user-plus"></i> Tambah Siswa
+                        </a>
                     </div>
+                @else
+                    <div class="table-responsive-custom">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nama Siswa</th>
+                                    <th>Email</th>
+                                    <th>No. HP</th>
+                                    <th>Kelas</th>
+                                    <th>Wali Kelas</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($students as $student)
+                                    <tr>
+                                        <td><strong>{{ $student->name }}</strong></td>
+                                        <td>{{ $student->email }}</td>
+                                        <td>{{ $student->phone ?? '-' }}</td>
+                                        <td>{{ $student->class ?? '-' }}</td>
+                                        <td>{{ $student->homeroom_teacher ?? '-' }}</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <a href="{{ route('guru.students.show', $student->id) }}"
+                                                    class="btn-sm btn-view">
+                                                    <i class="fas fa-eye"></i> Lihat
+                                                </a>
+                                                <form action="{{ route('guru.students.destroy', $student->id) }}"
+                                                    method="POST" style="display: inline;"
+                                                    onsubmit="return confirm('Hapus siswa ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn-sm btn-delete">
+                                                        <i class="fas fa-trash"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; color: #999;">Tidak ada data siswa
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    @if ($students && $students->hasPages())
+                        <div style="margin-top: 2rem;">
+                            {{ $students->links() }}
+                        </div>
+                    @endif
                 @endif
             @endif
         </div>
@@ -943,7 +1035,7 @@
 
 @section('extra-js')
     <script>
-        function switchTab(tabName) {
+        function switchTab(tabName, btn) {
             // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.style.display = 'none';
@@ -961,8 +1053,14 @@
                 tabElement.style.display = 'block';
             }
 
-            // Add active class to clicked button
-            event.target.classList.add('active');
+            // Add active class to clicked button (if provided) or find by data-tab
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if (btn && btn.classList) {
+                btn.classList.add('active');
+            } else {
+                const btnEl = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+                if (btnEl) btnEl.classList.add('active');
+            }
         }
 
         function toggleAnswers(userId) {
@@ -1048,6 +1146,17 @@
             }
             // initialize modules select
             populateModuleOptions('');
+
+            // Restore active tab if provided from server (e.g., after selecting class)
+            @if (!empty($activeTab))
+                try {
+                    switchTab('{{ $activeTab }}');
+                } catch (e) {}
+            @elseif (!empty($selectedClass))
+                try {
+                    switchTab('students');
+                } catch (e) {}
+            @endif
         });
     </script>
 @endsection

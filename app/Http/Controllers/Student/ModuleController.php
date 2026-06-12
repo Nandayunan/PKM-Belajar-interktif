@@ -244,6 +244,32 @@ class ModuleController extends Controller
         ]);
     }
 
+    /**
+     * Handle file upload for a module submission.
+     */
+    public function upload(Request $request, $subjectId, $moduleId)
+    {
+        $subject = Subject::findOrFail($subjectId);
+        $module = Module::where('id', $moduleId)
+            ->where('subject_id', $subjectId)
+            ->firstOrFail();
+
+        $request->validate([
+            'submission_file' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx,docs,word|max:10240',
+        ]);
+
+        $file = $request->file('submission_file');
+        $user = Auth::user();
+
+        // Store in public disk under submissions/{moduleId}
+        $path = $file->store("submissions/{$module->id}", 'public');
+
+        // Optionally, you could save a DB record here. For now we only store the file and return success.
+
+        return redirect()->route('siswa.modules.index', $subject->id)
+            ->with('success', 'File tugas berhasil diunggah.');
+    }
+
     private function convertYouTubeToEmbed($url)
     {
         // Normalize and extract video ID robustly to handle many YouTube URL formats

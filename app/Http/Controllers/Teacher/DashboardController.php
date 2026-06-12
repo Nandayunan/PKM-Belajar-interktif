@@ -15,7 +15,7 @@ use App\Models\TeacherNote;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
@@ -75,8 +75,31 @@ class DashboardController extends Controller
             ->get()
             ->groupBy(fn($a) => $a->user_id);
 
-        // Fetch all students (untuk manajemen siswa)
-        $students = User::where('role', 0)->paginate(15);
+        // Fetch class list (distinct class values from students)
+        $classes = User::where('role', 0)
+            ->whereNotNull('class')
+            ->where('class', '!=', '')
+            ->select('class', \DB::raw('count(*) as total'))
+            ->groupBy('class')
+            ->get()
+            ->map(fn($r) => (object)['name' => $r->class, 'count' => $r->total]);
+
+        // If a class is selected via query param, fetch students for that class
+        $selectedClass = $request->query('class');
+        $searchQ = $request->query('q');
+        $activeTab = $request->query('tab');
+        if ($selectedClass) {
+            $studentsQuery = User::where('role', 0)
+                ->where('class', $selectedClass);
+
+            if ($searchQ) {
+                $studentsQuery->where('name', 'like', '%' . $searchQ . '%');
+            }
+
+            $students = $studentsQuery->paginate(15)->withQueryString();
+        } else {
+            $students = null; // don't load all students by default
+        }
 
         // Fetch teacher notes grouped by user
         $teacherNotes = TeacherNote::where('teacher_id', $user->id)
@@ -91,6 +114,10 @@ class DashboardController extends Controller
             'questions' => $questions,
             'studentProgress' => $studentProgress,
             'students' => $students,
+            'classes' => $classes,
+            'selectedClass' => $selectedClass,
+            'searchQ' => $searchQ,
+            'activeTab' => $activeTab,
             'submissions' => $submissions,
             'teacherNotes' => $teacherNotes,
             'totalSubjects' => $totalSubjects,

@@ -241,6 +241,30 @@
                 padding: 0.5rem 0;
             }
         }
+
+        /* Upload box styles */
+        .module-upload-box .drop-area {
+            border: 2px dashed rgba(17, 24, 68, 0.08);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            background: #ffffff;
+        }
+
+        .module-upload-box .drop-area.drag-over {
+            background: linear-gradient(90deg, rgba(17, 24, 68, 0.03), rgba(17, 24, 68, 0.02));
+            border-color: var(--primary-color);
+        }
+
+        .module-upload-box .drop-message {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .module-upload-box .file-input {
+            display: none;
+        }
     </style>
 @endsection
 
@@ -362,14 +386,48 @@
                     </div>
 
                     <div style="padding: 1.5rem;">
-                        <a href="{{ route('siswa.modules.show', [$subject->id, $module->id]) }}" class="btn-module-action">
-                            <i class="fas fa-play"></i>
-                            @if ($isCompleted)
-                                Ulangi
-                            @else
-                                Mulai
-                            @endif
-                        </a>
+                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                            <a href="{{ route('siswa.modules.show', [$subject->id, $module->id]) }}"
+                                class="btn-module-action" style="flex:1;">
+                                <i class="fas fa-play"></i>
+                                @if ($isCompleted)
+                                    Ulangi
+                                @else
+                                    Mulai
+                                @endif
+                            </a>
+
+                            <button type="button" class="btn-module-action"
+                                style="flex:0 0 auto; background:#ffffff; color:var(--primary-color); border:1px solid rgba(17,24,68,0.06);"
+                                onclick="toggleUploadBox('{{ $module->id }}')">
+                                <i class="fas fa-upload"></i>
+                                Kumpulkan
+                            </button>
+                        </div>
+
+                        <div id="upload-box-{{ $module->id }}" class="module-upload-box"
+                            style="display:none; margin-top:0.75rem;">
+                            <form method="POST" action="{{ route('siswa.modules.upload', [$subject->id, $module->id]) }}"
+                                enctype="multipart/form-data" class="upload-form">
+                                @csrf
+                                <div class="drop-area" ondragover="event.preventDefault();"
+                                    ondrop="handleDrop(event, '{{ $module->id }}')">
+                                    <input type="file" name="submission_file" id="submission-file-{{ $module->id }}"
+                                        class="file-input" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.docs,.word" />
+                                    <div class="drop-message">Tarik & letakkan file di sini atau klik untuk memilih (jpg,
+                                        jpeg, png, pdf, docs, word)</div>
+                                    <div class="selected-file" id="selected-file-{{ $module->id }}"
+                                        style="display:none; margin-top:0.5rem;"></div>
+                                </div>
+
+                                <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+                                    <button type="submit" class="btn-module-action" style="flex:1;">Kirim Tugas</button>
+                                    <button type="button" class="btn-module-action"
+                                        style="flex:0 0 auto; background:#f3f4f6; color:#666;"
+                                        onclick="toggleUploadBox('{{ $module->id }}')">Batal</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             @endforeach
@@ -394,5 +452,73 @@
                     (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255))
                 .toString(16).slice(1);
         }
+    </script>
+    <script>
+        // Toggle the upload box for a specific module
+        function toggleUploadBox(moduleId) {
+            const el = document.getElementById('upload-box-' + moduleId);
+            if (!el) return;
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Allowed extensions
+        const allowedExt = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'docs', 'word'];
+
+        function handleDrop(e, moduleId) {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+            processFiles(files, moduleId);
+        }
+
+        function processFiles(files, moduleId) {
+            if (!files || files.length === 0) return;
+            const file = files[0];
+            if (!validateFile(file)) {
+                alert('Tipe file tidak diizinkan. Gunakan salah satu: ' + allowedExt.join(', '));
+                return;
+            }
+
+            const input = document.getElementById('submission-file-' + moduleId);
+            const selected = document.getElementById('selected-file-' + moduleId);
+            if (input) {
+                // create a DataTransfer to assign file to input
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                input.files = dataTransfer.files;
+            }
+
+            if (selected) {
+                selected.style.display = 'block';
+                selected.innerText = file.name + ' (' + Math.round(file.size / 1024) + ' KB)';
+            }
+        }
+
+        function validateFile(file) {
+            const name = file.name.toLowerCase();
+            const ext = name.split('.').pop();
+            return allowedExt.includes(ext);
+        }
+
+        // Attach click handler to drop areas to open file dialog
+        document.addEventListener('click', function(e) {
+            const target = e.target.closest('.drop-area');
+            if (!target) return;
+            const idParts = target.querySelector('.file-input')?.id?.split('-');
+            if (!idParts) return;
+            const moduleId = idParts[idParts.length - 1];
+            const input = document.getElementById('submission-file-' + moduleId);
+            if (input) input.click();
+        });
+
+        // Listen for file change on dynamically added inputs
+        document.addEventListener('change', function(e) {
+            const el = e.target;
+            if (!el.classList || !el.classList.contains('file-input')) return;
+            const idParts = el.id.split('-');
+            const moduleId = idParts[idParts.length - 1];
+            if (el.files && el.files.length) {
+                processFiles(el.files, moduleId);
+            }
+        });
     </script>
 @endsection
