@@ -8,6 +8,7 @@ use App\Models\Module;
 use App\Models\Question;
 use App\Models\StudentProgress;
 use App\Models\QuestionAnswer;
+use App\Models\SubjectEnrollment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,8 +17,18 @@ class ModuleController extends Controller
     public function index($subjectId)
     {
         $subject = Subject::findOrFail($subjectId);
-        $modules = $subject->modules()->get();
+        $modules = $subject->publishedModules()->get();
         $user = Auth::user();
+
+        $isEnrolled = SubjectEnrollment::where('user_id', $user->id)
+            ->where('subject_id', $subject->id)
+            ->exists();
+
+        if (!$isEnrolled) {
+            return view('siswa.subjects.enroll', [
+                'subject' => $subject,
+            ]);
+        }
 
         // Initialize progress if not exists
         $progress = StudentProgress::firstOrCreate(
@@ -43,12 +54,22 @@ class ModuleController extends Controller
     public function show($subjectId, $moduleId)
     {
         $subject = Subject::findOrFail($subjectId);
-        $module = Module::where('id', $moduleId)
+        $module = Module::published()
+            ->where('id', $moduleId)
             ->where('subject_id', $subjectId)
             ->firstOrFail();
 
-        $questions = $module->questions()->get();
         $user = Auth::user();
+        $isEnrolled = SubjectEnrollment::where('user_id', $user->id)
+            ->where('subject_id', $subject->id)
+            ->exists();
+
+        if (!$isEnrolled) {
+            return redirect()->route('siswa.modules.index', $subject->id)
+                ->with('error', 'Anda harus mendaftar ke mata pelajaran ini terlebih dahulu.');
+        }
+
+        $questions = $module->questions()->get();
 
         // Initialize module progress if not exists
         $moduleProgress = StudentProgress::firstOrCreate(
@@ -101,12 +122,21 @@ class ModuleController extends Controller
     public function submitAnswer(Request $request, $subjectId, $moduleId)
     {
         $subject = Subject::findOrFail($subjectId);
-        $module = Module::where('id', $moduleId)
+        $module = Module::published()
+            ->where('id', $moduleId)
             ->where('subject_id', $subjectId)
             ->firstOrFail();
 
         $questions = $module->questions()->get();
         $user = Auth::user();
+        $isEnrolled = SubjectEnrollment::where('user_id', $user->id)
+            ->where('subject_id', $subject->id)
+            ->exists();
+
+        if (!$isEnrolled) {
+            return redirect()->route('siswa.modules.index', $subject->id)
+                ->with('error', 'Anda harus mendaftar ke mata pelajaran ini terlebih dahulu.');
+        }
 
         $answers = $request->input('answers', []);
         $totalCorrect = 0;
@@ -219,12 +249,21 @@ class ModuleController extends Controller
     public function review($subjectId, $moduleId)
     {
         $subject = Subject::findOrFail($subjectId);
-        $module = Module::where('id', $moduleId)
+        $module = Module::published()
+            ->where('id', $moduleId)
             ->where('subject_id', $subjectId)
             ->firstOrFail();
 
         $questions = $module->questions()->get();
         $user = Auth::user();
+        $isEnrolled = SubjectEnrollment::where('user_id', $user->id)
+            ->where('subject_id', $subject->id)
+            ->exists();
+
+        if (!$isEnrolled) {
+            return redirect()->route('siswa.modules.index', $subject->id)
+                ->with('error', 'Anda harus mendaftar ke mata pelajaran ini terlebih dahulu.');
+        }
 
         // Load student answers for these questions
         $answers = \App\Models\QuestionAnswer::whereIn('question_id', $questions->pluck('id')->toArray())
@@ -250,9 +289,20 @@ class ModuleController extends Controller
     public function upload(Request $request, $subjectId, $moduleId)
     {
         $subject = Subject::findOrFail($subjectId);
-        $module = Module::where('id', $moduleId)
+        $module = Module::published()
+            ->where('id', $moduleId)
             ->where('subject_id', $subjectId)
             ->firstOrFail();
+
+        $user = Auth::user();
+        $isEnrolled = SubjectEnrollment::where('user_id', $user->id)
+            ->where('subject_id', $subject->id)
+            ->exists();
+
+        if (!$isEnrolled) {
+            return redirect()->route('siswa.modules.index', $subject->id)
+                ->with('error', 'Anda harus mendaftar ke mata pelajaran ini terlebih dahulu.');
+        }
 
         $request->validate([
             'submission_file' => 'required|file|mimes:jpg,jpeg,png,pdf,doc,docx,docs,word|max:10240',

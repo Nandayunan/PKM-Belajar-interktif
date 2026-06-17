@@ -6,6 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\SubjectEnrollment;
+use App\Models\Subject;
+use App\Models\StudentClassHistory;
 
 class User extends Authenticatable
 {
@@ -24,7 +27,9 @@ class User extends Authenticatable
         'date_of_birth',
         'password',
         'role',
+        'nisn',
         'class',
+        'academic_year',
         'homeroom_teacher',
     ];
 
@@ -66,6 +71,17 @@ class User extends Authenticatable
         return $this->hasMany(Question::class, 'created_by');
     }
 
+    public function subjectEnrollments()
+    {
+        return $this->hasMany(SubjectEnrollment::class, 'user_id');
+    }
+
+    public function enrolledSubjects()
+    {
+        return $this->belongsToMany(Subject::class, 'subject_enrollments', 'user_id', 'subject_id')
+            ->withTimestamps();
+    }
+
     public function answers()
     {
         return $this->hasMany(QuestionAnswer::class, 'user_id');
@@ -79,6 +95,11 @@ class User extends Authenticatable
     public function teacherSettings()
     {
         return $this->hasOne(TeacherSettings::class, 'teacher_id');
+    }
+
+    public function classHistories()
+    {
+        return $this->hasMany(StudentClassHistory::class, 'user_id');
     }
 
     // Helpers

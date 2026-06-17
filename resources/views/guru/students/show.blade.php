@@ -22,6 +22,10 @@
 
                 <div style="display:flex; gap:2rem;">
                     <div>
+                        <label style="color: #999; font-size: 0.9rem; font-weight: 600;">NISN</label>
+                        <p style="margin: 0.5rem 0 0 0; color: #2d3748;">{{ $student->nisn ?? '-' }}</p>
+                    </div>
+                    <div>
                         <label style="color: #999; font-size: 0.9rem; font-weight: 600;">Email</label>
                         <p style="margin: 0.5rem 0 0 0; color: #2d3748;">{{ $student->email }}</p>
                     </div>

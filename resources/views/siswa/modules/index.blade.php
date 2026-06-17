@@ -269,14 +269,15 @@
 @endsection
 
 @section('content')
-    <!-- Breadcrumb -->
-    <div class="breadcrumb-custom">
-        <a href="{{ route('siswa.dashboard') }}">
-            <i class="fas fa-home"></i> Dashboard
-        </a>
-        <span style="color: #ccc;"> / </span>
-        <span style="color: #666;">{{ $subject->name }}</span>
-    </div>
+    <div style="padding: 0 1.5rem;">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-custom">
+            <a href="{{ route('siswa.dashboard') }}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <span style="color: #ccc;"> / </span>
+            <span style="color: #666;">{{ $subject->name }}</span>
+        </div>
 
     <!-- Header -->
     <div class="module-header">
@@ -433,6 +434,7 @@
             @endforeach
         </div>
     @endif
+    </div>
 @endsection
 
 @section('extra-js')

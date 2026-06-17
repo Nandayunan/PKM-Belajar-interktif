@@ -22,6 +22,11 @@ class Module extends Model
         'published' => 'boolean',
     ];
 
+    public function scopePublished($query)
+    {
+        return $query->where('published', true);
+    }
+
     // Relationships
     public function subject()
     {

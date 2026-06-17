@@ -377,18 +377,19 @@
 @endsection
 
 @section('content')
-    <!-- Breadcrumb -->
-    <div class="breadcrumb-custom">
-        <a href="{{ route('siswa.dashboard') }}">
-            <i class="fas fa-home"></i> Dashboard
-        </a>
-        <span style="color: #ccc;"> / </span>
-        <a href="{{ route('siswa.modules.index', $subject->id) }}">
-            {{ $subject->name }}
-        </a>
-        <span style="color: #ccc;"> / </span>
-        <span style="color: #666;">Modul {{ $module->module_number }}</span>
-    </div>
+    <div style="padding: 0 1.5rem;">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-custom">
+            <a href="{{ route('siswa.dashboard') }}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <span style="color: #ccc;"> / </span>
+            <a href="{{ route('siswa.modules.index', $subject->id) }}">
+                {{ $subject->name }}
+            </a>
+            <span style="color: #ccc;"> / </span>
+            <span style="color: #666;">Modul {{ $module->module_number }}</span>
+        </div>
 
     <!-- Header -->
     <div class="module-detail-header">
@@ -525,9 +526,21 @@
                                         } else {
                                             $options = json_decode($question->options ?? '[]', true) ?? [];
                                         }
+
+                                        $options = array_values(array_filter($options, function ($option) {
+                                            return trim((string) $option) !== '';
+                                        }));
+
+                                        $shuffleSeed = auth()->id() . '|' . $module->id . '|' . $question->id;
+                                        $displayOptions = collect($options)
+                                            ->sortBy(function ($option) use ($shuffleSeed) {
+                                                return md5($shuffleSeed . '|' . $option);
+                                            })
+                                            ->values()
+                                            ->all();
                                     @endphp
 
-                                    @foreach ($options as $option)
+                                    @foreach ($displayOptions as $option)
                                         <label class="answer-option" style="cursor: pointer;">
                                             <input type="radio" name="answers[{{ $question->id }}]"
                                                 value="{{ $option }}"
@@ -571,6 +584,7 @@
             </div>
         </div>
     @endif
+    </div>
 @endsection
 
 @section('extra-js')

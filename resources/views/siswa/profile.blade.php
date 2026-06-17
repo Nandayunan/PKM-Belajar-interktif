@@ -3,64 +3,78 @@
 @section('title', 'Profil Saya')
 
 @section('content')
-    <div style="max-width: 600px; margin: 0 auto;">
-        <div
-            style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 10px 30px rgba(17, 24, 68, 0.1); margin-bottom: 2rem;">
-            <h1 style="color: var(--primary-color); margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem;">
-                <i class="fas fa-user-circle"></i> Profil Saya
-            </h1>
-
-            <div style="display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem;">
-                <div
-                    style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+    <div style="max-width: 900px; margin: 0 auto; padding: 2rem;">
+        <div style="background: rgba(255,255,255,0.96); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);">
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; margin-bottom: 2rem;">
+                <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #4338ca, #6366f1); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
                     <i class="fas fa-user"></i>
                 </div>
                 <div>
-                    <h2 style="margin: 0; color: #2d3748; font-weight: 700;">{{ auth()->user()->name }}</h2>
-                    <p style="margin: 0.5rem 0 0 0; color: #666;">
-                        <i class="fas fa-envelope"></i> {{ auth()->user()->email }}
-                    </p>
-                    <p style="margin: 0.5rem 0 0 0; color: #666;">
-                        <i class="fas fa-badge"></i>
-                        @if (auth()->user()->isStudent())
-                            <span
-                                style="background: #dbeafe; color: var(--info-color); padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: 600;">Siswa</span>
-                        @else
-                            <span
-                                style="background: #fef3c7; color: #92400e; padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: 600;">Guru</span>
-                        @endif
-                    </p>
+                    <h1 style="margin: 0; color: #111827; font-size: 2rem; font-weight: 700;">Profil Saya</h1>
+                    <p style="margin: 0.75rem 0 0; color: #475569; max-width: 600px;">Perbarui data akun dan kata sandi Anda di halaman ini. Email digunakan sebagai username, jadi tidak bisa diubah.</p>
                 </div>
             </div>
 
-            <div style="border-top: 1px solid #e5e7eb; padding-top: 2rem;">
-                <h3 style="color: #2d3748; font-weight: 700; margin-bottom: 1rem;">Informasi Akun</h3>
+            @if(session('success'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-                <div style="display: grid; gap: 1rem;">
-                    <div style="padding: 1rem; background: #f8f9ff; border-radius: 10px;">
-                        <label style="color: #999; font-size: 0.85rem; font-weight: 600;">Nama Lengkap</label>
-                        <p style="margin: 0.5rem 0 0 0; color: #2d3748; font-weight: 600;">{{ auth()->user()->name }}</p>
+            <form method="POST" action="{{ route('profile.update') }}">
+                @csrf
+
+                <div style="display: grid; gap: 1.25rem; margin-bottom: 2rem;">
+                    <div style="background: #f8fafc; border-radius: 18px; padding: 1.5rem; border: 1px solid #e2e8f0;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 700; color: #334155;">Nama Lengkap</label>
+                        <input type="text" name="name" value="{{ old('name', auth()->user()->name) }}" class="form-control @error('name') is-invalid @enderror" placeholder="Nama lengkap Anda" required>
+                        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <div style="padding: 1rem; background: #f8f9ff; border-radius: 10px;">
-                        <label style="color: #999; font-size: 0.85rem; font-weight: 600;">Email</label>
-                        <p style="margin: 0.5rem 0 0 0; color: #2d3748; font-weight: 600;">{{ auth()->user()->email }}</p>
+                    <div style="background: #f8fafc; border-radius: 18px; padding: 1.5rem; border: 1px solid #e2e8f0;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 700; color: #334155;">Email</label>
+                        <input type="email" value="{{ auth()->user()->email }}" class="form-control" disabled>
+                        <small style="color: #475569; margin-top: 0.5rem; display: block;">Email tidak dapat diubah karena digunakan sebagai username.</small>
                     </div>
 
-                    <div style="padding: 1rem; background: #f8f9ff; border-radius: 10px;">
-                        <label style="color: #999; font-size: 0.85rem; font-weight: 600;">Bergabung Sejak</label>
-                        <p style="margin: 0.5rem 0 0 0; color: #2d3748; font-weight: 600;">
-                            {{ auth()->user()->created_at->format('d F Y H:i') }}</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
+                        <div style="background: #f8fafc; border-radius: 18px; padding: 1.5rem; border: 1px solid #e2e8f0;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 700; color: #334155;">Nomor HP</label>
+                            <input type="text" name="phone" value="{{ old('phone', auth()->user()->phone) }}" class="form-control @error('phone') is-invalid @enderror" placeholder="Contoh: 081234567890">
+                            @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div style="background: #f8fafc; border-radius: 18px; padding: 1.5rem; border: 1px solid #e2e8f0;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 700; color: #334155;">Tanggal Lahir</label>
+                            <input type="date" name="date_of_birth" value="{{ old('date_of_birth', auth()->user()->date_of_birth?->format('Y-m-d')) }}" class="form-control @error('date_of_birth') is-invalid @enderror">
+                            @error('date_of_birth')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
-                <a href="{{ auth()->user()->isStudent() ? route('siswa.dashboard') : route('guru.dashboard') }}"
-                    style="padding: 0.75rem 2rem; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; border-radius: 10px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
-                </a>
-            </div>
+                <div style="background: #ffffff; border-radius: 20px; padding: 2rem; border: 1px solid #e2e8f0; margin-bottom: 2rem;">
+                    <h2 style="margin: 0 0 1rem; color: #111827; font-size: 1.25rem; font-weight: 700;">Ubah Kata Sandi</h2>
+                    <p style="margin: 0 0 1.25rem; color: #475569;">Isi hanya jika ingin mengganti password. Biarkan kosong jika tidak ingin mengubahnya.</p>
+
+                    <div style="display: grid; gap: 1.25rem;">
+                        <div style="background: #f8fafc; border-radius: 18px; padding: 1.5rem; border: 1px solid #e2e8f0;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 700; color: #334155;">Kata Sandi Baru</label>
+                            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Minimal 8 karakter, huruf dan angka">
+                            @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div style="background: #f8fafc; border-radius: 18px; padding: 1.5rem; border: 1px solid #e2e8f0;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 700; color: #334155;">Konfirmasi Kata Sandi</label>
+                            <input type="password" name="password_confirmation" class="form-control" placeholder="Ulangi kata sandi baru">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: flex-end;">
+                    <a href="{{ route('siswa.dashboard') }}" class="btn btn-outline-primary" style="padding: 0.85rem 1.5rem;">Kembali</a>
+                    <button type="submit" class="btn btn-primary" style="padding: 0.85rem 1.5rem;">Simpan Perubahan</button>
+                </div>
+            </form>
         </div>
     </div>
 @endsection

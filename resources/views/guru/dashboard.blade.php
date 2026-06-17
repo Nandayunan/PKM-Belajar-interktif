@@ -136,6 +136,182 @@
             border-color: var(--primary-color);
         }
 
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .subject-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+
+        .subject-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            cursor: pointer;
+        }
+
+        .subject-card-header h2 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #111827;
+        }
+
+        .subject-card-body {
+            padding: 1.5rem;
+            display: none;
+            background: white;
+        }
+
+        .subject-card-body.active {
+            display: block;
+        }
+
+        .subject-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #334155;
+            background: #f8fafc;
+        }
+
+        .module-box {
+            background: #f9fafb;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 1.25rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .module-box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .module-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .question-card-row {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .question-card-row strong {
+            color: #0f172a;
+        }
+
+        .question-card-row .question-meta {
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .module-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.85rem;
+        }
+
+        .module-summary span {
+            background: #eef2ff;
+            color: #1d4ed8;
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.82rem;
+        }
+
+        .subject-class-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.85rem;
+        }
+
+        .subject-class-chips .class-chip,
+        .subject-class-chips .class-chip-disabled {
+            border: none;
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .subject-class-chips .class-chip {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .subject-class-chips .class-chip:hover {
+            background: #bfdbfe;
+        }
+
+        .subject-class-chips .class-chip.selected {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        .subject-class-chips .class-chip-disabled {
+            background: #f3f4f6;
+            color: #64748b;
+            cursor: default;
+        }
+
+        .btn-secondary-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.7rem 1rem;
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .btn-secondary-outline:hover {
+            background: #f8fafc;
+        }
+
+        .subject-chevron {
+            transition: transform 0.2s ease;
+        }
+
+        .subject-chevron.open {
+            transform: rotate(90deg);
+        }
+
         .table-responsive-custom {
             overflow-x: auto;
             border-radius: 10px;
@@ -317,6 +493,169 @@
                 padding: 0.75rem 0.5rem;
             }
         }
+
+        /* Modal Manage Kelas */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 40px);
+            overflow: hidden;
+        }
+
+        .modal-content.modal-large {
+            max-width: 900px;
+        }
+
+        .modal-content .modal-body {
+            overflow-y: auto;
+            max-height: calc(100vh - 220px);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #111827;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #111827;
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-body .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .modal-body label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+        }
+
+        .modal-body select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .modal-body select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(17, 24, 68, 0.3);
+        }
+
+        .modal-btn-secondary {
+            background: #f3f4f6;
+            color: #666;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .modal-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .modal-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
 @endsection
 
@@ -354,14 +693,11 @@
             <button class="tab-btn active" data-tab="subjects" onclick="switchTab('subjects', this)">
                 <i class="fas fa-book"></i> Mata Pelajaran
             </button>
-            <button class="tab-btn" data-tab="modules" onclick="switchTab('modules', this)">
-                <i class="fas fa-layer-group"></i> Modul
-            </button>
-            <button class="tab-btn" data-tab="questions" onclick="switchTab('questions', this)">
-                <i class="fas fa-question-circle"></i> Soal
+            <button class="tab-btn" data-tab="classes" onclick="switchTab('classes', this)">
+                <i class="fas fa-door-open"></i> Manage Kelas
             </button>
             <button class="tab-btn" data-tab="students" onclick="switchTab('students', this)">
-                <i class="fas fa-users"></i> Manajemen Siswa
+                <i class="fas fa-users"></i> Manage Siswa
             </button>
             <button class="tab-btn" data-tab="student-progress" onclick="switchTab('student-progress', this)">
                 <i class="fas fa-chart-bar"></i> Progress Siswa
@@ -375,10 +711,10 @@
         <div id="subjects-tab" class="tab-content">
             <div class="section-header">
                 <div class="section-title">
-                    <i class="fas fa-book"></i> Manajemen Mata Pelajaran
+                    <i class="fas fa-book"></i> Mata Pelajaran
                 </div>
                 <a href="{{ route('guru.subjects.create') }}" class="btn-add">
-                    <i class="fas fa-plus"></i> Buat Mata Pelajaran
+                    <i class="fas fa-plus"></i> Tambah Mata Pelajaran
                 </a>
             </div>
 
@@ -391,269 +727,225 @@
                     </a>
                 </div>
             @else
-                <div class="table-responsive-custom">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Nama Mata Pelajaran</th>
-                                <th>Deskripsi</th>
-                                <th>Modul</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($subjects as $subject)
-                                <tr>
-                                    <td>
-                                        <strong>{{ $subject->icon }} {{ $subject->name }}</strong>
-                                    </td>
-                                    <td>{{ Str::limit($subject->description, 50) }}</td>
-                                    <td>
-                                        <strong>{{ $subject->modules()->count() }}</strong> modul
-                                    </td>
-                                    <td>
-                                        <span class="badge-status badge-published">
-                                            <i class="fas fa-check"></i> Aktif
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <a href="{{ route('guru.subjects.show', $subject->id) }}"
-                                                class="btn-sm btn-view">
-                                                <i class="fas fa-eye"></i> Lihat
-                                            </a>
-                                            <a href="{{ route('guru.subjects.edit', $subject->id) }}"
-                                                class="btn-sm btn-edit">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                            <form action="{{ route('guru.subjects.destroy', $subject->id) }}"
-                                                method="POST" style="display: inline;"
-                                                onsubmit="return confirm('Hapus mata pelajaran ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn-sm btn-delete">
-                                                    <i class="fas fa-trash"></i> Hapus
-                                                </button>
-                                            </form>
+                <div class="subject-grid">
+                    @foreach ($subjects as $subject)
+                        @php
+                            $subjectModules = $modules->where('subject_id', $subject->id);
+                            $subjectQuestionsCount = $questions->whereIn('module_id', $subjectModules->pluck('id'))->count();
+
+                            $subjectClassChips = [];
+                            if ($subject->class) {
+                                $parts = explode('-', $subject->class, 2);
+                                $grade = $parts[0];
+                                $sectionPart = $parts[1] ?? '';
+
+                                if (strtoupper($sectionPart) === 'ALL') {
+                                    $subjectClassChips = collect(['A', 'B', 'C', 'D'])->map(fn($section) => $grade . '-' . $section)->all();
+                                } elseif ($sectionPart !== '') {
+                                    foreach (explode(',', $sectionPart) as $section) {
+                                        $section = trim(strtoupper($section));
+                                        if ($section !== '') {
+                                            $subjectClassChips[] = $grade . '-' . $section;
+                                        }
+                                    }
+                                } else {
+                                    $subjectClassChips[] = $grade;
+                                }
+                            }
+                        @endphp
+                        <div class="subject-card" data-subject-classes="{{ implode(' ', $subjectClassChips) }}">
+                            <div class="subject-card-header" onclick="toggleSubjectDetails({{ $subject->id }});">
+                                <div>
+                                    <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                                        <div style="width:44px; height:44px; border-radius:14px; background: rgba(59, 130, 246, 0.15); display:flex; align-items:center; justify-content:center; color:#1d4ed8; font-size:1.1rem;">
+                                            <i class="fas fa-book"></i>
                                         </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @endif
-        </div>
+                                        <div>
+                                            <h2>{{ $subject->name }}</h2>
+                                            <p style="margin:0.5rem 0 0 0; color:#475569; font-size:0.95rem; max-width:520px;">{{ Str::limit($subject->description ?: 'Tidak ada deskripsi.', 120) }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="module-summary">
+                                        <span>{{ $subjectModules->count() }} Modul</span>
+                                        <span>{{ $subjectQuestionsCount }} Soal</span>
+                                    </div>
+                                    <div class="subject-class-chips">
+                                        @if (!empty($subjectClassChips))
+                                            @foreach ($subjectClassChips as $classChip)
+                                                <button type="button" class="class-chip" data-filter-class="{{ $classChip }}" onclick="event.stopPropagation(); filterSubjectsByClass('{{ $classChip }}', this);">{{ $classChip }}</button>
+                                            @endforeach
+                                        @else
+                                            <span class="class-chip class-chip-disabled">Semua kelas</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div>
+                                    <span id="subject-chevron-{{ $subject->id }}" class="subject-chevron">▶</span>
+                                </div>
+                            </div>
+                            <div id="subject-details-{{ $subject->id }}" class="subject-card-body">
+                                <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
+                                    <a href="{{ route('guru.subjects.edit', $subject->id) }}" class="btn-secondary-outline"> <i class="fas fa-edit"></i> Edit Mata Pelajaran</a>
+                                    <a href="{{ route('guru.modules.create') }}?subject_id={{ $subject->id }}" class="btn-secondary-outline"> <i class="fas fa-plus"></i> Tambah Modul</a>
+                                    <form method="POST" action="{{ route('guru.subjects.destroy', $subject->id) }}" onsubmit="return confirm('Hapus mata pelajaran ini beserta semua modul dan soal yang terkait?');" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-secondary-outline" style="color:#b91c1c; border-color:#fca5a5;"> <i class="fas fa-trash"></i> Hapus Mata Pelajaran</button>
+                                    </form>
+                                </div>
 
-        <!-- MODULES TAB -->
-        <div id="modules-tab" class="tab-content" style="display: none;">
-            <div class="section-header">
-                <div class="section-title">
-                    <i class="fas fa-layer-group"></i> Manajemen Modul
-                </div>
-                <a href="{{ route('guru.modules.create') }}" class="btn-add">
-                    <i class="fas fa-plus"></i> Buat Modul
-                </a>
-            </div>
-
-            @if ($subjects->isEmpty())
-                <div class="empty-state">
-                    <i class="fas fa-inbox"></i>
-                    <p>Belum ada mata pelajaran atau modul yang dibuat</p>
-                    <a href="{{ route('guru.subjects.create') }}" class="btn-add">
-                        <i class="fas fa-plus"></i> Buat Mata Pelajaran / Modul Pertama
-                    </a>
-                </div>
-            @else
-                @foreach ($subjects as $subj)
-                    @php
-                        $subModules = $modules->where('subject_id', $subj->id);
-                    @endphp
-
-                    <div style="margin-bottom:1rem;">
-                        <div class="accordion-header" onclick="toggleSubjectModules({{ $subj->id }})">
-                            <div style="font-weight:800; font-size:1.05rem;">{{ $subj->icon }} {{ $subj->name }}</div>
-                            <div style="display:flex; align-items:center; gap:0.75rem; color:#666;">
-                                <div style="font-size:0.95rem;">{{ $subModules->count() }} modul</div>
-                                <div id="chev-{{ $subj->id }}" class="accordion-chevron">▶</div>
+                                @if ($subjectModules->isEmpty())
+                                    <div style="padding:1.5rem; border-radius:18px; background:#f8fafc; color:#475569;">Belum ada modul untuk mata pelajaran ini. Tambahkan modul untuk memulai materi dan soal.</div>
+                                @else
+                                    <div style="display:grid; gap:1rem;">
+                                        @foreach ($subjectModules as $module)
+                                            @php
+                                                $moduleQuestions = $questions->where('module_id', $module->id);
+                                            @endphp
+                                            <div class="module-box">
+                                                <div class="module-box-header">
+                                                    <div>
+                                                        <div style="font-weight:700; color:#0f172a;">{{ $module->name }}</div>
+                                                        <div style="color:#64748b; font-size:0.9rem; margin-top:0.35rem;">Modul {{ $module->module_number }} · {{ $moduleQuestions->count() }} soal</div>
+                                                    </div>
+                                                    <div class="module-actions">
+                                                        @if ($module->published)
+                                                            <span style="background:#ecfdf5; color:#166534; padding:0.45rem 0.8rem; border-radius:999px; font-size:0.82rem;">Dipublikasi</span>
+                                                        @else
+                                                            <span style="background:#f8fafc; color:#475569; padding:0.45rem 0.8rem; border-radius:999px; font-size:0.82rem;">Draft</span>
+                                                        @endif
+                                                        <a href="{{ route('guru.modules.edit', [$module->subject_id, $module->id]) }}" class="btn-secondary-outline" style="font-size:0.85rem;">Ubah Modul</a>
+                                                        <form method="POST" action="{{ route('guru.modules.destroy', [$module->subject_id, $module->id]) }}" onsubmit="return confirm('Hapus modul ini beserta semua soal yang terkait?');" style="display:inline;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn-secondary-outline" style="color:#b91c1c; border-color:#fca5a5; font-size:0.85rem;">Hapus Modul</button>
+                                                        </form>
+                                                        <a href="{{ route('guru.questions.create') }}?module_id={{ $module->id }}" class="btn-secondary-outline" style="font-size:0.85rem;">Tambah Soal</a>
+                                                    </div>
+                                                </div>
+                                                @if ($module->content)
+                                                    <div style="color:#475569;">{{ Str::limit($module->content, 180) }}</div>
+                                                @endif
+                                                <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.85rem;">
+                                                    @if ($module->video_url)
+                                                        <span style="background:#eef2ff; color:#1d4ed8; padding:0.45rem 0.8rem; border-radius:999px; font-size:0.82rem;">Video</span>
+                                                    @endif
+                                                    @if ($module->pdf_path)
+                                                        <span style="background:#fef2f2; color:#991b1b; padding:0.45rem 0.8rem; border-radius:999px; font-size:0.82rem;">PDF</span>
+                                                    @endif
+                                                </div>
+                                                <div style="margin-top:1rem; display:grid; gap:0.75rem;">
+                                                    @if ($moduleQuestions->isEmpty())
+                                                        <div style="color:#475569;">Belum ada soal pada modul ini.</div>
+                                                    @else
+                                                        @foreach ($moduleQuestions as $question)
+                                                            <div class="question-card-row">
+                                                                <div>
+                                                                    <strong>{{ Str::limit($question->question, 90) }}</strong>
+                                                                    <div class="question-meta">{{ ucfirst(str_replace('_', ' ', $question->type)) }} · {{ $question->points }} pts</div>
+                                                                </div>
+                                                                <div style="display:flex; gap:0.5rem; align-items:center;">
+                                                                    <a href="{{ route('guru.questions.edit', $question->id) }}" class="btn-secondary-outline" style="font-size:0.82rem;">Ubah</a>
+                                                                    <form method="POST" action="{{ route('guru.questions.destroy', $question->id) }}" onsubmit="return confirm('Hapus soal ini?');" style="display:inline;">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="btn-secondary-outline" style="color:#b91c1c; border-color:#fca5a5; font-size:0.82rem;">Hapus</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         </div>
-
-                        <div id="modules-for-{{ $subj->id }}" style="display:none;">
-                            @if ($subModules->isEmpty())
-                                <div class="empty-state" style="padding:1rem; text-align:left;">
-                                    <p style="margin:0;">Belum ada modul untuk mata pelajaran ini.</p>
-                                </div>
-                            @else
-                                <div class="table-responsive-custom">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th style="width:40%">Modul</th>
-                                                <th>Soal</th>
-                                                <th>Video</th>
-                                                <th>PDF</th>
-                                                <th>Status</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($subModules as $module)
-                                                <tr>
-                                                    <td>
-                                                        <strong>{{ $module->name }}</strong><br>
-                                                        <small style="color: #999;">Modul
-                                                            {{ $module->module_number }}</small>
-                                                    </td>
-                                                    <td>{{ $module->questions()->count() }} soal</td>
-                                                    <td>
-                                                        @if ($module->video_url)
-                                                            <span style="color: var(--success-color);">
-                                                                <i class="fas fa-check"></i> Ada
-                                                            </span>
-                                                        @else
-                                                            <span style="color: #999;"><i class="fas fa-times"></i>
-                                                                Tidak</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if ($module->pdf_path)
-                                                            <a href="{{ asset('storage/' . $module->pdf_path) }}"
-                                                                target="_blank" class="btn-sm btn-view">
-                                                                <i class="fas fa-file-pdf"></i> Lihat
-                                                            </a>
-                                                        @else
-                                                            <span style="color: #999;"><i class="fas fa-times"></i>
-                                                                Tidak</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        <span
-                                                            class="badge-status {{ $module->published ? 'badge-published' : 'badge-draft' }}">
-                                                            <i
-                                                                class="fas fa-{{ $module->published ? 'check' : 'clock' }}"></i>
-                                                            {{ $module->published ? 'Dipublikasi' : 'Draft' }}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="action-buttons">
-                                                            <a href="{{ route('guru.modules.edit', [$module->subject_id, $module->id]) }}"
-                                                                class="btn-sm btn-edit">
-                                                                <i class="fas fa-edit"></i> Edit
-                                                            </a>
-                                                            <form
-                                                                action="{{ route('guru.modules.destroy', [$module->subject_id, $module->id]) }}"
-                                                                method="POST" style="display: inline;"
-                                                                onsubmit="return confirm('Hapus modul ini?');">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn-sm btn-delete">
-                                                                    <i class="fas fa-trash"></i> Hapus
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             @endif
         </div>
 
-        <!-- QUESTIONS TAB -->
-        <div id="questions-tab" class="tab-content" style="display: none;">
+        <!-- Modal Manage Students per Academic Year -->
+        <div id="manageStudentsModal" class="modal-overlay">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h2>Kelola Siswa - <span id="manageStudentsYear">-</span></h2>
+                    <button type="button" class="modal-close" onclick="closeManageStudentsModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body" id="manageStudentsBody">
+                    <div style="padding:1rem; color:#666;">Memuat daftar siswa...</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-btn modal-btn-secondary" onclick="closeManageStudentsModal()">Tutup</button>
+                    <button type="button" class="modal-btn modal-btn-primary" id="saveManageStudentsBtn" onclick="saveManageStudents()">Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MANAGE KELAS TAB -->
+        <div id="classes-tab" class="tab-content" style="display: none;">
             <div class="section-header">
-                <div class="section-title">
-                    <i class="fas fa-question-circle"></i> Manajemen Soal
+                <div>
+                    <div class="section-title">
+                        <i class="fas fa-door-open"></i> Manage Kelas
+                    </div>
+                    <p style="margin:0.5rem 0 0; color:#475569; max-width:760px;">Atur tahun ajaran, penempatan kelas, dan wali kelas siswa per tahun. Akun siswa permanen tetap dikelola di tab Manage Siswa.</p>
                 </div>
-                <a href="{{ route('guru.questions.create') }}" class="btn-add">
-                    <i class="fas fa-plus"></i> Buat Soal
-                </a>
+                <button class="btn-add" onclick="openAddAcademicYearModal()">
+                    <i class="fas fa-plus"></i> Tambah Tahun Ajaran
+                </button>
             </div>
 
-            <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:1rem; flex-wrap:wrap;">
-                <div>
-                    <label for="filter-subject" style="font-weight:700; display:block; margin-bottom:0.25rem;">Filter Mata
-                        Pelajaran</label>
-                    <select id="filter-subject" style="padding:0.5rem; border-radius:6px; border:1px solid #e5e7eb;">
-                        <option value="">Semua Mata Pelajaran</option>
-                        @foreach ($subjects as $s)
-                            <option value="{{ $s->id }}">{{ $s->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    <label for="filter-module" style="font-weight:700; display:block; margin-bottom:0.25rem;">Filter
-                        Modul</label>
-                    <select id="filter-module" disabled
-                        style="padding:0.5rem; border-radius:6px; border:1px solid #e5e7eb;">
-                        <option value="">Semua Modul</option>
-                    </select>
-                </div>
-
-                <div style="align-self:flex-end;">
-                    <button class="tab-btn" onclick="resetQuestionFilter();">Reset</button>
-                </div>
-            </div>
-
-            @if ($questions->isEmpty())
+            @if ($academicYears->isEmpty())
                 <div class="empty-state">
                     <i class="fas fa-inbox"></i>
-                    <p>Belum ada soal yang dibuat</p>
-                    <a href="{{ route('guru.questions.create') }}" class="btn-add">
-                        <i class="fas fa-plus"></i> Buat Soal Pertama
-                    </a>
+                    <p>Belum ada tahun ajaran yang ada</p>
+                    <button class="btn-add" onclick="openAddAcademicYearModal()">
+                        <i class="fas fa-plus"></i> Buat Tahun Ajaran Pertama
+                    </button>
                 </div>
             @else
                 <div class="table-responsive-custom">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Soal</th>
-                                <th>Tipe</th>
-                                <th>Modul</th>
-                                <th>Poin</th>
+                                <th>Tahun Ajaran</th>
+                                <th>Jumlah Siswa</th>
+                                <th>Jumlah Kelas</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($questions as $question)
-                                <tr data-subject-id="{{ $question->module->subject_id ?? '' }}"
-                                    data-module-id="{{ $question->module_id }}">
-                                    <td><strong>{{ Str::limit($question->question, 50) }}</strong></td>
+                            @foreach ($academicYears as $year)
+                                <tr>
                                     <td>
-                                        <span class="badge-status badge-published"
-                                            style="background: #dbeafe; color: var(--info-color);">
-                                            {{ ucfirst(str_replace('_', ' ', $question->type)) }}
+                                        <strong>{{ $year->name }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge-draft" style="background: #eef2ff; color: #1d4ed8; padding: 0.4rem 0.8rem; border-radius: 999px; font-weight: 600;">
+                                            {{ $year->student_count ?? '-' }} Siswa
                                         </span>
                                     </td>
-                                    <td>{{ $question->module->name }}</td>
                                     <td>
-                                        <span
-                                            style="color: var(--warning-color); font-weight: 700;">+{{ $question->points }}</span>
+                                        <span class="badge-draft" style="background: #eff6ff; color: #1d4ed8; padding: 0.4rem 0.8rem; border-radius: 999px; font-weight: 600;">
+                                            {{ $year->class_count ?? '-' }} Kelas
+                                        </span>
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <a href="{{ route('guru.questions.edit', $question->id) }}"
-                                                class="btn-sm btn-edit">
+                                            <button type="button" class="btn-sm btn-view" onclick='openEditAcademicYearModal({{ $year->id }}, @json($year->name))'>
                                                 <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                            <form action="{{ route('guru.questions.destroy', $question->id) }}"
-                                                method="POST" style="display: inline;"
-                                                onsubmit="return confirm('Hapus soal ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn-sm btn-delete">
-                                                    <i class="fas fa-trash"></i> Hapus
-                                                </button>
-                                            </form>
+                                            </button>
+                                            <button type="button" class="btn-sm btn-view" onclick='openManageStudentsModal({{ $year->id }}, @json($year->name))'>
+                                                <i class="fas fa-users"></i> Kelola Siswa
+                                            </button>
+                                            <button type="button" class="btn-sm btn-delete" onclick='deleteAcademicYear({{ $year->id }}, @json($year->name))'>
+                                                <i class="fas fa-trash"></i> Hapus
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -666,169 +958,9 @@
 
         <!-- STUDENTS MANAGEMENT TAB -->
         <div id="students-tab" class="tab-content" style="display: none;">
-            <div class="section-header">
-                <div class="section-title">
-                    <i class="fas fa-users"></i> Manajemen Siswa
-                </div>
-                <a href="{{ route('guru.students.create') }}" class="btn-add">
-                    <i class="fas fa-user-plus"></i> Tambah Siswa
-                </a>
-            </div>
-
-            <div style="margin:1rem 0; display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
-                <form method="GET" action="{{ route('guru.dashboard') }}"
-                    style="display:flex; gap:0.5rem; align-items:center;">
-                    <input type="hidden" name="tab" value="students">
-
-                    @if (!isset($selectedClass) || !$selectedClass)
-                        <div>
-                            <label style="font-weight:700; display:block; margin-bottom:0.5rem;">Pilih Kelas</label>
-                            <div style="color:#666;">Pilih salah satu kelas di bawah untuk melihat daftar siswanya.</div>
-                        </div>
-                    @else
-                        <input type="hidden" name="class" value="{{ $selectedClass }}">
-                        <div style="flex:1; display:flex; gap:0.75rem; align-items:flex-end;">
-                            <div>
-                                <label for="search-q" style="font-weight:700; display:block; margin-bottom:0.25rem;">Cari
-                                    Nama Siswa</label>
-                                <input id="search-q" name="q" placeholder="Cari nama..."
-                                    value="{{ $searchQ ?? '' }}"
-                                    style="padding:0.5rem; border-radius:6px; border:1px solid #e5e7eb; min-width:220px;">
-                            </div>
-
-                            <div style="display:flex; gap:0.5rem; align-items:center;">
-                                <a href="{{ route('guru.students.create') }}?class={{ urlencode($selectedClass) }}"
-                                    class="btn-add">Tambah Siswa di Kelas {{ $selectedClass }}</a>
-                                <a href="{{ route('guru.dashboard') }}?tab=students" class="btn-sm"
-                                    style="background:#eee; padding:0.5rem 0.75rem; border-radius:6px; color:#333; text-decoration:none;">Kembali</a>
-                            </div>
-                        </div>
-                    @endif
-                </form>
-            </div>
-
-            @if (!isset($selectedClass) || !$selectedClass)
-                <div class="empty-state" style="padding:1.5rem;">
-                    @if (empty($classes) || $classes->isEmpty())
-                        <div style="color:#999;">Belum ada kelas terdaftar</div>
-                    @else
-                        <div class="table-responsive-custom" style="width:100%;">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th style="width:45%">Kelas</th>
-                                        <th>Deskripsi</th>
-                                        <th style="width:12%">Jumlah Siswa</th>
-                                        <th style="width:12%">Status</th>
-                                        <th style="width:12%">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($classes as $c)
-                                        <tr>
-                                            <td>
-                                                <strong>
-                                                    <span
-                                                        style="display:inline-block;width:34px;height:34px;border-radius:8px;background:#e6f6ff;color:#2b6cb0;text-align:center;line-height:34px;margin-right:0.75rem;vertical-align:middle;font-size:14px;">
-                                                        <i class="fas fa-school"></i>
-                                                    </span>
-                                                    {{ $c->name }}
-                                                </strong>
-                                            </td>
-                                            <td>{{ Str::limit('Daftar siswa untuk kelas ' . $c->name, 50) }}</td>
-                                            <td>
-                                                <strong>{{ $c->count }}</strong> siswa
-                                            </td>
-                                            <td>
-                                                <span class="badge-status badge-published">
-                                                    <i class="fas fa-check"></i> Aktif
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    <a href="{{ route('guru.dashboard') }}?class={{ urlencode($c->name) }}&tab=students"
-                                                        class="btn-sm btn-view">
-                                                        <i class="fas fa-eye"></i> Lihat
-                                                    </a>
-                                                    <a href="#" class="btn-sm btn-delete"
-                                                        onclick="event.preventDefault(); if(confirm('Hapus kelas {{ addslashes($c->name) }}?')){ alert('Fitur hapus kelas belum tersedia.'); }">
-                                                        <i class="fas fa-trash"></i> Hapus
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endif
-                </div>
-            @else
-                @if ($students && $students->isEmpty())
-                    <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <p>Belum ada siswa yang terdaftar di kelas {{ $selectedClass }}</p>
-                        <a href="{{ route('guru.students.create') }}?class={{ urlencode($selectedClass) }}"
-                            class="btn-add">
-                            <i class="fas fa-user-plus"></i> Tambah Siswa
-                        </a>
-                    </div>
-                @else
-                    <div class="table-responsive-custom">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Nama Siswa</th>
-                                    <th>Email</th>
-                                    <th>No. HP</th>
-                                    <th>Kelas</th>
-                                    <th>Wali Kelas</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($students as $student)
-                                    <tr>
-                                        <td><strong>{{ $student->name }}</strong></td>
-                                        <td>{{ $student->email }}</td>
-                                        <td>{{ $student->phone ?? '-' }}</td>
-                                        <td>{{ $student->class ?? '-' }}</td>
-                                        <td>{{ $student->homeroom_teacher ?? '-' }}</td>
-                                        <td>
-                                            <div class="action-buttons">
-                                                <a href="{{ route('guru.students.show', $student->id) }}"
-                                                    class="btn-sm btn-view">
-                                                    <i class="fas fa-eye"></i> Lihat
-                                                </a>
-                                                <form action="{{ route('guru.students.destroy', $student->id) }}"
-                                                    method="POST" style="display: inline;"
-                                                    onsubmit="return confirm('Hapus siswa ini?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn-sm btn-delete">
-                                                        <i class="fas fa-trash"></i> Hapus
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" style="text-align: center; color: #999;">Tidak ada data siswa
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                    @if ($students && $students->hasPages())
-                        <div style="margin-top: 2rem;">
-                            {{ $students->links() }}
-                        </div>
-                    @endif
-                @endif
-            @endif
+            @include('guru.students.partials.list')
         </div>
+
 
         <!-- STUDENT PROGRESS TAB -->
         <div id="student-progress-tab" class="tab-content" style="display: none;">
@@ -1031,6 +1163,36 @@
             @endif
         </div>
     </div>
+
+    <!-- Modal Add/Edit Kelas -->
+    <div id="classManageModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="classModalTitle">Tambah Kelas Baru</h2>
+                <button type="button" class="modal-close" onclick="closeClassManageModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="classNameInput">Tahun Ajaran:</label>
+                    <input type="text" id="classNameInput" placeholder="Contoh: 2025/2026" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.95rem;">
+                </div>
+                <small style="color: #666; display: block; margin-top: -0.5rem; margin-bottom: 1rem;">Gunakan format: 2025/2026 atau 2025-2026</small>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="modal-btn modal-btn-secondary" onclick="closeClassManageModal()">
+                    Batal
+                </button>
+                <button type="button" id="submitClassBtn" class="modal-btn modal-btn-primary" onclick="submitClassManage()">
+                    <span class="modal-spinner"></span>
+                    Simpan
+                </button>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('extra-js')
@@ -1073,21 +1235,19 @@
             });
         }
 
-        // Accordion: toggle modules per subject
-        function toggleSubjectModules(subjectId) {
-            const container = document.getElementById('modules-for-' + subjectId);
-            const chev = document.getElementById('chev-' + subjectId);
-            if (!container) return;
-            const isHidden = container.style.display === 'none' || container.style.display === '';
-            container.style.display = isHidden ? 'block' : 'none';
-            if (chev) {
-                if (isHidden) chev.classList.add('open');
-                else chev.classList.remove('open');
+        function toggleSubjectDetails(subjectId) {
+            const details = document.getElementById('subject-details-' + subjectId);
+            const chevron = document.getElementById('subject-chevron-' + subjectId);
+            if (!details) return;
+            const isOpen = details.classList.contains('active');
+            details.classList.toggle('active');
+            if (chevron) chevron.classList.toggle('open', !isOpen);
+            if (!isOpen) {
+                details.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
             }
-            if (isHidden) container.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
         }
 
         // Question filtering
@@ -1095,6 +1255,7 @@
 
         function populateModuleOptions(subjectId) {
             const select = document.getElementById('filter-module');
+            if (!select) return; // guard when the filter-module element is not present on the page
             select.innerHTML = '';
             const defaultOpt = document.createElement('option');
             defaultOpt.value = '';
@@ -1132,7 +1293,128 @@
             applyQuestionFilter();
         }
 
+        function showStudentsMessage(message, type = 'success') {
+            const container = document.getElementById('students-actions-message');
+            if (!container) return;
+            container.innerHTML = `<div style="padding:1rem; margin-bottom:1rem; border-radius:10px; background:${type === 'success' ? '#ecfdf5' : '#fef3f2'}; color:${type === 'success' ? '#03543f' : '#991b1b'}; border:1px solid ${type === 'success' ? '#a7f3d0' : '#fecaca'};">${message}</div>`;
+            setTimeout(() => {
+                if (container) container.innerHTML = '';
+            }, 6000);
+        }
+
+        function attachStudentListeners() {
+            const form = document.getElementById('students-filter-form');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const formData = new FormData(form);
+                    const params = new URLSearchParams();
+                    for (const [key, value] of formData.entries()) {
+                        if (value) params.append(key, value);
+                    }
+                    params.append('tab', 'students');
+                    fetchStudentList(params);
+                });
+            }
+
+            const resetBtn = document.getElementById('students-reset-btn');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function() {
+                    const qInput = document.getElementById('search-q');
+                    const classSelect = document.getElementById('class');
+                    if (qInput) qInput.value = '';
+                    if (classSelect) classSelect.value = '';
+                    const params = new URLSearchParams();
+                    params.append('tab', 'students');
+                    fetchStudentList(params);
+                });
+            }
+
+            document.querySelectorAll('#students-tab form[data-ajax-delete="true"]').forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    if (!confirm('Hapus siswa ini?')) return;
+                    const action = form.getAttribute('action');
+                    const token = form.querySelector('input[name="_token"]')?.value;
+                    const method = form.querySelector('input[name="_method"]')?.value || 'POST';
+                    fetch(action, {
+                        method: method === 'DELETE' ? 'DELETE' : 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': token || '',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        },
+                    }).then(async response => {
+                        if (!response.ok) {
+                            const data = await response.json().catch(() => null);
+                            throw new Error(data?.message || 'Gagal menghapus siswa.');
+                        }
+                        return response.json();
+                    }).then(data => {
+                        showStudentsMessage(data.message || 'Siswa berhasil dihapus.', 'success');
+                        const currentClass = document.getElementById('class')?.value || '';
+                        const currentSearch = document.getElementById('search-q')?.value || '';
+                        const params = new URLSearchParams();
+                        if (currentClass) params.append('class', currentClass);
+                        if (currentSearch) params.append('q', currentSearch);
+                        params.append('tab', 'students');
+                        fetchStudentList(params);
+                    }).catch(error => {
+                        showStudentsMessage(error.message, 'error');
+                    });
+                });
+            });
+
+            document.querySelectorAll('#students-tab .pagination a').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const url = new URL(this.href, window.location.origin);
+                    const params = new URLSearchParams(url.search);
+                    params.set('tab', 'students');
+                    fetchStudentList(params);
+                });
+            });
+        }
+
+        function fetchStudentList(params) {
+            const baseUrl = @json(route('guru.students.ajax-list'));
+            const url = new URL(baseUrl, window.location.origin);
+            if (params instanceof URLSearchParams) {
+                params.forEach((value, key) => url.searchParams.set(key, value));
+            }
+            return fetch(url.toString(), {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            }).then(response => response.text()).then(html => {
+                const tab = document.getElementById('students-tab');
+                if (tab) {
+                    tab.innerHTML = html;
+                    attachStudentListeners();
+                }
+            });
+        }
+
+        function filterSubjectsByClass(className, button) {
+            document.querySelectorAll('.subject-card').forEach(card => {
+                const classes = card.dataset.subjectClasses ? card.dataset.subjectClasses.split(' ') : [];
+                const visible = !className || classes.includes(className);
+                card.style.display = visible ? '' : 'none';
+            });
+
+            document.querySelectorAll('.subject-class-chips .class-chip').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.filterClass === className);
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.subject-class-chips .class-chip').forEach(btn => {
+                btn.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    filterSubjectsByClass(this.dataset.filterClass, this);
+                });
+            });
+
             const subjSel = document.getElementById('filter-subject');
             const modSel = document.getElementById('filter-module');
             if (subjSel) {
@@ -1144,8 +1426,9 @@
             if (modSel) {
                 modSel.addEventListener('change', applyQuestionFilter);
             }
-            // initialize modules select
-            populateModuleOptions('');
+            // initialize modules select (only if element exists)
+            if (document.getElementById('filter-module')) populateModuleOptions('');
+            attachStudentListeners();
 
             // Restore active tab if provided from server (e.g., after selecting class)
             @if (!empty($activeTab))
@@ -1158,5 +1441,232 @@
                 } catch (e) {}
             @endif
         });
+
+        // Manage Kelas Functions
+        // Close modal on overlay click
+        document.addEventListener('DOMContentLoaded', function() {
+            const classModal = document.getElementById('classManageModal');
+            if (classModal) {
+                classModal.addEventListener('click', function(event) {
+                    if (event.target === classModal) {
+                        closeClassManageModal();
+                    }
+                });
+            }
+        });
+
+        // Manage Class Functions
+        function openAddAcademicYearModal() {
+            const modal = document.getElementById('classManageModal');
+            if (!modal) return;
+            
+            document.getElementById('classModalTitle').textContent = 'Tambah Tahun Ajaran Baru';
+            document.getElementById('classNameInput').value = '';
+            document.getElementById('classNameInput').setAttribute('data-academic-year-id', '');
+            document.getElementById('submitClassBtn').setAttribute('data-action', 'add');
+            
+            modal.classList.add('active');
+        }
+
+        function openEditAcademicYearModal(academicYearId, academicYearName) {
+            const modal = document.getElementById('classManageModal');
+            if (!modal) return;
+            
+            document.getElementById('classModalTitle').textContent = 'Edit Tahun Ajaran';
+            document.getElementById('classNameInput').value = academicYearName;
+            document.getElementById('classNameInput').setAttribute('data-academic-year-id', academicYearId);
+            document.getElementById('submitClassBtn').setAttribute('data-action', 'edit');
+            
+            modal.classList.add('active');
+        }
+
+        function openManageStudentsModal(academicYearId, academicYearName) {
+            const modal = document.getElementById('manageStudentsModal');
+            if (!modal) return;
+            document.getElementById('manageStudentsYear').textContent = academicYearName;
+            modal.classList.add('active');
+            modal.setAttribute('data-academic-year-id', academicYearId);
+
+            const body = document.getElementById('manageStudentsBody');
+            if (body) {
+                body.innerHTML = '<div style="padding:1rem; color:#666;">Memuat daftar siswa...</div>';
+            }
+
+            const url = new URL(@json(route('guru.students.ajax-list')), window.location.origin);
+            url.searchParams.set('academic_year', academicYearName);
+            url.searchParams.set('editable', '1');
+            fetch(url.toString(), {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).then(r => r.text()).then(html => {
+                if (body) body.innerHTML = html;
+            }).catch(err => {
+                if (body) body.innerHTML = '<div style="color:#b91c1c">Gagal memuat daftar siswa.</div>';
+            });
+        }
+
+        function closeManageStudentsModal() {
+            const modal = document.getElementById('manageStudentsModal');
+            if (modal) {
+                modal.classList.remove('active');
+                const body = document.getElementById('manageStudentsBody');
+                if (body) body.innerHTML = '';
+            }
+        }
+
+        async function saveManageStudents() {
+            const modal = document.getElementById('manageStudentsModal');
+            if (!modal) return;
+            const academicYearId = modal.getAttribute('data-academic-year-id');
+            const body = document.getElementById('manageStudentsBody');
+            const rows = body ? body.querySelectorAll('table tbody tr') : document.querySelectorAll('#students-tab table tbody tr');
+            const students = [];
+            rows.forEach(row => {
+                const select = row.querySelector('.student-class-select');
+                if (!select) return;
+                const userId = select.getAttribute('data-user-id');
+                const newClass = select.value || null;
+                const homeroomInput = row.querySelector('.student-homeroom-input');
+                const homeroomTeacher = homeroomInput ? homeroomInput.value.trim() || null : null;
+                students.push({ id: parseInt(userId, 10), class: newClass, homeroom_teacher: homeroomTeacher });
+            });
+
+            if (students.length === 0) {
+                alert('Tidak ada perubahan yang ditemukan.');
+                return;
+            }
+
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || document.querySelector('input[name="_token"]')?.value || '';
+            const saveBtn = document.getElementById('saveManageStudentsBtn');
+            if (saveBtn) saveBtn.disabled = true;
+
+            const url = '/guru/classes/' + encodeURIComponent(academicYearId) + '/assign-students';
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': token || '',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ students })
+            });
+
+            if (!resp.ok) {
+                const data = await resp.json().catch(() => null);
+                alert(data?.message || 'Gagal menyimpan perubahan.');
+                if (saveBtn) saveBtn.disabled = false;
+                return;
+            }
+
+            const data = await resp.json();
+            showStudentsMessage(data.message || 'Perubahan tersimpan.', 'success');
+            closeManageStudentsModal();
+            if (saveBtn) saveBtn.disabled = false;
+            setTimeout(() => location.reload(), 1200);
+        }
+
+        function closeClassManageModal() {
+            const modal = document.getElementById('classManageModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.getElementById('classNameInput').value = '';
+            }
+        }
+
+        function submitClassManage() {
+            const classNameInput = document.getElementById('classNameInput');
+            const newClassName = classNameInput.value.trim();
+            const action = document.getElementById('submitClassBtn').getAttribute('data-action') || 'add';
+            const academicYearId = classNameInput.getAttribute('data-academic-year-id') || '';
+            const submitBtn = document.getElementById('submitClassBtn');
+
+            if (!newClassName) {
+                alert('Silakan masukkan nama tahun ajaran.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            const spinner = submitBtn.querySelector('.modal-spinner');
+            if (spinner) spinner.style.display = 'block';
+
+            const token = document.querySelector('input[name="_token"]')?.value;
+            let url;
+            if (action === 'edit') {
+                url = '/guru/classes/' + encodeURIComponent(academicYearId);
+            } else {
+                url = '{{ route("guru.classes.store") }}';
+            }
+
+            const method = action === 'edit' ? 'PUT' : 'POST';
+            const body = action === 'edit' 
+                ? JSON.stringify({ name: newClassName })
+                : JSON.stringify({ name: newClassName });
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'X-CSRF-TOKEN': token || '',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: body,
+            })
+            .then(async response => {
+                if (!response.ok) {
+                    const data = await response.json().catch(() => null);
+                    throw new Error(data?.message || `Gagal ${action === 'edit' ? 'mengupdate' : 'menambah'} tahun ajaran.`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                showStudentsMessage(data.message || `Tahun ajaran berhasil ${action === 'edit' ? 'diupdate' : 'ditambah'}.`, 'success');
+                closeClassManageModal();
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            })
+            .catch(error => {
+                showStudentsMessage(error.message, 'error');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                if (spinner) spinner.style.display = 'none';
+            });
+        }
+
+        function deleteAcademicYear(academicYearId, academicYearName) {
+            if (!confirm(`Hapus tahun ajaran "${academicYearName}"? Ini akan mengosongkan tahun ajaran semua siswa pada tahun ajaran ini.`)) {
+                return;
+            }
+
+            const token = document.querySelector('input[name="_token"]')?.value;
+            const url = '/guru/classes/' + encodeURIComponent(academicYearId);
+
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': token || '',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+            })
+            .then(async response => {
+                if (!response.ok) {
+                    const data = await response.json().catch(() => null);
+                    throw new Error(data?.message || 'Gagal menghapus tahun ajaran.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                showStudentsMessage(data.message || 'Tahun ajaran berhasil dihapus.', 'success');
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            })
+            .catch(error => {
+                showStudentsMessage(error.message, 'error');
+            });
+        }
     </script>
 @endsection

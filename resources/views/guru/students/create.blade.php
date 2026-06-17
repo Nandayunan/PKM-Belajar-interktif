@@ -141,6 +141,45 @@
             <p>Isi formulir di bawah untuk menambahkan siswa baru ke sistem</p>
         </div>
 
+        <div style="background:#f8fafc; border:1px solid #dbeafe; border-radius:15px; padding:1.5rem; margin-bottom:2rem;">
+            <h2 style="margin:0 0 0.75rem 0; font-size:1.25rem; color:#1d4ed8;">Tambah Banyak Siswa</h2>
+            <p style="margin:0 0 1rem 0; color:#475569;">Unggah file <strong>template_akun.xlsx</strong> untuk membuat banyak akun siswa sekaligus.</p>
+            <form action="{{ route('guru.students.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="selected_class" value="{{ request('class') ?? '' }}">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:flex-end;">
+                    <div>
+                        <label for="file" style="display:block; font-weight:700; margin-bottom:0.5rem;">File Excel/CSV</label>
+                        <input id="file" name="file" type="file" accept=".xlsx,.xls,.csv,.ods,.xlsm,.xlsb"
+                            style="width:100%; padding:0.75rem; border:1px solid #d1d5db; border-radius:10px; background:white;">
+                    </div>
+                    <div>
+                        <label for="selected_class" style="display:block; font-weight:700; margin-bottom:0.5rem;">Kelas Default (opsional)</label>
+                        <input id="selected_class" name="selected_class" type="text"
+                            value="{{ request('class') ?? '' }}" placeholder="Contoh: VII-A"
+                            style="width:100%; padding:0.75rem; border:1px solid #d1d5db; border-radius:10px;">
+                    </div>
+                </div>
+                <div style="margin-top:1rem; display:grid; grid-template-columns:1fr; gap:1rem;">
+                    <div>
+                        <label for="selected_academic_year" style="display:block; font-weight:700; margin-bottom:0.5rem;">Tahun Ajaran Default (opsional)</label>
+                        <input id="selected_academic_year" name="selected_academic_year" type="text"
+                            value="{{ request('selected_academic_year') ?? '' }}" placeholder="Contoh: 2025/2026"
+                            style="width:100%; padding:0.75rem; border:1px solid #d1d5db; border-radius:10px;">
+                    </div>
+                </div>
+                <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1rem; align-items:center;">
+                    <button type="submit" class="btn-submit" style="background:#2563eb;">
+                        <i class="fas fa-upload"></i> Upload Excel
+                    </button>
+                    <a href="{{ route('guru.students.import.template') }}" class="btn-cancel"
+                        style="text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; padding:0.75rem 1rem; border-radius:8px; background:#f3f4f6; color:#374151;">
+                        <i class="fas fa-download"></i> Download template_akun.xlsx
+                    </a>
+                </div>
+            </form>
+        </div>
+
         <form action="{{ route('guru.students.store') }}" method="POST">
             @csrf
 
@@ -155,6 +194,18 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    <label for="nisn">NISN <span class="required">*</span></label>
+                    <input type="text" id="nisn" name="nisn"
+                        class="form-control @error('nisn') is-invalid @enderror" placeholder="NISN siswa"
+                        value="{{ old('nisn') }}" required>
+                    @error('nisn')
+                        <div class="error-text">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="form-row">
                 <div class="form-group">
                     <label for="email">Email <span class="required">*</span></label>
                     <input type="email" id="email" name="email"
@@ -195,6 +246,16 @@
                         class="form-control @error('class') is-invalid @enderror" placeholder="Contoh: VII-A, VII-B, VIII-A"
                         value="{{ old('class') }}" required>
                     @error('class')
+                        <div class="error-text">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="academic_year">Tahun Ajaran <span class="required">*</span></label>
+                    <input type="text" id="academic_year" name="academic_year"
+                        class="form-control @error('academic_year') is-invalid @enderror" placeholder="Contoh: 2025/2026"
+                        value="{{ old('academic_year') }}" required>
+                    @error('academic_year')
                         <div class="error-text">{{ $message }}</div>
                     @enderror
                 </div>

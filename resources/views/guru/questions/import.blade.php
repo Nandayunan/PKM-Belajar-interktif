@@ -81,10 +81,11 @@
 
                 <div class="mb-3">
                     <label class="form-label">Petunjuk singkat</label>
-                    <div class="form-note">Gunakan template CSV/Excel yang tersedia: <a
-                            href="{{ asset('templates/question-import-template.csv') }}">Download template</a>. Untuk
-                        pilihan
-                        ganda pisahkan opsi dengan <code>||</code>.</div>
+                    <div class="form-note">Gunakan template Excel yang tersedia: <a
+                        href="{{ asset('templates/template-soall.xlsx') }}">Download template</a>. Format
+                    workbook ini berisi <code>No</code>, <code>Questions</code>, lalu <code>Option A</code> sampai
+                    <code>Option D</code>. Di web, opsi tetap diacak saat siswa mengerjakan, tetapi jawaban benar
+                    tetap diambil dari data yang tersimpan.</div>
                 </div>
 
                 <div class="d-flex" style="gap:0.5rem">

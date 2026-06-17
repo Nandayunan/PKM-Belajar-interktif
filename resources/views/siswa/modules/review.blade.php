@@ -159,13 +159,14 @@
 @endsection
 
 @section('content')
-    <div class="breadcrumb-pills">
-        <a class="breadcrumb-pill" href="{{ route('siswa.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
-        <a class="breadcrumb-pill" href="{{ route('siswa.modules.index', $subject->id) }}"><i class="fas fa-book"></i>
-            {{ $subject->name }}</a>
-        <span class="breadcrumb-pill current"><i class="fas fa-clipboard-check"></i> Review Modul
-            {{ $module->module_number }}</span>
-    </div>
+    <div style="padding: 0 1.5rem;">
+        <div class="breadcrumb-pills">
+            <a class="breadcrumb-pill" href="{{ route('siswa.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
+            <a class="breadcrumb-pill" href="{{ route('siswa.modules.index', $subject->id) }}"><i class="fas fa-book"></i>
+                {{ $subject->name }}</a>
+            <span class="breadcrumb-pill current"><i class="fas fa-clipboard-check"></i> Review Modul
+                {{ $module->module_number }}</span>
+        </div>
 
     <div class="review-hero">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
@@ -260,6 +261,7 @@
                 @endif
             </div>
         @endforeach
+    </div>
     </div>
 
 @endsection

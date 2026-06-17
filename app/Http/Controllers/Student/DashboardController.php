@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\Subject;
 use App\Models\StudentProgress;
+use App\Models\SubjectEnrollment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\QuestionAnswer;
@@ -15,10 +16,36 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $subjects = Subject::all();
+        $studentClass = trim($user->class ?? '');
+
+        $subjectsQuery = Subject::query();
+
+        if ($studentClass !== '') {
+            $classParts = explode('-', $studentClass, 2);
+            $grade = $classParts[0];
+            $section = $classParts[1] ?? null;
+
+            $subjectsQuery->where(function ($query) use ($studentClass, $grade, $section) {
+                $query->where('class', $studentClass)
+                    ->orWhere('class', $grade)
+                    ->orWhere('class', $grade . '-ALL');
+
+                if ($section) {
+                    $query->orWhere('class', 'LIKE', $grade . '-' . $section . '%');
+                }
+            });
+        } else {
+            $subjectsQuery->whereNull('class');
+        }
+
+        $subjects = $subjectsQuery->get();
+
+        $enrolledSubjectIds = SubjectEnrollment::where('user_id', $user->id)
+            ->pluck('subject_id')
+            ->toArray();
 
         $totalSubjects = $subjects->count();
-        $totalModules = $subjects->sum(fn($s) => $s->modules->count());
+        $totalModules = $subjects->sum(fn($s) => $s->publishedModules()->count());
 
         $completedSubjects = StudentProgress::where('user_id', $user->id)
             ->where('status', 'completed')
@@ -29,6 +56,8 @@ class DashboardController extends Controller
         $averageProgress = StudentProgress::where('user_id', $user->id)
             ->whereNull('module_id')
             ->average('percentage') ?? 0;
+
+        
 
         // Recent graded answers by teachers for this student
         $gradedAnswers = QuestionAnswer::where('user_id', $user->id)
@@ -47,6 +76,7 @@ class DashboardController extends Controller
 
         return view('siswa.dashboard', [
             'subjects' => $subjects,
+            'enrolledSubjectIds' => $enrolledSubjectIds,
             'totalSubjects' => $totalSubjects,
             'totalModules' => $totalModules,
             'completedSubjects' => $completedSubjects,

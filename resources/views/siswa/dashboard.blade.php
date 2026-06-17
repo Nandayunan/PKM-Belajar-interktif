@@ -5,12 +5,12 @@
 @section('extra-css')
     <style>
         .dashboard-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: white;
+            background: #eef2ff;
+            color: #1f2937;
             padding: 3rem 2rem;
             border-radius: 20px;
             margin-bottom: 3rem;
-            box-shadow: 0 15px 40px rgba(17, 24, 68, 0.3);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
         }
 
         .dashboard-header h1 {
@@ -20,8 +20,8 @@
         }
 
         .dashboard-header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
+            font-size: 1.05rem;
+            color: #4b5563;
         }
 
         /* Notification bell */
@@ -33,11 +33,11 @@
             color: var(--primary-color);
             width: 44px;
             height: 44px;
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 18px rgba(17, 24, 68, 0.12);
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
             cursor: pointer;
             z-index: 70;
         }
@@ -64,20 +64,20 @@
             right: 2rem;
             top: 5.2rem;
             width: 420px;
-            max-width: calc(100% - 4rem);
+            max-width: calc(100vw - 4rem);
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 12px 40px rgba(17, 24, 68, 0.15);
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
             display: none;
-            z-index: 60;
+            z-index: 1000;
             overflow: hidden;
             max-height: 60vh;
             overflow-y: auto;
         }
 
         .notif-item {
-            padding: 0.9rem;
-            border-bottom: 1px solid #f1f5f9;
+            padding: 0.95rem;
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
         }
@@ -86,67 +86,86 @@
             border-bottom: none;
         }
 
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
         .profile-avatar {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 3rem;
             color: white;
-            box-shadow: 0 10px 30px rgba(17, 24, 68, 0.3);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+            flex-shrink: 0;
+        }
+
+        .profile-info {
+            flex: 1;
         }
 
         .profile-info h3 {
-            color: var(--primary-color);
+            color: #111827;
             font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
 
         .profile-info p {
-            color: #666;
-            margin-bottom: 0.3rem;
+            color: #475569;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
         }
 
         .section-title {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 2rem;
+            color: #111827;
+            margin-bottom: 1.6rem;
             display: flex;
             align-items: center;
             gap: 1rem;
+            margin-top: 1rem;
         }
 
         .section-title i {
-            color: var(--primary-color);
+            color: #4338ca;
             font-size: 2rem;
         }
 
         .subject-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 2rem;
+            gap: 1.5rem;
             margin-bottom: 3rem;
         }
 
         .subject-card {
-            background: white;
-            border-radius: 15px;
+            background: #ffffff;
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s;
-            cursor: pointer;
-            border: 2px solid transparent;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+            transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+            cursor: default;
+            border: 1px solid #e2e8f0;
         }
 
         .subject-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(17, 24, 68, 0.2);
-            border-color: var(--primary-color);
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+            border-color: #4338ca;
         }
 
         .subject-header {
@@ -162,7 +181,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            opacity: 0.1;
+            opacity: 0.08;
             z-index: 0;
         }
 
@@ -177,33 +196,34 @@
         }
 
         .subject-name {
-            font-size: 1.3rem;
+            font-size: 1.35rem;
             font-weight: 700;
-            color: #2d3748;
+            color: #111827;
             margin-bottom: 0.5rem;
         }
 
         .subject-description {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+            color: #475569;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
         }
 
         .subject-badge {
             display: inline-block;
-            padding: 0.3rem 0.8rem;
-            background: rgba(17, 24, 68, 0.1);
-            color: var(--primary-color);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            padding: 0.4rem 0.9rem;
+            background: rgba(67, 56, 202, 0.1);
+            color: #4338ca;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
             margin-bottom: 1rem;
         }
 
         .subject-body {
             padding: 1.5rem;
-            background: #f8f9ff;
-            border-top: 1px solid #e5e7eb;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
         }
 
         .progress-item {
@@ -217,42 +237,42 @@
         .progress-label {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
             font-size: 0.9rem;
             font-weight: 600;
-            color: #2d3748;
+            color: #111827;
         }
 
         .progress-bar {
             height: 8px;
-            background: #e5e7eb;
-            border-radius: 10px;
+            background: #e2e8f0;
+            border-radius: 999px;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
-            border-radius: 10px;
+            background: linear-gradient(90deg, #4338ca, #6366f1);
+            border-radius: 999px;
             transition: width 0.3s;
         }
 
         .subject-footer {
             padding: 1rem 1.5rem;
-            background: white;
-            border-top: 1px solid #e5e7eb;
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
         }
 
         .btn-modules {
             width: 100%;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            background: #4338ca;
             color: white;
             border: none;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
+            padding: 0.85rem 1rem;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.25s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -260,33 +280,32 @@
         }
 
         .btn-modules:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(17, 24, 68, 0.3);
-            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(67, 56, 202, 0.24);
             text-decoration: none;
         }
 
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
-            background: white;
-            border-radius: 15px;
-            box-shadow: var(--card-shadow);
+            background: #f8fafc;
+            border-radius: 18px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
         }
 
         .empty-state i {
             font-size: 4rem;
-            color: #ccc;
+            color: #94a3b8;
             margin-bottom: 1rem;
         }
 
         .empty-state h3 {
-            color: #999;
+            color: #334155;
             margin-bottom: 0.5rem;
         }
 
         .empty-state p {
-            color: #bbb;
+            color: #64748b;
         }
 
         .stats-row {
@@ -342,11 +361,12 @@
 @endsection
 
 @section('content')
-    <div class="dashboard-header">
-        <h1><i class="fas fa-star"></i> Selamat Datang, {{ auth()->user()->name }}! 🎉</h1>
-        <p>Mari kita mulai petualangan belajar hari ini</p>
+    <div style="padding: 0 1.5rem;">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-star"></i> Selamat Datang, {{ auth()->user()->name }}! 🎉</h1>
+            <p>Mari kita mulai petualangan belajar hari ini</p>
 
-        <div class="notif-bell" id="notifBell" title="Notifikasi Penilaian Guru">
+            <div class="notif-bell" id="notifBell" title="Notifikasi Penilaian Guru">
             <i class="fas fa-bell"></i>
             @if (!empty($gradedAnswers) && $gradedAnswers->count() > 0)
                 <div class="notif-count">{{ $gradedAnswers->count() }}</div>
@@ -438,6 +458,8 @@
         <div class="profile-info">
             <h3>{{ auth()->user()->name }}</h3>
             <p><i class="fas fa-envelope"></i> {{ auth()->user()->email }}</p>
+            <p><i class="fas fa-user-graduate"></i> Kelas: {{ auth()->user()->class ?? 'Belum ditentukan' }}</p>
+            <p><i class="fas fa-school"></i> Tahun Ajaran: {{ auth()->user()->academic_year ?? 'Belum ditentukan' }}</p>
             <p><i class="fas fa-badge"></i> Siswa (Pelajar)</p>
             <p><i class="fas fa-calendar"></i> Bergabung sejak {{ auth()->user()->created_at->format('d M Y') }}</p>
         </div>
@@ -464,15 +486,15 @@
     </div>
 
     <!-- Subjects Section -->
-    <div class="section-title">
-        <i class="fas fa-book"></i> Pilih Mata Pelajaran
+    <div class="section-title" style="display:flex; align-items:center; justify-content:space-between;">
+        <div><i class="fas fa-book"></i> Mata Pelajaran Kelas Anda</div>
     </div>
 
     @if ($subjects->isEmpty())
         <div class="empty-state">
             <i class="fas fa-inbox"></i>
-            <h3>Belum ada mata pelajaran</h3>
-            <p>Tunggu guru membuat mata pelajaran</p>
+            <h3>Belum ada mata pelajaran untuk kelas Anda</h3>
+            <p>Tunggu guru menambahkan mata pelajaran atau periksa kembali data kelas Anda.</p>
         </div>
     @else
         <div class="subject-grid">
@@ -485,7 +507,8 @@
                         ->whereNull('module_id')
                         ->first();
                     $progressPercentage = $progress?->percentage ?? 0;
-                    $moduleCount = $subject->modules()->count();
+                    $moduleCount = $subject->publishedModules()->count();
+                    $isEnrolled = in_array($subject->id, $enrolledSubjectIds ?? []);
                 @endphp
 
                 <div class="subject-card" style="cursor: default;">
@@ -512,14 +535,24 @@
                         </div>
                     </div>
                     <div class="subject-footer">
-                        <a href="{{ route('siswa.modules.index', $subject->id) }}" class="btn-modules">
-                            <i class="fas fa-arrow-right"></i> Lihat Modul
-                        </a>
+                        @if ($isEnrolled)
+                            <a href="{{ route('siswa.modules.index', $subject->id) }}" class="btn-modules">
+                                <i class="fas fa-arrow-right"></i> Lihat Modul
+                            </a>
+                        @else
+                            <form method="POST" action="{{ route('siswa.subjects.enroll', $subject->id) }}">
+                                @csrf
+                                <button type="submit" class="btn-modules" style="width:100%;">
+                                    <i class="fas fa-sign-in-alt"></i> Daftar Mata Pelajaran
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             @endforeach
         </div>
     @endif
+    </div>
 @endsection
 
 @section('extra-js')

@@ -91,7 +91,7 @@ class QuestionImportController extends Controller
             $raw = trim((string)($headerRow[$col] ?? ''));
             // remove common non-breaking spaces
             $raw = str_replace("\xc2\xa0", ' ', $raw);
-            $headers[$col] = strtolower($raw);
+            $headers[$col] = $this->normalizeHeader($raw);
         }
 
         // Build parsed rows for preview (do not save yet)
@@ -108,13 +108,26 @@ class QuestionImportController extends Controller
                 }
             }
 
+            // Skip rows that are entirely empty or only contain a 'no' column
+            $allEmpty = true;
+            foreach ($assoc as $k => $v) {
+                if ($k === 'no') continue; // ignore numbering column
+                if (trim((string)$v) !== '') {
+                    $allEmpty = false;
+                    break;
+                }
+            }
+            if ($allEmpty) {
+                continue;
+            }
+
             $rowErrors = [];
-            $questionText = $assoc['question'] ?? $assoc['pertanyaan'] ?? $assoc['soal'] ?? null;
+            $questionText = $this->valueByAliases($assoc, ['question', 'questions', 'pertanyaan', 'soal']);
             if (!$questionText) {
                 $rowErrors[] = "kolom 'Pertanyaan' tidak ditemukan atau kosong";
             }
 
-            $rawType = trim(strtolower($assoc['type'] ?? ($assoc['tipe'] ?? '')));
+            $rawType = trim(strtolower($this->valueByAliases($assoc, ['type', 'tipe'])));
             $rawType = str_replace([' ', '-', '\\'], '_', $rawType);
             $typeMap = [
                 'multiple_choice' => 'multiple_choice',
@@ -133,10 +146,11 @@ class QuestionImportController extends Controller
             ];
             $type = $typeMap[$rawType] ?? '';
 
-            $points = isset($assoc['points']) && is_numeric($assoc['points']) ? (int)$assoc['points'] : (isset($assoc['poin']) && is_numeric($assoc['poin']) ? (int)$assoc['poin'] : 0);
-            $class = $assoc['class'] ?? ($assoc['kelas'] ?? null);
+            $pointsRaw = $this->valueByAliases($assoc, ['points', 'poin']);
+            $points = is_numeric($pointsRaw) ? (int) $pointsRaw : 0;
+            $class = $this->valueByAliases($assoc, ['class', 'kelas']) ?: null;
 
-            $rowModuleId = $assoc['module_id'] ?? ($assoc['module'] ?? null);
+            $rowModuleId = $this->valueByAliases($assoc, ['module_id', 'module']);
             $moduleId = $request->input('module_id') ?: ($rowModuleId ?: null);
             if (!$moduleId) {
                 $rowErrors[] = 'module_id tidak ditentukan; pilih module saat upload atau sertakan kolom module_id';
@@ -145,49 +159,14 @@ class QuestionImportController extends Controller
             }
 
             // options detection
-            $options = null;
-            if (isset($assoc['options']) && trim($assoc['options']) !== '') {
-                $opts = array_values(array_filter(array_map('trim', explode('||', $assoc['options']))));
-                $options = $opts ?: null;
-            } else {
-                $letterOptions = [];
-                foreach ($headers as $col => $h) {
-                    if (preg_match('/^[a-z]$/', $h)) {
-                        $letterOptions[] = isset($row[$col]) ? trim((string)$row[$col]) : '';
-                    }
-                }
-                if (empty($letterOptions)) {
-                    foreach ($headers as $col => $h) {
-                        if (strlen($h) === 1 && ctype_alpha($h)) {
-                            $letterOptions[] = isset($row[$col]) ? trim((string)$row[$col]) : '';
-                        }
-                    }
-                }
-                if (!empty($letterOptions)) {
-                    $opts = array_values(array_filter($letterOptions, function ($v) {
-                        return $v !== '';
-                    }));
-                    $options = $opts ?: null;
-                }
-            }
+            $options = $this->extractOptions($assoc, $row);
 
             // correct answer
-            $correctRaw = $assoc['correct_answer'] ?? ($assoc['jawaban benar'] ?? ($assoc['jawaban'] ?? ($assoc['jawaban_benar'] ?? '')));
-            $correctAnswer = '';
-            if ($correctRaw !== '') {
-                $cr = strtoupper(trim($correctRaw));
-                if (preg_match('/^[A-Z]$/', $cr) && is_array($options) && !empty($options)) {
-                    $index = ord($cr) - ord('A');
-                    if (isset($options[$index])) {
-                        $correctAnswer = $options[$index];
-                    } else {
-                        $rowErrors[] = 'Jawaban benar berupa huruf namun tidak ada opsi yang sesuai';
-                        $correctAnswer = $correctRaw;
-                    }
-                } else {
-                    $correctAnswer = $correctRaw;
-                }
+            $correctRaw = $this->valueByAliases($assoc, ['correct_answer', 'jawaban_benar', 'jawaban benar', 'jawaban', 'kunci_jawaban', 'kunci', 'answer_key', 'option_a']);
+            if ($correctRaw === '' && is_array($options) && !empty($options)) {
+                $correctRaw = $options[0];
             }
+            $correctAnswer = $this->resolveCorrectAnswer($correctRaw, $options, $rowErrors);
 
             if ($type === '') {
                 if (is_array($options) && count($options) >= 2) {
@@ -205,7 +184,7 @@ class QuestionImportController extends Controller
 
             // basic validation for MC questions
             if (in_array($type, ['multiple_choice', 'mixed'], true) && (!is_array($options) || count($options) < 2)) {
-                $rowErrors[] = 'Pilihan ganda membutuhkan minimal 2 opsi (kolom A,B atau kolom options)';
+                $rowErrors[] = 'Pilihan ganda membutuhkan minimal 2 opsi (kolom A/B/C/D atau kolom options)';
             }
 
             $parsed[] = [
@@ -308,5 +287,112 @@ class QuestionImportController extends Controller
 
         // Otherwise, return to import preview/import page with details
         return redirect()->route('guru.questions.import')->with('success', $message);
+    }
+
+    private function normalizeHeader(string $value): string
+    {
+        $value = trim(mb_strtolower($value));
+        $value = preg_replace('/[^a-z0-9]+/u', '_', $value) ?? $value;
+
+        return trim($value, '_');
+    }
+
+    private function valueByAliases(array $row, array $aliases): string
+    {
+        foreach ($aliases as $alias) {
+            $normalized = $this->normalizeHeader($alias);
+            if (array_key_exists($normalized, $row)) {
+                return trim((string) $row[$normalized]);
+            }
+        }
+
+        return '';
+    }
+
+    private function extractOptions(array $row, array $rawRow): ?array
+    {
+        $optionsRaw = $this->valueByAliases($row, ['options', 'opsi', 'pilihan']);
+        if ($optionsRaw !== '') {
+            $options = array_values(array_filter(array_map('trim', explode('||', $optionsRaw)), static function ($value) {
+                return $value !== '';
+            }));
+
+            return !empty($options) ? $options : null;
+        }
+
+        $optionAliases = [];
+        foreach (['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'] as $letter) {
+            $optionAliases[$letter] = [
+                $letter,
+                'option_' . $letter,
+                'opsi_' . $letter,
+                'pilihan_' . $letter,
+                'choice_' . $letter,
+                'jawaban_' . $letter,
+            ];
+        }
+
+        $options = [];
+        foreach ($optionAliases as $aliases) {
+            $value = $this->valueByAliases($row, $aliases);
+            if ($value !== '') {
+                $options[] = $value;
+            }
+        }
+
+        if (empty($options)) {
+            foreach ($rawRow as $column => $cellValue) {
+                $normalizedColumn = $this->normalizeHeader((string) $column);
+                if (in_array($normalizedColumn, ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], true)) {
+                    $value = trim((string) $cellValue);
+                    if ($value !== '') {
+                        $options[] = $value;
+                    }
+                }
+            }
+        }
+
+        return !empty($options) ? $options : null;
+    }
+
+    private function resolveCorrectAnswer(string $correctRaw, ?array $options, array &$rowErrors): string
+    {
+        if ($correctRaw === '') {
+            return '';
+        }
+
+        $normalized = trim(mb_strtoupper($correctRaw));
+
+        if (is_array($options) && !empty($options)) {
+            // 1) Prefer exact match of the provided key/value to avoid
+            // interpreting numeric option texts (e.g. "2") as indexes.
+            foreach ($options as $opt) {
+                if (trim((string) $opt) === trim((string) $correctRaw)) {
+                    return $opt;
+                }
+            }
+
+            // 2) If provided as a letter (A..H), map to index
+            if (preg_match('/^[A-H]$/', $normalized)) {
+                $index = ord($normalized) - ord('A');
+                if (isset($options[$index])) {
+                    return $options[$index];
+                }
+
+                $rowErrors[] = 'Jawaban benar berupa huruf, tetapi opsi pada kolom yang sesuai tidak ditemukan';
+                return $correctRaw;
+            }
+
+            // 3) If provided as a digit and it didn't match an option text,
+            // treat it as a 1-based index (fallback).
+            if (preg_match('/^\d+$/', $normalized)) {
+                $index = (int) $normalized - 1;
+                if (isset($options[$index])) {
+                    return $options[$index];
+                }
+            }
+        }
+
+        return $correctRaw;
     }
 }

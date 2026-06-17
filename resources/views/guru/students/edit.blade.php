@@ -156,7 +156,7 @@
 
         <div class="info-box">
             <i class="fas fa-info-circle"></i>
-            <strong>Catatan:</strong> Email siswa tidak dapat diubah. Password juga tidak akan diubah melalui form ini.
+            <strong>Catatan:</strong> Email siswa tidak dapat diubah. Kosongkan kolom password jika tidak ingin mengganti password.
         </div>
 
         <form action="{{ route('guru.students.update', $student->id) }}" method="POST">
@@ -174,6 +174,18 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    <label for="nisn">NISN <span class="required">*</span></label>
+                    <input type="text" id="nisn" name="nisn"
+                        class="form-control @error('nisn') is-invalid @enderror"
+                        value="{{ old('nisn', $student->nisn) }}" required>
+                    @error('nisn')
+                        <div class="error-text">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="form-row">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" class="form-control" value="{{ $student->email }}"
@@ -216,11 +228,34 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="academic_year">Tahun Ajaran <span class="required">*</span></label>
+                    <input type="text" id="academic_year" name="academic_year"
+                        class="form-control @error('academic_year') is-invalid @enderror" placeholder="Contoh: 2025/2026"
+                        value="{{ old('academic_year', $student->academic_year) }}" required>
+                    @error('academic_year')
+                        <div class="error-text">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
                     <label for="homeroom_teacher">Wali Kelas <span class="required">*</span></label>
                     <input type="text" id="homeroom_teacher" name="homeroom_teacher"
                         class="form-control @error('homeroom_teacher') is-invalid @enderror" placeholder="Nama wali kelas"
                         value="{{ old('homeroom_teacher', $student->homeroom_teacher) }}" required>
                     @error('homeroom_teacher')
+                        <div class="error-text">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password">Password Baru</label>
+                    <input type="password" id="password" name="password"
+                        class="form-control @error('password') is-invalid @enderror" placeholder="Kosongkan jika tidak ingin mengganti password">
+                    @error('password')
                         <div class="error-text">{{ $message }}</div>
                     @enderror
                 </div>
