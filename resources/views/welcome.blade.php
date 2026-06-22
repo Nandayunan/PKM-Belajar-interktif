@@ -8,7 +8,7 @@
         <div
             style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; border-radius: 20px; padding: 3rem 2rem; margin-bottom: 3rem; text-align: center; box-shadow: var(--card-shadow);">
             <h1 style="font-size: 2.5rem; margin: 0; margin-bottom: 1rem; font-weight: 700;">
-                <i class="fas fa-graduation-cap"></i> Selamat Datang di SMP 40 Bandung
+                <i class="fas fa-graduation-cap"></i> Selamat Datang di SMPN 40 Bandung
             </h1>
             <p style="font-size: 1.1rem; margin: 0; opacity: 0.95; max-width: 600px; margin: 0 auto;">
                 Platform Pembelajaran Digital Interaktif untuk Semua Siswa dan Guru
