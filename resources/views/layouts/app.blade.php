@@ -353,13 +353,13 @@
                             </li>
                         @endif
 
-                        @if (Route::has('register'))
+                        {{-- @if (Route::has('register'))
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('register') }}">
                                     <i class="fas fa-user-plus"></i> Register
                                 </a>
                             </li>
-                        @endif
+                        @endif --}}
                     @endauth
                 </ul>
             </div>
