@@ -159,7 +159,22 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
 
     // Dummy routes for CRUD operations
     Route::get('/subjects/create', function () {
-        return view('guru.subjects.create');
+        // prepare available classes grouped by grade similar to dashboard
+        $availableStudentClasses = \App\Models\User::where('role', 0)
+            ->whereNotNull('class')
+            ->where('class', '!=', '')
+            ->pluck('class')
+            ->unique()
+            ->sort()
+            ->values()
+            ->all();
+
+        $classesByGrade = collect($availableStudentClasses)
+            ->groupBy(fn($class) => explode('-', $class, 2)[0])
+            ->map(fn($group) => $group->sort()->values()->all())
+            ->all();
+
+        return view('guru.subjects.create', compact('classesByGrade'));
     })->name('subjects.create');
 
     Route::get('/subjects/{subject}', function (App\Models\Subject $subject) {
@@ -174,7 +189,21 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
     })->name('subjects.show');
 
     Route::get('/subjects/{subject}/edit', function (\App\Models\Subject $subject) {
-        return view('guru.subjects.edit', compact('subject'));
+        $availableStudentClasses = \App\Models\User::where('role', 0)
+            ->whereNotNull('class')
+            ->where('class', '!=', '')
+            ->pluck('class')
+            ->unique()
+            ->sort()
+            ->values()
+            ->all();
+
+        $classesByGrade = collect($availableStudentClasses)
+            ->groupBy(fn($class) => explode('-', $class, 2)[0])
+            ->map(fn($group) => $group->sort()->values()->all())
+            ->all();
+
+        return view('guru.subjects.edit', compact('subject', 'classesByGrade'));
     })->name('subjects.edit');
 
     Route::post('/subjects', function (\Illuminate\Http\Request $request) {
@@ -185,7 +214,6 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
             'sections' => 'nullable|array',
             'sections.*' => 'in:A,B,C,D',
             'all_sections' => 'nullable|boolean',
-            'access_code' => 'nullable|string|max:100',
             // 'icon' and 'color' are optional now — UI no longer provides them
         ]);
 
@@ -217,9 +245,7 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
             $data['color'] = $request->input('color');
         }
 
-        if ($request->filled('access_code')) {
-            $data['access_code'] = $request->input('access_code');
-        }
+        // access_code removed from subject creation
 
         $subject = \App\Models\Subject::create($data);
 
@@ -234,7 +260,6 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
             'sections' => 'nullable|array',
             'sections.*' => 'in:A,B,C,D',
             'all_sections' => 'nullable|boolean',
-            'access_code' => 'nullable|string|max:100',
         ]);
 
         $grade = $request->input('grade');
@@ -252,7 +277,6 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
             'name' => $request->input('name'),
             'description' => $request->input('description'),
             'class' => $classValue,
-            'access_code' => $request->input('access_code'),
         ]);
 
         return redirect()->route('guru.dashboard')->with('success', 'Mata pelajaran berhasil diperbarui');

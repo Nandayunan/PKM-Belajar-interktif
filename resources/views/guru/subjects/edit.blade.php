@@ -51,9 +51,15 @@
                 <select id="subject-grade" name="grade" required
                     style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Poppins', sans-serif; background:white;">
                     <option value="">Pilih kelas</option>
-                    <option value="VII" {{ old('grade', $subjectGrade) == 'VII' ? 'selected' : '' }}>VII</option>
-                    <option value="VIII" {{ old('grade', $subjectGrade) == 'VIII' ? 'selected' : '' }}>VIII</option>
-                    <option value="IX" {{ old('grade', $subjectGrade) == 'IX' ? 'selected' : '' }}>IX</option>
+                    @if(!empty($classesByGrade) && is_array($classesByGrade))
+                        @foreach(array_keys($classesByGrade) as $gradeOpt)
+                            <option value="{{ $gradeOpt }}" {{ old('grade', $subjectGrade) == $gradeOpt ? 'selected' : '' }}>{{ $gradeOpt }}</option>
+                        @endforeach
+                    @else
+                        <option value="VII" {{ old('grade', $subjectGrade) == 'VII' ? 'selected' : '' }}>VII</option>
+                        <option value="VIII" {{ old('grade', $subjectGrade) == 'VIII' ? 'selected' : '' }}>VIII</option>
+                        <option value="IX" {{ old('grade', $subjectGrade) == 'IX' ? 'selected' : '' }}>IX</option>
+                    @endif
                 </select>
                 @error('grade')
                     <div style="color:#dc2626; margin-top:0.5rem;">{{ $message }}</div>
@@ -62,20 +68,8 @@
 
             <div style="margin-bottom: 1.5rem;">
                 <label style="font-weight: 700; color: #2d3748; display: block; margin-bottom: 0.5rem;">Subkelas</label>
-                <div style="display:flex; flex-wrap:wrap; gap:0.75rem;">
-                    @foreach(['A','B','C','D'] as $section)
-                        <label style="display:inline-flex; align-items:center; gap:0.5rem;">
-                            <input type="checkbox" name="sections[]" value="{{ $section }}"
-                                {{ in_array($section, old('sections', $subjectSections)) ? 'checked' : '' }}
-                                onchange="syncSubjectClass();" />
-                            <span>{{ $section }}</span>
-                        </label>
-                    @endforeach
-                    <label style="display:inline-flex; align-items:center; gap:0.5rem; margin-left:1rem;">
-                        <input type="checkbox" id="subject-all-classes" name="all_sections" value="1"
-                            {{ old('all_sections', $subjectAll ? '1' : null) ? 'checked' : '' }} onchange="syncSubjectClass(); toggleSectionInputs();" />
-                        <span>Semua kelas</span>
-                    </label>
+                <div id="subject-sections-container" style="display:flex; flex-wrap:wrap; gap:0.75rem;">
+                    <!-- dynamic sections populated by JS -->
                 </div>
                 <small style="color:#6b7280; display:block; margin-top:0.75rem;">Pilih satu atau beberapa subkelas, atau centang Semua kelas.</small>
                 @error('sections')
@@ -88,13 +82,7 @@
 
             <input type="hidden" name="class" id="subject-class-hidden" value="{{ old('class', $subject->class) }}">
 
-            <div style="margin-bottom: 1.5rem;">
-                <label style="font-weight: 700; color: #2d3748; display: block; margin-bottom: 0.5rem;">Kode Akses (opsional)</label>
-                <input type="text" name="access_code" placeholder="Contoh: ABC123 (opsional)"
-                    style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Poppins', sans-serif;"
-                    value="{{ old('access_code', $subject->access_code) }}">
-                <small style="color:#6b7280;">Jika diisi, siswa harus memasukkan kode ini untuk mendaftar.</small>
-            </div>
+            <!-- access_code removed from edit form -->
 
             <div style="display: flex; gap: 1rem;">
                 <button type="submit"
@@ -110,10 +98,52 @@
     </div>
 
     <script>
+        const classesByGrade = @json($classesByGrade ?? []);
+        const initialSubjectSections = @json($subjectSections ?? []);
+        const initialSubjectAll = {{ $subjectAll ? 'true' : 'false' }};
+
+        function renderSectionsForGrade(grade) {
+            const container = document.getElementById('subject-sections-container');
+            container.innerHTML = '';
+
+            const allLabel = document.createElement('label');
+            allLabel.style = 'display:inline-flex; align-items:center; gap:0.5rem; margin-left:1rem;';
+            allLabel.innerHTML = `<input type="checkbox" id="subject-all-classes" name="all_sections" value="1"> <span>Semua kelas</span>`;
+            container.appendChild(allLabel);
+
+            let sections = [];
+            if (grade && classesByGrade && classesByGrade[grade]) {
+                sections = classesByGrade[grade].map(c => {
+                    const parts = String(c).split('-');
+                    return parts[1] || c;
+                }).filter((v, i, a) => a.indexOf(v) === i);
+            }
+            if (sections.length === 0) sections = ['A','B','C','D'];
+
+            sections.forEach(section => {
+                const lbl = document.createElement('label');
+                lbl.style = 'display:inline-flex; align-items:center; gap:0.5rem;';
+                const checked = initialSubjectSections.includes(section) || (Array.isArray(@json(old('sections', []))) && @json(old('sections', [])).includes(section));
+                lbl.innerHTML = `<input type="checkbox" name="sections[]" value="${section}" ${checked ? 'checked' : ''}> <span>${section}</span>`;
+                container.appendChild(lbl);
+            });
+
+            try {
+                const oldAll = {{ old('all_sections', $subjectAll ? '1' : 0) ? 'true' : 'false' }};
+                const allEl = document.getElementById('subject-all-classes');
+                if (allEl) allEl.checked = oldAll || initialSubjectAll;
+            } catch (e) {}
+
+            document.querySelectorAll('input[name="sections[]"]').forEach(input => input.addEventListener('change', syncSubjectClass));
+            const allEl = document.getElementById('subject-all-classes');
+            if (allEl) allEl.addEventListener('change', function() { toggleSectionInputs(); syncSubjectClass(); });
+        }
+
         function syncSubjectClass() {
             const grade = document.getElementById('subject-grade').value;
             const hidden = document.getElementById('subject-class-hidden');
-            const allClasses = document.getElementById('subject-all-classes').checked;
+            const allEl = document.getElementById('subject-all-classes');
+            const allClasses = allEl ? allEl.checked : false;
             const sectionInputs = Array.from(document.querySelectorAll('input[name="sections[]"]'));
             const selectedSections = sectionInputs
                 .filter(input => input.checked)
@@ -139,21 +169,24 @@
         }
 
         function toggleSectionInputs() {
-            const allClasses = document.getElementById('subject-all-classes').checked;
+            const allClasses = document.getElementById('subject-all-classes')?.checked;
             document.querySelectorAll('input[name="sections[]"]').forEach(input => {
                 input.disabled = allClasses;
                 if (allClasses) input.checked = false;
             });
-            syncSubjectClass();
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('subject-grade').addEventListener('change', syncSubjectClass);
-            document.getElementById('subject-all-classes').addEventListener('change', toggleSectionInputs);
-            document.querySelectorAll('input[name="sections[]"]').forEach(input => {
-                input.addEventListener('change', syncSubjectClass);
+            const gradeSel = document.getElementById('subject-grade');
+            const initialGrade = gradeSel.value || '';
+            renderSectionsForGrade(initialGrade);
+
+            gradeSel.addEventListener('change', function() {
+                renderSectionsForGrade(this.value);
+                syncSubjectClass();
             });
-            toggleSectionInputs();
+
+            syncSubjectClass();
         });
     </script>
 @endsection

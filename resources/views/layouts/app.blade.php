@@ -411,6 +411,55 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script>
+        // Global password visibility toggle: add an eye button inside password inputs
+        (function() {
+            function addPasswordToggles() {
+                document.querySelectorAll('input[type="password"]').forEach(function(input) {
+                    if (input.dataset.pwToggleAdded) return;
+                    
+                    // wrap input in a container if it's not already
+                    const wrapper = document.createElement('div');
+                    wrapper.style.cssText = 'position:relative; display:inline-block; width:100%;';
+                    input.parentNode.insertBefore(wrapper, input);
+                    wrapper.appendChild(input);
+
+                    // ensure input has padding-right to make space for button
+                    const currentPad = parseInt(getComputedStyle(input).paddingRight) || 10;
+                    if (currentPad < 40) input.style.paddingRight = '40px';
+
+                    // create toggle button positioned inside the input
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'password-toggle';
+                    btn.setAttribute('aria-label', 'Toggle password visibility');
+                    btn.style.cssText = 'position:absolute; right:12px; top:50%; transform:translateY(-50%); border:none; background:transparent; cursor:pointer; color:#6b7280; font-size:1.1rem; padding:4px 8px; z-index:10;';
+                    btn.innerHTML = '<i class="fas fa-eye"></i>';
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                        } else {
+                            input.type = 'password';
+                            btn.innerHTML = '<i class="fas fa-eye"></i>';
+                        }
+                    });
+
+                    wrapper.appendChild(btn);
+                    input.dataset.pwToggleAdded = '1';
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', addPasswordToggles);
+            // Also observe DOM changes for dynamically injected password fields
+            const observer = new MutationObserver(function() {
+                addPasswordToggles();
+            });
+            observer.observe(document.documentElement || document.body, { childList: true, subtree: true });
+        })();
+    </script>
+
     @yield('extra-js')
 </body>
 

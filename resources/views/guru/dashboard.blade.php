@@ -1040,11 +1040,7 @@
             @endif
         </div>
 
-        {{-- Debug panel for class filtering (temporary) --}}
-        <div id="class-debug-panel" style="font-size:0.9rem; color:#374151; margin-bottom:0.75rem; display:none; background:#f8fafc; padding:0.6rem; border-radius:8px; border:1px dashed #e6eefc;">
-            <strong>Debug Class Filter:</strong>
-            <div id="class-debug-content" style="margin-top:0.4rem; white-space:pre-wrap; font-family:monospace; font-size:0.85rem;"></div>
-        </div>
+        {{-- Debug panel removed --}}
 
         <!-- Modal Manage Students per Academic Year -->
         <div id="manageStudentsModal" class="modal-overlay">
@@ -1600,7 +1596,7 @@
                 btn.classList.toggle('selected', btnClass === target || (!target && (rawBtn === 'Semua kelas' || rawBtn === '')));
             });
             // Additionally filter modules and their questions by class
-                const debug = [];
+                // debug logging removed
                 document.querySelectorAll('.module-box').forEach(module => {
                 const moduleClass = (module.dataset.moduleClass || '').trim();
                 const moduleClassNorm = norm(moduleClass);
@@ -1641,23 +1637,7 @@
 
                 const countEl = module.querySelector('.module-question-count');
                 if (countEl) countEl.textContent = String(visibleCount);
-                debug.push({
-                    module: module.querySelector('.module-box-header > div > div') ? (module.querySelector('.module-box-header > div > div').textContent || '').trim() : '(name)',
-                    moduleClass: moduleClass,
-                    moduleClassNorm: moduleClassNorm,
-                    visibleCount: visibleCount,
-                    shown: module.style.display !== 'none'
-                });
             });
-
-            // show debug panel
-            const debugPanel = document.getElementById('class-debug-panel');
-            const debugContent = document.getElementById('class-debug-content');
-            if (debugPanel && debugContent) {
-                debugPanel.style.display = '';
-                debugContent.textContent = 'selected=' + target + '\n' + JSON.stringify(debug, null, 2);
-            }
-            
         }
 
         document.addEventListener('DOMContentLoaded', function() {
