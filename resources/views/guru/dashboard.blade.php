@@ -144,10 +144,16 @@
 
         .subject-card {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border: 1px solid #e5e7eb;
             overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .subject-card:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+            border-color: #d1d5db;
         }
 
         .subject-card-header {
@@ -156,20 +162,31 @@
             align-items: flex-start;
             gap: 1rem;
             padding: 1.5rem;
-            background: #f8fafc;
+            background: linear-gradient(135deg, #f8fafc 0%, #f3f4f6 100%);
             cursor: pointer;
+            border-bottom: 1px solid #e5e7eb;
         }
 
         .subject-card-header h2 {
             margin: 0;
-            font-size: 1.2rem;
-            color: #111827;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .subject-card-header p {
+            margin: 0.4rem 0 0 0;
+            font-size: 0.9rem;
+            color: #6b7280;
+            line-height: 1.4;
         }
 
         .subject-card-body {
-            padding: 1.5rem;
+            padding: 0.9rem;
             display: none;
             background: white;
+            max-height: 800px;
+            overflow-y: auto;
         }
 
         .subject-card-body.active {
@@ -189,48 +206,127 @@
         }
 
         .module-box {
-            background: #f9fafb;
-            border: 1px solid #e2e8f0;
-            border-radius: 18px;
-            padding: 1.25rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 0.75rem 0.9rem;
             display: grid;
-            gap: 1rem;
+            gap: 0.6rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-left: 0;
+        }
+
+        .module-box:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: #d1d5db;
         }
 
         .module-box-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             gap: 1rem;
             flex-wrap: wrap;
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 0.6rem;
+        }
+
+        .module-box-header > div:first-child {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .module-box-header > div:first-child > div:first-child {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-box-header > div:first-child > div:first-child > div:first-child {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1f2937;
+        }
+
+        .module-box-header > div:first-child > div:first-child > div:nth-child(2) {
+            font-size: 0.8rem;
+            background: #dbeafe;
+            color: #0369a1;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .module-box-header > div:first-child > div:nth-child(2) {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
         }
 
         .module-actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.75rem;
+            gap: 0.5rem;
             justify-content: flex-end;
         }
 
         .question-card-row {
-            background: white;
+            background: #f9fafb;
             border: 1px solid #e5e7eb;
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 1rem;
+            display: block;
+            transition: all 0.2s ease;
+        }
+
+        .question-card-row:hover {
+            background: white;
+            border-color: #d1d5db;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .question-card-row .question-row-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
+            gap: 0.75rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .question-card-row .question-row-header > div:first-child {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .question-card-row .question-detail {
+            display: none;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #e5e7eb;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .question-card-row.expanded .question-detail {
+            display: block;
         }
 
         .question-card-row strong {
-            color: #0f172a;
+            color: #1f2937;
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
         }
 
         .question-card-row .question-meta {
-            color: #475569;
-            font-size: 0.9rem;
+            color: #6b7280;
+            font-size: 0.85rem;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
         }
 
         .module-summary {
@@ -249,6 +345,20 @@
             font-size: 0.82rem;
         }
 
+        .task-questions {
+            display: grid;
+            gap: 0.75rem;
+            background: #fafbfc;
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .task-questions .question-card-row {
+            margin-bottom: 0;
+            background: white;
+        }
+
         .subject-class-chips {
             display: flex;
             flex-wrap: wrap;
@@ -258,27 +368,34 @@
 
         .subject-class-chips .class-chip,
         .subject-class-chips .class-chip-disabled {
-            border: none;
-            padding: 0.45rem 0.8rem;
-            border-radius: 999px;
-            font-weight: 700;
-            font-size: 0.82rem;
+            border: 1px solid #d1d5db;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s ease;
-        }
-
-        .subject-class-chips .class-chip {
-            background: #dbeafe;
-            color: #1d4ed8;
+            background: white;
+            color: #374151;
         }
 
         .subject-class-chips .class-chip:hover {
-            background: #bfdbfe;
+            background: #eff6ff;
+            border-color: #0369a1;
+            color: #0369a1;
         }
 
         .subject-class-chips .class-chip.selected {
-            background: #1d4ed8;
+            background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
             color: white;
+            border-color: #0369a1;
+            box-shadow: 0 4px 12px rgba(3, 105, 161, 0.3);
+        }
+
+        .subject-class-chips .class-chip-disabled {
+            background: #f9fafb;
+            color: #9ca3af;
+            cursor: default;
         }
 
         .subject-class-chips .class-chip-disabled {
@@ -291,13 +408,22 @@
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            padding: 0.7rem 1rem;
-            border-radius: 999px;
-            border: 1px solid #d1d5db;
+            padding: 0.65rem 1.1rem;
+            border-radius: 8px;
+            border: 1.5px solid #d1d5db;
             background: white;
             color: #374151;
             text-decoration: none;
-            font-weight: 700;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary-outline:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+            color: #1f2937;
         }
 
         .btn-secondary-outline:hover {
@@ -416,8 +542,25 @@
 
         .empty-state {
             text-align: center;
-            padding: 3rem;
+            padding: 3rem 2rem;
             color: #999;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            color: #d1d5db;
+            margin-bottom: 1rem;
+            display: block;
+            opacity: 0.6;
+        }
+
+        .empty-state p {
+            margin-bottom: 1.5rem;
+            color: #6b7280;
+            font-size: 1rem;
         }
 
         .accordion-header {
@@ -438,17 +581,6 @@
 
         .accordion-chevron.open {
             transform: rotate(90deg);
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            color: #ccc;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .empty-state p {
-            margin-bottom: 1rem;
         }
 
         .progress-bar-thin {
@@ -733,30 +865,11 @@
                             $subjectModules = $modules->where('subject_id', $subject->id);
                             $subjectQuestionsCount = $questions->whereIn('module_id', $subjectModules->pluck('id'))->count();
 
-                            $subjectClassChips = [];
-                            if ($subject->class) {
-                                $parts = explode('-', $subject->class, 2);
-                                $grade = $parts[0];
-                                $sectionPart = $parts[1] ?? '';
-
-                                if (strtoupper($sectionPart) === 'ALL') {
-                                    $subjectClassChips = collect(['A', 'B', 'C', 'D'])->map(fn($section) => $grade . '-' . $section)->all();
-                                } elseif ($sectionPart !== '') {
-                                    foreach (explode(',', $sectionPart) as $section) {
-                                        $section = trim(strtoupper($section));
-                                        if ($section !== '') {
-                                            $subjectClassChips[] = $grade . '-' . $section;
-                                        }
-                                    }
-                                } else {
-                                    $subjectClassChips[] = $grade;
-                                }
-                            }
+                            $subjectClassChips = $subject->getClassChips($classesByGrade);
                         @endphp
                         <div class="subject-card" data-subject-classes="{{ implode(' ', $subjectClassChips) }}">
                             <div class="subject-card-header" onclick="toggleSubjectDetails({{ $subject->id }});">
                                 <div>
-                                    <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
                                         <div style="width:44px; height:44px; border-radius:14px; background: rgba(59, 130, 246, 0.15); display:flex; align-items:center; justify-content:center; color:#1d4ed8; font-size:1.1rem;">
                                             <i class="fas fa-book"></i>
                                         </div>
@@ -784,7 +897,7 @@
                                 </div>
                             </div>
                             <div id="subject-details-{{ $subject->id }}" class="subject-card-body">
-                                <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
+                                <div style="display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:0.9rem;">
                                     <a href="{{ route('guru.subjects.edit', $subject->id) }}" class="btn-secondary-outline"> <i class="fas fa-edit"></i> Edit Mata Pelajaran</a>
                                     <a href="{{ route('guru.modules.create') }}?subject_id={{ $subject->id }}" class="btn-secondary-outline"> <i class="fas fa-plus"></i> Tambah Modul</a>
                                     <form method="POST" action="{{ route('guru.subjects.destroy', $subject->id) }}" onsubmit="return confirm('Hapus mata pelajaran ini beserta semua modul dan soal yang terkait?');" style="display:inline;">
@@ -794,19 +907,29 @@
                                     </form>
                                 </div>
 
-                                @if ($subjectModules->isEmpty())
-                                    <div style="padding:1.5rem; border-radius:18px; background:#f8fafc; color:#475569;">Belum ada modul untuk mata pelajaran ini. Tambahkan modul untuk memulai materi dan soal.</div>
-                                @else
-                                    <div style="display:grid; gap:1rem;">
-                                        @foreach ($subjectModules as $module)
-                                            @php
-                                                $moduleQuestions = $questions->where('module_id', $module->id);
-                                            @endphp
-                                            <div class="module-box">
+                                <div style="border-top: 1px solid #e5e7eb; padding-top: 0.9rem;">
+                                    <h3 style="font-size:1rem; font-weight:700; color:#1f2937; margin:0 0 0.8rem 0; display:flex; align-items:center; gap:0.5rem;"><i class="fas fa-book-open"></i> Modul</h3>
+                                    @if ($subjectModules->isEmpty())
+                                        <div style="padding:1rem; border-radius:12px; background:#f9fafb; color:#6b7280; border:1px dashed #e5e7eb; text-align:center;">
+                                            <i class="fas fa-inbox" style="font-size:1.75rem; color:#d1d5db; margin-bottom:0.4rem; display:block;"></i>
+                                            <p style="margin:0; font-size:0.9rem;">Belum ada modul untuk mata pelajaran ini. Klik tombol "Tambah Modul" untuk memulai.</p>
+                                        </div>
+                                    @else
+                                        <div style="display:grid; gap:0.8rem;">
+                                            @foreach ($subjectModules as $module)
+                                                @php
+                                                    $moduleQuestions = $questions->where('module_id', $module->id);
+                                                @endphp
+                                                <div class="module-box" data-module-class="{{ $module->class ?? '' }}">
                                                 <div class="module-box-header">
                                                     <div>
-                                                        <div style="font-weight:700; color:#0f172a;">{{ $module->name }}</div>
-                                                        <div style="color:#64748b; font-size:0.9rem; margin-top:0.35rem;">Modul {{ $module->module_number }} · {{ $moduleQuestions->count() }} soal</div>
+                                                        <div style="display:flex; align-items:center; gap:0.75rem;">
+                                                            <div style="font-weight:700; color:#0f172a;">{{ $module->name }}</div>
+                                                            @if($module->class)
+                                                                <div style="font-size:0.8rem; background:#eef2ff; color:#1d4ed8; padding:0.25rem 0.5rem; border-radius:8px;">{{ $module->class }}</div>
+                                                            @endif
+                                                        </div>
+                                                        <div style="color:#64748b; font-size:0.9rem; margin-top:0.35rem;">Modul {{ $module->module_number }} · <span class="module-question-count">{{ $moduleQuestions->count() }}</span> soal</div>
                                                     </div>
                                                     <div class="module-actions">
                                                         @if ($module->published)
@@ -824,33 +947,82 @@
                                                     </div>
                                                 </div>
                                                 @if ($module->content)
-                                                    <div style="color:#475569;">{{ Str::limit($module->content, 180) }}</div>
+                                                    <div style="color:#475569; font-size:0.9rem;">{{ Str::limit($module->content, 150) }}</div>
                                                 @endif
-                                                <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.85rem;">
+                                                <div style="display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:0.5rem;">
                                                     @if ($module->video_url)
-                                                        <span style="background:#eef2ff; color:#1d4ed8; padding:0.45rem 0.8rem; border-radius:999px; font-size:0.82rem;">Video</span>
+                                                        <span style="background:#eef2ff; color:#1d4ed8; padding:0.35rem 0.65rem; border-radius:999px; font-size:0.75rem;">Video</span>
                                                     @endif
                                                     @if ($module->pdf_path)
-                                                        <span style="background:#fef2f2; color:#991b1b; padding:0.45rem 0.8rem; border-radius:999px; font-size:0.82rem;">PDF</span>
+                                                        <span style="background:#fef2f2; color:#991b1b; padding:0.35rem 0.65rem; border-radius:999px; font-size:0.75rem;">PDF</span>
                                                     @endif
                                                 </div>
-                                                <div style="margin-top:1rem; display:grid; gap:0.75rem;">
-                                                    @if ($moduleQuestions->isEmpty())
-                                                        <div style="color:#475569;">Belum ada soal pada modul ini.</div>
-                                                    @else
-                                                        @foreach ($moduleQuestions as $question)
-                                                            <div class="question-card-row">
-                                                                <div>
-                                                                    <strong>{{ Str::limit($question->question, 90) }}</strong>
-                                                                    <div class="question-meta">{{ ucfirst(str_replace('_', ' ', $question->type)) }} · {{ $question->points }} pts</div>
-                                                                </div>
-                                                                <div style="display:flex; gap:0.5rem; align-items:center;">
-                                                                    <a href="{{ route('guru.questions.edit', $question->id) }}" class="btn-secondary-outline" style="font-size:0.82rem;">Ubah</a>
-                                                                    <form method="POST" action="{{ route('guru.questions.destroy', $question->id) }}" onsubmit="return confirm('Hapus soal ini?');" style="display:inline;">
+                                                @php
+                                                    $moduleTasks = \App\Models\Task::where('module_id', $module->id)->get();
+                                                @endphp
+                                                <div style="margin-top:0.5rem;">
+                                                    @if($moduleTasks->isNotEmpty())
+                                                        <div style="display:flex; flex-direction:column; gap:0.4rem; margin-bottom:0.4rem;">
+                                                            @foreach($moduleTasks as $task)
+                                                                <div style="display:flex; align-items:center; gap:0.5rem;">
+                                                                    <button type="button" class="btn-secondary-outline btn-open-task" data-task-id="{{ $task->id }}" style="font-size:0.85rem; padding:0.4rem 0.7rem;">{{ $task->name }} <span style="color:#64748b; font-size:0.8rem;">({{ count($task->question_ids ?? []) }} soal)</span></button>
+                                                                    <form method="POST" action="{{ route('guru.tasks.destroy', $task->id) }}" onsubmit="return confirm('Hapus tugas ini?');" style="display:inline;">
                                                                         @csrf
                                                                         @method('DELETE')
-                                                                        <button type="submit" class="btn-secondary-outline" style="color:#b91c1c; border-color:#fca5a5; font-size:0.82rem;">Hapus</button>
+                                                                        <button type="submit" class="btn-secondary-outline" style="font-size:0.75rem; color:#b91c1c; border-color:#fca5a5; padding:0.4rem 0.7rem;">Hapus</button>
                                                                     </form>
+                                                                </div>
+                                                                <div id="task-questions-{{ $task->id }}" class="task-questions" style="display:none; margin-left:0.5rem; margin-top:0.3rem;">
+                                                                    @php $tqs = $task->questions(); @endphp
+                                                                    @if($tqs->isEmpty())
+                                                                        <div style="color:#475569; font-size:0.85rem;">Tidak ada soal pada tugas ini.</div>
+                                                                    @else
+                                                                        @foreach($tqs as $tq)
+                                                                            <div class="question-card-row" data-question-class="{{ $tq->class ?? '' }}" style="margin-bottom:0.4rem;">
+                                                                                <div class="question-row-header">
+                                                                                    <div>
+                                                                                        <strong style="font-size:0.9rem;">{{ Str::limit($tq->question, 80) }}</strong>
+                                                                                        <div class="question-meta" style="font-size:0.8rem;">{{ ucfirst(str_replace('_', ' ', $tq->type)) }} · {{ $tq->points }} pts</div>
+                                                                                    </div>
+                                                                                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                                                                                        <a href="{{ route('guru.questions.edit', $tq->id) }}" class="btn-secondary-outline question-action" style="font-size:0.75rem; padding:0.35rem 0.6rem;">Ubah</a>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="question-detail">
+                                                                                    <div style="white-space:pre-wrap; font-size:0.85rem;">{{ $tq->question }}</div>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                </div>
+
+                                                <div class="module-questions-wrapper" id="module-questions-{{ $module->id }}" style="margin-top:0.6rem; display:grid; grid-gap:0.5rem;">
+                                                    @if ($moduleQuestions->isEmpty())
+                                                        <div style="color:#475569; font-size:0.85rem;">Belum ada soal pada modul ini.</div>
+                                                    @else
+                                                        @foreach ($moduleQuestions as $question)
+                                                            <div class="question-card-row" data-question-class="{{ $question->class ?? '' }}">
+                                                                <div class="question-row-header">
+                                                                    <div>
+                                                                        <strong style="font-size:0.9rem;">{{ Str::limit($question->question, 80) }}</strong>
+                                                                        <div class="question-meta" style="font-size:0.8rem;">{{ ucfirst(str_replace('_', ' ', $question->type)) }} · {{ $question->points }} pts @if($question->class) · <span style="background:#fff7ed; color:#92400e; padding:0.12rem 0.35rem; border-radius:6px; font-size:0.75rem;">{{ $question->class }}</span>@endif</div>
+                                                                    </div>
+                                                                    <div style="display:flex; gap:0.4rem; align-items:center;">
+                                                                        <a href="{{ route('guru.questions.edit', $question->id) }}" class="btn-secondary-outline question-action" style="font-size:0.75rem; padding:0.35rem 0.6rem;">Ubah</a>
+                                                                        <form method="POST" action="{{ route('guru.questions.destroy', $question->id) }}" onsubmit="return confirm('Hapus soal ini?');" style="display:inline;" class="question-action">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit" class="btn-secondary-outline" style="color:#b91c1c; border-color:#fca5a5; font-size:0.75rem; padding:0.35rem 0.6rem;">Hapus</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="question-detail">
+                                                                    <div style="font-weight:700; color:#0f172a; margin-bottom:0.15rem; font-size:0.85rem;">Full question</div>
+                                                                    <div style="white-space:pre-wrap; font-size:0.85rem;">{{ $question->question }}</div>
                                                                 </div>
                                                             </div>
                                                         @endforeach
@@ -858,13 +1030,20 @@
                                                 </div>
                                             </div>
                                         @endforeach
-                                    </div>
-                                @endif
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
             @endif
+        </div>
+
+        {{-- Debug panel for class filtering (temporary) --}}
+        <div id="class-debug-panel" style="font-size:0.9rem; color:#374151; margin-bottom:0.75rem; display:none; background:#f8fafc; padding:0.6rem; border-radius:8px; border:1px dashed #e6eefc;">
+            <strong>Debug Class Filter:</strong>
+            <div id="class-debug-content" style="margin-top:0.4rem; white-space:pre-wrap; font-family:monospace; font-size:0.85rem;"></div>
         </div>
 
         <!-- Modal Manage Students per Academic Year -->
@@ -1396,22 +1575,98 @@
         }
 
         function filterSubjectsByClass(className, button) {
+            // normalize helper: trim, uppercase, replace spaces with '-', remove non A-Z0-9- chars
+            const norm = (s) => {
+                if (!s) return '';
+                try { s = String(s); } catch (e) { return ''; }
+                s = s.trim().toUpperCase();
+                s = s.replace(/\s+/g, '-');
+                s = s.replace(/[^A-Z0-9\-]/g, '');
+                return s;
+            };
+
+            const target = norm(className);
+
             document.querySelectorAll('.subject-card').forEach(card => {
-                const classes = card.dataset.subjectClasses ? card.dataset.subjectClasses.split(' ') : [];
-                const visible = !className || classes.includes(className);
+                const raw = card.dataset.subjectClasses ? card.dataset.subjectClasses.split(' ') : [];
+                const classes = raw.map(c => norm(c)).filter(x => x !== '');
+                const visible = !target || classes.includes(target);
                 card.style.display = visible ? '' : 'none';
             });
 
-            document.querySelectorAll('.subject-class-chips .class-chip').forEach(btn => {
-                btn.classList.toggle('selected', btn.dataset.filterClass === className);
+            document.querySelectorAll('.class-chip:not(.class-chip-disabled)').forEach(btn => {
+                const rawBtn = btn.dataset.filterClass ? btn.dataset.filterClass : (btn.textContent || '').trim();
+                const btnClass = norm(rawBtn);
+                btn.classList.toggle('selected', btnClass === target || (!target && (rawBtn === 'Semua kelas' || rawBtn === '')));
             });
+            // Additionally filter modules and their questions by class
+                const debug = [];
+                document.querySelectorAll('.module-box').forEach(module => {
+                const moduleClass = (module.dataset.moduleClass || '').trim();
+                const moduleClassNorm = norm(moduleClass);
+                const questionRows = module.querySelectorAll('.question-card-row');
+                let visibleCount = 0;
+
+                // If module has NO class, it's for all classes - always show it
+                if (!moduleClassNorm) {
+                    // Module is for all classes, always visible
+                } else if (target && moduleClassNorm !== target) {
+                    // Module has a specific class but it doesn't match selected class - hide it
+                    module.style.display = 'none';
+                    return;
+                }
+
+                questionRows.forEach(row => {
+                    const qClass = (row.dataset.questionClass || '').trim();
+                    const qClassNorm = norm(qClass);
+                    const show = !target || qClassNorm === '' || qClassNorm === target;
+                    row.style.display = show ? '' : 'none';
+                    if (show) visibleCount++;
+                });
+
+                // If module has no class, always show it
+                if (!moduleClassNorm) {
+                    module.style.display = '';
+                } else if (moduleClassNorm && target && moduleClassNorm === target) {
+                    // If module is explicitly targeted to the selected class, show it even if it has 0 questions
+                    module.style.display = '';
+                } else {
+                    // For targeted modules that don't match, they're already hidden above
+                    if (visibleCount === 0) {
+                        module.style.display = 'none';
+                    } else {
+                        module.style.display = '';
+                    }
+                }
+
+                const countEl = module.querySelector('.module-question-count');
+                if (countEl) countEl.textContent = String(visibleCount);
+                debug.push({
+                    module: module.querySelector('.module-box-header > div > div') ? (module.querySelector('.module-box-header > div > div').textContent || '').trim() : '(name)',
+                    moduleClass: moduleClass,
+                    moduleClassNorm: moduleClassNorm,
+                    visibleCount: visibleCount,
+                    shown: module.style.display !== 'none'
+                });
+            });
+
+            // show debug panel
+            const debugPanel = document.getElementById('class-debug-panel');
+            const debugContent = document.getElementById('class-debug-content');
+            if (debugPanel && debugContent) {
+                debugPanel.style.display = '';
+                debugContent.textContent = 'selected=' + target + '\n' + JSON.stringify(debug, null, 2);
+            }
+            
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.subject-class-chips .class-chip').forEach(btn => {
+            document.querySelectorAll('.class-chip:not(.class-chip-disabled)').forEach(btn => {
                 btn.addEventListener('click', function(event) {
                     event.stopPropagation();
-                    filterSubjectsByClass(this.dataset.filterClass, this);
+                    let cls = this.dataset.filterClass ? this.dataset.filterClass : (this.textContent || '').trim();
+                    if (cls === 'Semua kelas') cls = '';
+                    filterSubjectsByClass(cls, this);
                 });
             });
 
@@ -1429,6 +1684,32 @@
             // initialize modules select (only if element exists)
             if (document.getElementById('filter-module')) populateModuleOptions('');
             attachStudentListeners();
+
+            // make question rows collapsible: toggle .expanded when header clicked
+            document.querySelectorAll('.question-row-header').forEach(h => {
+                h.addEventListener('click', function (ev) {
+                    // if click on an action control, ignore
+                    if (ev.target.closest('.question-action')) return;
+                    const row = this.closest('.question-card-row');
+                    if (!row) return;
+                    row.classList.toggle('expanded');
+                });
+            });
+
+            // prevent action controls from toggling the row
+            document.querySelectorAll('.question-action').forEach(el => el.addEventListener('click', function(ev){ ev.stopPropagation(); }));
+
+            // Open task question list when clicking task button
+            document.querySelectorAll('.btn-open-task').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.taskId;
+                    const wrapper = document.getElementById('task-questions-' + id);
+                    if (!wrapper) return;
+                    wrapper.style.display = wrapper.style.display === 'none' ? '' : 'none';
+                });
+            });
+
+
 
             // Restore active tab if provided from server (e.g., after selecting class)
             @if (!empty($activeTab))

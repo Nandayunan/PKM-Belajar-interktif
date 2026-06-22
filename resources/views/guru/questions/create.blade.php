@@ -221,7 +221,23 @@
                     <div class="col-md-2">
                         <label class="form-label">Kelas</label>
                         <input type="text" name="class" id="class-input" class="form-control"
-                            placeholder="Contoh: VII-A">
+                            placeholder="Contoh: VII-A" list="question-class-options">
+                        <datalist id="question-class-options">
+                            @php
+                                $questionClasses = \App\Models\User::where('role', 0)
+                                    ->whereNotNull('class')
+                                    ->where('class', '!=', '')
+                                    ->distinct()
+                                    ->pluck('class')
+                                    ->sort()
+                                    ->values()
+                                    ->all();
+                            @endphp
+                            @foreach ($questionClasses as $classOption)
+                                <option value="{{ $classOption }}"></option>
+                            @endforeach
+                        </datalist
+                        >
                     </div>
 
                     <div class="col-12 mt-2">

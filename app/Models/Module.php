@@ -16,6 +16,7 @@ class Module extends Model
         'pdf_path',
         'created_by',
         'published',
+        'class',
     ];
 
     protected $casts = [

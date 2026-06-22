@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Subject;
 use App\Models\Module;
+use App\Models\User;
 
 class ModuleController extends Controller
 {
@@ -15,8 +16,19 @@ class ModuleController extends Controller
     {
         $user = Auth::user();
         $subjects = Subject::where('created_by', $user->id)->get();
+        $availableClasses = User::where('role', 0)
+            ->whereNotNull('class')
+            ->where('class', '!=', '')
+            ->distinct()
+            ->pluck('class')
+            ->sort()
+            ->values()
+            ->all();
 
-        return view('guru.modules.create', ['subjects' => $subjects]);
+        return view('guru.modules.create', [
+            'subjects' => $subjects,
+            'availableClasses' => $availableClasses,
+        ]);
     }
 
     public function store(Request $request)
@@ -30,11 +42,22 @@ class ModuleController extends Controller
             'content' => 'nullable|string',
             'video_url' => 'nullable|url',
             'published' => 'sometimes|accepted',
+            'class' => 'nullable|string|max:50',
             'pdf' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         $module = new Module();
         $module->subject_id = $validated['subject_id'];
+        // Normalize class input: trim, uppercase, replace spaces with '-' (e.g., "VII A" -> "VII-A")
+        $rawClass = $validated['class'] ?? null;
+        if ($rawClass) {
+            $normalized = strtoupper(trim((string)$rawClass));
+            $normalized = preg_replace('/\s+/', '-', $normalized);
+            $normalized = preg_replace('/[^A-Z0-9\-]/', '', $normalized);
+            $module->class = $normalized;
+        } else {
+            $module->class = null;
+        }
         $module->name = $validated['name'];
         $module->module_number = $validated['module_number'];
         $module->content = $validated['content'] ?? null;
@@ -70,10 +93,20 @@ class ModuleController extends Controller
             'content' => 'nullable|string',
             'video_url' => 'nullable|url',
             'published' => 'sometimes|accepted',
+            'class' => 'nullable|string|max:50',
             'pdf' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         $module->subject_id = $validated['subject_id'];
+        $rawClass = $validated['class'] ?? null;
+        if ($rawClass) {
+            $normalized = strtoupper(trim((string)$rawClass));
+            $normalized = preg_replace('/\s+/', '-', $normalized);
+            $normalized = preg_replace('/[^A-Z0-9\-]/', '', $normalized);
+            $module->class = $normalized;
+        } else {
+            $module->class = null;
+        }
         $module->name = $validated['name'];
         $module->module_number = $validated['module_number'];
         $module->content = $validated['content'] ?? null;

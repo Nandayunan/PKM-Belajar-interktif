@@ -92,6 +92,21 @@ class DashboardController extends Controller
                 ->get()
                 ->map(fn($r) => (object)['name' => $r->class, 'count' => $r->total]);
 
+            $availableStudentClasses = User::where('role', 0)
+                ->when($selectedAcademicYear, fn($q) => $q->where('academic_year', $selectedAcademicYear))
+                ->whereNotNull('class')
+                ->where('class', '!=', '')
+                ->pluck('class')
+                ->unique()
+                ->sort()
+                ->values()
+                ->all();
+
+            $classesByGrade = collect($availableStudentClasses)
+                ->groupBy(fn($class) => explode('-', $class, 2)[0])
+                ->map(fn($group) => $group->sort()->values()->all())
+                ->all();
+
             $academicYears = AcademicYear::orderBy('name')->get();
             foreach ($academicYears as $year) {
                 $year->student_count = User::where('role', 0)
@@ -144,6 +159,7 @@ class DashboardController extends Controller
             'totalModules' => $totalModules,
             'totalQuestions' => $totalQuestions,
             'totalStudents' => $totalStudents,
+            'classesByGrade' => $classesByGrade,
         ]);
     }
 

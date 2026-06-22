@@ -13,6 +13,7 @@ use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardControll
 use App\Http\Controllers\Teacher\ModuleController as TeacherModuleController;
 use App\Http\Controllers\Teacher\StudentController;
 use App\Http\Controllers\Teacher\GradingController;
+use App\Http\Controllers\Teacher\TaskController;
 use App\Models\Question;
 use App\Models\Module;
 use App\Models\Subject;
@@ -172,8 +173,8 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
         return view('guru.subjects.show', compact('subject', 'totalModules', 'totalQuestions'));
     })->name('subjects.show');
 
-    Route::get('/subjects/{subject}/edit', function () {
-        return view('guru.subjects.edit');
+    Route::get('/subjects/{subject}/edit', function (\App\Models\Subject $subject) {
+        return view('guru.subjects.edit', compact('subject'));
     })->name('subjects.edit');
 
     Route::post('/subjects', function (\Illuminate\Http\Request $request) {
@@ -305,6 +306,7 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
             'type' => 'required|string',
             'question' => 'required|string',
             'points' => 'required|integer',
+            'class' => 'nullable|string|max:50',
         ]);
 
         $user = Auth::user();
@@ -317,6 +319,16 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
         $question->type = $submittedType === 'mixed' ? 'multiple_choice' : $submittedType;
         $question->question = $request->input('question');
         $question->points = $request->input('points');
+        // Normalize class input
+        $rawClass = $request->input('class');
+        if ($rawClass) {
+            $normalized = strtoupper(trim((string)$rawClass));
+            $normalized = preg_replace('/\s+/', '-', $normalized);
+            $normalized = preg_replace('/[^A-Z0-9\-]/', '', $normalized);
+            $question->class = $normalized;
+        } else {
+            $question->class = null;
+        }
         $question->created_by = $user->id;
 
         // Ensure correct_answer always stored as a non-null string
@@ -371,7 +383,15 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
         $question->type = $submittedType === 'mixed' ? 'multiple_choice' : $submittedType;
         $question->question = $request->input('question');
         $question->points = $request->input('points');
-        $question->class = $request->input('class');
+        $rawClass = $request->input('class');
+        if ($rawClass) {
+            $normalized = strtoupper(trim((string)$rawClass));
+            $normalized = preg_replace('/\s+/', '-', $normalized);
+            $normalized = preg_replace('/[^A-Z0-9\-]/', '', $normalized);
+            $question->class = $normalized;
+        } else {
+            $question->class = null;
+        }
 
         $question->correct_answer = '';
         $question->options = null;
@@ -414,6 +434,10 @@ Route::middleware(['auth', 'teacher'])->prefix('guru')->name('guru.')->group(fun
 
         return redirect()->route('guru.dashboard')->with('success', 'Soal berhasil dihapus');
     })->name('questions.destroy');
+
+    // Tasks (Tugas)
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
     // Settings & Progress
     Route::get('/settings', function () {

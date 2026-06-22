@@ -34,6 +34,49 @@ class Subject extends Model
         return $this->hasMany(Module::class, 'subject_id')->where('published', true);
     }
 
+    public function getClassChips(array $availableClassesByGrade = []): array
+    {
+        if (!$this->class) {
+            return [];
+        }
+
+        $parts = explode('-', $this->class, 2);
+        $grade = $parts[0];
+        $sectionPart = $parts[1] ?? '';
+        $actualGradeClasses = $availableClassesByGrade[$grade] ?? [];
+
+        if (strtoupper($sectionPart) === 'ALL' || $sectionPart === '') {
+            if (!empty($actualGradeClasses)) {
+                return $actualGradeClasses;
+            }
+
+            if (strtoupper($sectionPart) === 'ALL') {
+                return collect(['A', 'B', 'C', 'D'])->map(fn($section) => $grade . '-' . $section)->all();
+            }
+
+            return [$grade];
+        }
+
+        $subjectClassChips = [];
+        foreach (explode(',', $sectionPart) as $section) {
+            $section = trim(strtoupper($section));
+            if ($section === '') {
+                continue;
+            }
+
+            $sectionClass = $grade . '-' . $section;
+            if (!empty($actualGradeClasses)) {
+                if (in_array($sectionClass, $actualGradeClasses, true)) {
+                    $subjectClassChips[] = $sectionClass;
+                }
+            } else {
+                $subjectClassChips[] = $sectionClass;
+            }
+        }
+
+        return $subjectClassChips;
+    }
+
     public function progress()
     {
         return $this->hasMany(StudentProgress::class, 'subject_id');

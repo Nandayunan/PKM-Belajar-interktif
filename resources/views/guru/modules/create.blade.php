@@ -187,6 +187,20 @@
                     placeholder="https://youtube.com/watch?v=...">
             </div>
 
+            <div class="mb-3">
+                <label class="form-label">Kelas Khusus (opsional)</label>
+                <input type="text" name="class" class="form-control form-control-lg" list="module-class-options"
+                    placeholder="Contoh: VII-A" value="{{ old('class') }}">
+                @if (!empty($availableClasses))
+                    <datalist id="module-class-options">
+                        @foreach ($availableClasses as $classOption)
+                            <option value="{{ $classOption }}"></option>
+                        @endforeach
+                    </datalist>
+                @endif
+                <div class="form-note">Kosongkan agar modul tersedia untuk semua kelas.</div>
+            </div>
+
             <div class="d-flex align-items-center gap-3 mb-3">
                 <label class="toggle mb-0">
                     <input type="checkbox" name="published" id="published">

@@ -57,6 +57,19 @@
                     placeholder="https://youtube.com/watch?v=...">
             </div>
 
+            <div style="margin-bottom: 1.5rem;">
+                <label style="font-weight:700; display:block; margin-bottom:0.5rem;">Kelas Khusus (opsional)</label>
+                <input type="text" name="class" value="{{ old('class', $module->class) }}"
+                    style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Poppins', sans-serif;"
+                    placeholder="Contoh: VII-A" list="module-class-options">
+                <datalist id="module-class-options">
+                    @foreach (\App\Models\User::where('role', 0)->whereNotNull('class')->where('class', '!=', '')->distinct()->pluck('class')->sort()->values()->all() as $classOption)
+                        <option value="{{ $classOption }}"></option>
+                    @endforeach
+                </datalist>
+                <div style="font-size:0.95rem; color:#6b7280; margin-top:0.5rem;">Kosongkan agar modul tersedia untuk semua kelas.</div>
+            </div>
+
             <div style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
                 <input type="checkbox" name="published" id="published" style="width: 20px; height: 20px;"
                     {{ $module->published ? 'checked' : '' }}>

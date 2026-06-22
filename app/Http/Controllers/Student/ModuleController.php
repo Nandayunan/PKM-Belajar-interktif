@@ -17,7 +17,19 @@ class ModuleController extends Controller
     public function index($subjectId)
     {
         $subject = Subject::findOrFail($subjectId);
-        $modules = $subject->publishedModules()->get();
+        $user = Auth::user();
+
+        $modulesQuery = $subject->publishedModules();
+        if ($user->class) {
+            $modulesQuery->where(function ($q) use ($user) {
+                $q->whereNull('class')
+                    ->orWhere('class', $user->class);
+            });
+        } else {
+            $modulesQuery->whereNull('class');
+        }
+
+        $modules = $modulesQuery->get();
         $user = Auth::user();
 
         $isEnrolled = SubjectEnrollment::where('user_id', $user->id)
@@ -54,12 +66,21 @@ class ModuleController extends Controller
     public function show($subjectId, $moduleId)
     {
         $subject = Subject::findOrFail($subjectId);
-        $module = Module::published()
-            ->where('id', $moduleId)
-            ->where('subject_id', $subjectId)
-            ->firstOrFail();
-
         $user = Auth::user();
+
+        $moduleQuery = Module::published()
+            ->where('id', $moduleId)
+            ->where('subject_id', $subjectId);
+        if ($user->class) {
+            $moduleQuery->where(function ($q) use ($user) {
+                $q->whereNull('class')
+                    ->orWhere('class', $user->class);
+            });
+        } else {
+            $moduleQuery->whereNull('class');
+        }
+
+        $module = $moduleQuery->firstOrFail();
         $isEnrolled = SubjectEnrollment::where('user_id', $user->id)
             ->where('subject_id', $subject->id)
             ->exists();
@@ -69,7 +90,14 @@ class ModuleController extends Controller
                 ->with('error', 'Anda harus mendaftar ke mata pelajaran ini terlebih dahulu.');
         }
 
-        $questions = $module->questions()->get();
+        $questions = $module->questions()
+            ->where(function ($q) use ($user) {
+                $q->whereNull('class');
+                if ($user->class) {
+                    $q->orWhere('class', $user->class);
+                }
+            })
+            ->get();
 
         // Initialize module progress if not exists
         $moduleProgress = StudentProgress::firstOrCreate(
