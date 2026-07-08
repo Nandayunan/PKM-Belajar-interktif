@@ -68,7 +68,7 @@
         .section-title {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #2d3748;
+            color: #f8f8f9;
             display: flex;
             align-items: center;
             gap: 1rem;
@@ -1068,7 +1068,7 @@
                     <div class="section-title">
                         <i class="fas fa-door-open"></i> Manage Kelas
                     </div>
-                    <p style="margin:0.5rem 0 0; color:#475569; max-width:760px;">Atur tahun ajaran, penempatan kelas, dan wali kelas siswa per tahun. Akun siswa permanen tetap dikelola di tab Manage Siswa.</p>
+                    <p style="margin:0.5rem 0 0; color:#FFFFFF; max-width:760px;">Atur tahun ajaran, penempatan kelas, dan wali kelas siswa per tahun. Akun siswa permanen tetap dikelola di tab Manage Siswa.</p>
                 </div>
                 <button class="btn-add" onclick="openAddAcademicYearModal()">
                     <i class="fas fa-plus"></i> Tambah Tahun Ajaran

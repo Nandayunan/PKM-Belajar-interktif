@@ -6,7 +6,7 @@
             <div class="section-title">
                 <i class="fas fa-users"></i> Manage Siswa
             </div>
-            <p style="margin:0.5rem 0 0; color:#475569; max-width:760px;">Kelola akun siswa permanen, data pribadi, dan riwayat. Penempatan kelas per tahun ajaran dilakukan di tab Manage Kelas.</p>
+            <p style="margin:0.5rem 0 0; color:#FFFFFF; max-width:760px;">Kelola akun siswa permanen, data pribadi, dan riwayat. Penempatan kelas per tahun ajaran dilakukan di tab Manage Kelas.</p>
         </div>
         <a href="{{ route('guru.students.create', ['class' => $selectedClass ?? null]) }}" class="btn-add">
             <i class="fas fa-user-plus"></i> Tambah Siswa
@@ -18,13 +18,16 @@
             <input type="hidden" name="tab" value="students">
 
             <div style="min-width:220px; flex:1;">
-                <label for="search-q" style="font-weight:700; display:block; margin-bottom:0.5rem;">Cari Nama Siswa</label>
+                <label for="search-q"
+        style="font-weight:700; display:block; margin-bottom:0.5rem; color:white;">
+        Cari Nama Siswa
+    </label>
                 <input id="search-q" name="q" placeholder="Cari nama..." value="{{ $searchQ ?? '' }}"
                     style="width:100%; padding:0.75rem; border-radius:10px; border:1px solid #e5e7eb;">
             </div>
 
             <div style="min-width:220px; flex:1;">
-                <label for="class" style="font-weight:700; display:block; margin-bottom:0.5rem;">Filter Kelas</label>
+                <label for="class" style="font-weight:700; display:block; margin-bottom:0.5rem; color:white;">Filter Kelas</label>
                 <select id="class" name="class"
                     style="width:100%; padding:0.75rem; border-radius:10px; border:1px solid #e5e7eb;">
                     <option value="">Semua Kelas</option>
@@ -35,7 +38,7 @@
             </div>
 
             <div style="min-width:220px; flex:1;">
-                <label for="academic_year_filter" style="font-weight:700; display:block; margin-bottom:0.5rem;">Filter Tahun Ajaran</label>
+                <label for="academic_year_filter" style="font-weight:700; display:block; margin-bottom:0.5rem; color:white;">Filter Tahun Ajaran</label>
                 <select id="academic_year_filter" name="academic_year"
                     style="width:100%; padding:0.75rem; border-radius:10px; border:1px solid #e5e7eb;">
                     <option value="">Semua Tahun Ajaran</option>
